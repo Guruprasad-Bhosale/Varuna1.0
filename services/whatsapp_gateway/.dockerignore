@@ -1,0 +1,5 @@
+node_modules/
+auth_info_baileys/
+.env
+.DS_Store
+npm-debug.log

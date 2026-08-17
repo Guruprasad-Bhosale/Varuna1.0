@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://varuna:varunapass@db:5432/varuna_db
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: varuna
+      POSTGRES_PASSWORD: varunapass
+      POSTGRES_DB: varuna_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  whatsapp_gateway:
+    build:
+      context: ./services/whatsapp_gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - baileys_auth:/app/auth_info_baileys
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  baileys_auth:

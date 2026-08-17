@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+backend/main.py
+edge/camera.py
+edge/local_db.py
+edge/main.py
+edge/mock_telemetry.py
+edge/serial_reader.py
+ml/data_generator.py
+ml/inference.py
+ml/train_model.py
+tests/test_e2e_pipeline.py
+varuna.egg-info/PKG-INFO
+varuna.egg-info/SOURCES.txt
+varuna.egg-info/dependency_links.txt
+varuna.egg-info/requires.txt
+varuna.egg-info/top_level.txt

@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "varuna"
+version = "0.1.0"
+description = "Project VARUNA - Automated river water quality monitoring platform"
+authors = [
+    {name = "Principal Architect", email = "architect@varuna.local"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",
+    "requests>=2.31.0",
+    "SQLAlchemy>=2.0.0",
+    "psycopg2-binary>=2.9.7",
+    "httpx>=0.25.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "flake8",
+    "mypy"
+]
+
+[tool.setuptools]
+packages = ["backend", "edge", "ml"]

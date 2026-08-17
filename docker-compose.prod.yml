@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-varuna}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-varuna_secure_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-varunadb}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-varuna}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  backend:
+    build: 
+      context: .
+      dockerfile: backend/Dockerfile
+    command: gunicorn -w 4 -k uvicorn.workers.UvicornWorker backend.main:app --bind 0.0.0.0:8000
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-varuna}:${POSTGRES_PASSWORD:-varuna_secure_pass}@db:5432/${POSTGRES_DB:-varunadb}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - MUNICIPAL_WEBHOOK_URL=${MUNICIPAL_WEBHOOK_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: infra/nginx/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    restart: always
+
+  whatsapp_gateway:
+    build:
+      context: ./services/whatsapp_gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - baileys_auth:/app/auth_info_baileys
+    restart: always
+
+volumes:
+  pgdata:
+  baileys_auth:
