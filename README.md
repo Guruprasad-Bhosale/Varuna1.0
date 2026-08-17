@@ -18,3 +18,4 @@ Phase 1 focuses on scaffolding the core software architecture, generating synthe
 2. Generate synthetic data: `python ml/data_generator.py`
 3. Run hardware emulation: `python edge/mock_telemetry.py --anomaly industrial_dump --interval 2`
 # Varuna
+# Varuna1.0
