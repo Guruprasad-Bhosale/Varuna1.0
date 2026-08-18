@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-textMain font-sans antialiased selection:bg-tealLight selection:text-teal;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-navy;
+  }
+}
+
+/* Base Card Utility */
+.card-panel {
+  @apply bg-surface border border-border shadow-card rounded-lg overflow-hidden transition-shadow duration-200;
+}
+.card-panel:hover {
+  @apply shadow-card-hover;
+}
+
+/* Custom scrollbar - Clean & Minimal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent; 
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full; 
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400; 
+}
+
+/* Leaflet map styles */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  border-radius: 0.5rem;
+}
+.leaflet-popup-content-wrapper {
+  @apply bg-surface text-textMain border border-border shadow-card rounded-md;
+}
+.leaflet-popup-tip {
+  @apply bg-surface border-b border-r border-border;
+}

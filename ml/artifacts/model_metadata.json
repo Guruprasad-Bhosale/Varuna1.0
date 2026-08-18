@@ -1,0 +1,57 @@
+{
+  "features": [
+    "ph",
+    "turbidity_ntu",
+    "ec_us_cm",
+    "temperature_c",
+    "particle_count",
+    "avg_particle_size_mm"
+  ],
+  "classes": [
+    "Dangerous",
+    "Moderate",
+    "Safe"
+  ],
+  "cv_accuracy_mean": 1.0,
+  "feature_importances": {
+    "ph": 0.0118,
+    "turbidity_ntu": 0.291,
+    "ec_us_cm": 0.2766,
+    "temperature_c": 0.0406,
+    "particle_count": 0.2774,
+    "avg_particle_size_mm": 0.1027
+  },
+  "test_metrics": {
+    "Dangerous": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 6.0
+    },
+    "Moderate": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 19.0
+    },
+    "Safe": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 35.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 60.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 60.0
+    }
+  }
+}
