@@ -2,9 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
+import { ThresholdProvider } from './context/ThresholdContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <ThresholdProvider>
+      <App />
+    </ThresholdProvider>
   </React.StrictMode>,
 )

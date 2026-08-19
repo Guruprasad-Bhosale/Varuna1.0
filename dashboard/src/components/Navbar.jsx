@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Bell, User, Menu } from 'lucide-react';
+import { ThresholdSettingsButton } from './ThresholdSettingsButton';
 
 export default function Navbar({ lastSyncTime }) {
   const currentDate = new Date().toLocaleDateString('en-US', { 
@@ -35,8 +36,8 @@ export default function Navbar({ lastSyncTime }) {
           />
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-3 border-l border-border pl-6">
+          <ThresholdSettingsButton />
+
           <button 
             onClick={() => window.dispatchEvent(new CustomEvent('open-whatsapp-modal'))}
             className="p-2 text-textMuted hover:text-teal hover:bg-background rounded-full transition-colors relative"
@@ -46,7 +47,7 @@ export default function Navbar({ lastSyncTime }) {
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-safe rounded-full border border-surface"></span>
           </button>
           
-          <button className="p-2 text-textMuted hover:text-navy hover:bg-background rounded-full transition-colors relative">
+          <button className="p-2 text-textMuted hover:text-navy hover:bg-background rounded-full transition-colors relative" title="Alerts">
             <Bell className="w-5 h-5" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-moderate rounded-full border border-surface"></span>
           </button>

@@ -1,10 +1,13 @@
 import React from 'react';
-import { Cpu, Server, Battery, Cloud, RefreshCw } from 'lucide-react';
+import { Cpu, Server, Battery, Cloud, RefreshCw, Activity } from 'lucide-react';
 
 export default function DeviceHealth() {
   const healthMetrics = [
     { label: "Raspberry Pi", value: "Online", icon: Cpu, status: "good" },
     { label: "ESP32 UART", value: "Connected", icon: Server, status: "good" },
+    { label: "pH Sensor", value: "Calibrated", icon: Activity, status: "good" },
+    { label: "Turbidity Sensor", value: "Online", icon: Activity, status: "good" },
+    { label: "EC Sensor", value: "Online", icon: Activity, status: "good" },
     { label: "LTE Sync", value: "12ms ping", icon: Cloud, status: "good" },
     { label: "Battery", value: "98% (Solar)", icon: Battery, status: "good" },
     { label: "Last Sample", value: "2 mins ago", icon: RefreshCw, status: "good" },

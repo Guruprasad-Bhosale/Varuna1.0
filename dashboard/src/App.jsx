@@ -11,6 +11,7 @@ import CameraScreeningPanel from './components/CameraScreeningPanel'
 import ModelInsights from './components/ModelInsights'
 import DeviceHealth from './components/DeviceHealth'
 import WhatsAppModal from './components/WhatsAppModal'
+import ThresholdConfigModal from './components/ThresholdConfigModal'
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -100,6 +101,7 @@ function App() {
       </div>
 
       <WhatsAppModal isOpen={isWaModalOpen} onClose={() => setIsWaModalOpen(false)} />
+      <ThresholdConfigModal />
     </div>
   )
 }

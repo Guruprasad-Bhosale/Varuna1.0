@@ -95,8 +95,13 @@ export const telemetryService = {
 
     try {
       const response = await apiClient.get(`/history?node_id=${nodeId}&limit=${limit}`);
+      if (response.data && response.data.length === 0) {
+        console.warn("Backend connected but no history data found. Using MOCK history.");
+        return { data: mockHistory.slice(0, limit), isMock: true };
+      }
       return { data: response.data, isMock: false };
     } catch (error) {
+      console.warn("Backend offline or error. Using MOCK history.");
       return { data: mockHistory.slice(0, limit), isMock: true };
     }
   },
