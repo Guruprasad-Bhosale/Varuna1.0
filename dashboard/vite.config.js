@@ -7,7 +7,6 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-    // Vercel preview hostnames are generated dynamically.
     allowedHosts: true
   }
 })
