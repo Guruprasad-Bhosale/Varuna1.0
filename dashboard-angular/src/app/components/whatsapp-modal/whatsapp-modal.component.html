@@ -1,0 +1,89 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+  <div class="relative w-full max-w-lg overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-800 bg-slate-900/50 p-5 backdrop-blur">
+      <div class="flex items-center space-x-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#25D366]/10">
+          <lucide-icon [img]="MessageCircleIcon" class="h-6 w-6 text-[#25D366]"></lucide-icon>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-white leading-tight">WhatsApp Gateway</h3>
+          <p class="text-xs text-slate-400">VARUNA Alert Subsystem</p>
+        </div>
+      </div>
+      <button
+        (click)="closeModal()"
+        class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <lucide-icon [img]="XIcon" class="h-5 w-5"></lucide-icon>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="p-6">
+      <!-- Status Box -->
+      <div class="mb-6 flex items-start space-x-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+        <div class="mt-0.5 rounded-full bg-emerald-500/20 p-1">
+          <lucide-icon [img]="CheckCircle2Icon" class="h-4 w-4 text-emerald-400"></lucide-icon>
+        </div>
+        <div>
+          <h4 class="font-semibold text-emerald-400">Gateway Active & Polling</h4>
+          <p class="mt-1 text-sm text-slate-300">
+            Node 001 telemetry is currently linked. Automated hazard alerts will be dispatched to registered numbers immediately upon threshold breach.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="rounded-xl border border-slate-800 bg-slate-950/50 p-5 flex flex-col items-center justify-center">
+          <div class="mb-4 text-center">
+            <h4 class="font-medium text-slate-200">Scan to subscribe to alerts</h4>
+            <p class="text-xs text-slate-500 mt-1">Updates sent exclusively during Dangerous events</p>
+          </div>
+          
+          <div class="bg-white p-3 rounded-xl border-4 border-slate-800 mb-4">
+            <!-- Simulated QR code safely bound via DomSanitizer -->
+            <img [src]="safeQrUrl" alt="WhatsApp QR Code" class="w-40 h-40 object-cover" />
+          </div>
+          
+          <button class="flex items-center space-x-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
+            <lucide-icon [img]="RefreshCwIcon" class="h-4 w-4"></lucide-icon>
+            <span>Regenerate pairing code</span>
+          </button>
+        </div>
+
+        <div>
+          <h4 class="mb-3 text-sm font-semibold text-slate-200">Registered Alert Recipients</h4>
+          <div class="space-y-2">
+            <!-- Mock contacts -->
+            <div class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+              <div class="flex items-center space-x-3">
+                <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-300">
+                  OP
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-slate-200">Field Operator Alpha</div>
+                  <div class="text-xs text-slate-500">+91 98*** ***12</div>
+                </div>
+              </div>
+              <lucide-icon [img]="ShieldCheckIcon" class="h-4 w-4 text-emerald-400"></lucide-icon>
+            </div>
+            
+            <div class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+              <div class="flex items-center space-x-3">
+                <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-300">
+                  PM
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-slate-200">Project Manager</div>
+                  <div class="text-xs text-slate-500">+91 94*** ***55</div>
+                </div>
+              </div>
+              <lucide-icon [img]="ShieldCheckIcon" class="h-4 w-4 text-emerald-400"></lucide-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

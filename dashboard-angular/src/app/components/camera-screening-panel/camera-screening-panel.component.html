@@ -1,0 +1,53 @@
+<div class="card-panel flex flex-col h-full bg-white rounded-xl border border-border shadow-sm">
+  <div class="p-4 border-b border-border flex justify-between items-center bg-surfaceHover">
+    <div class="flex items-center gap-2">
+      <lucide-icon [img]="CameraIcon" class="w-4 h-4 text-teal"></lucide-icon>
+      <h3 class="font-semibold text-navy">AI-Assisted Particle Screening</h3>
+    </div>
+  </div>
+
+  <div class="p-4 flex-1 flex flex-col gap-4">
+    <!-- Image Display -->
+    <div class="w-full h-48 bg-navy rounded-lg overflow-hidden relative flex items-center justify-center">
+      <div class="absolute top-2 left-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white backdrop-blur">
+        Latest Sample
+      </div>
+      
+      <!-- Cache-busting IMG (Hidden in demo, uses SVG below) -->
+      <!-- <img [src]="latestCaptureUrl" class="w-full h-full object-cover" /> -->
+
+      <!-- Synthetic representation of the bounding box image -->
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="#1e293b" />
+        <g *ngFor="let p of syntheticPoints">
+          <circle [attr.cx]="p.cx" [attr.cy]="p.cy" [attr.r]="p.r" fill="#94a3b8" />
+          <rect [attr.x]="p.x" [attr.y]="p.y" width="8" height="8" fill="none" stroke="#0ea5e9" stroke-width="1" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="grid grid-cols-2 gap-3 text-sm">
+      <div class="bg-surfaceHover p-3 rounded border border-border">
+        <div class="text-textMuted text-xs mb-1">Detected Particles</div>
+        <div class="font-bold text-navy">132</div>
+      </div>
+      <div class="bg-surfaceHover p-3 rounded border border-border">
+        <div class="text-textMuted text-xs mb-1">Avg Size</div>
+        <div class="font-bold text-navy">0.8 mm</div>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-auto flex items-start gap-2 bg-moderateBg/50 p-3 rounded border border-moderateBg text-xs text-moderate">
+      <lucide-icon [img]="AlertCircleIcon" class="w-4 h-4 shrink-0 mt-0.5"></lucide-icon>
+      <p>
+        <strong>Screening support only.</strong> This optical classification does not serve as laboratory confirmation of microplastics or specific biological contaminants.
+      </p>
+    </div>
+    
+    <button class="w-full py-2 bg-surfaceHover hover:bg-slate-100 border border-border rounded text-sm font-medium text-navy transition-colors">
+      Compare Recent Samples
+    </button>
+  </div>
+</div>

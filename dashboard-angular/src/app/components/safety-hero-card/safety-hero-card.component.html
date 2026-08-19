@@ -1,0 +1,74 @@
+<div *ngIf="latestData" class="card-panel p-6 flex flex-col md:flex-row gap-8 items-center bg-white h-full shadow-sm rounded-xl border border-border">
+  <!-- Left: Node Info -->
+  <div class="flex-1 flex flex-col justify-center">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="px-2.5 py-1 text-xs font-bold uppercase rounded-md" [ngClass]="[statusBg, statusColor]">
+        {{ level }}
+      </span>
+      <span class="text-xs text-textMuted font-medium">{{ message }}</span>
+    </div>
+    
+    <h2 class="text-2xl font-bold text-navy mb-4">Node 001 — Gad River</h2>
+    
+    <div class="grid grid-cols-2 gap-4 text-sm mb-6">
+      <div class="flex items-center gap-2 text-textMuted">
+        <lucide-icon [img]="MapPinIcon" class="w-4 h-4 text-teal"></lucide-icon>
+        <span>{{ latestData.latitude | number:'1.4-4' }}, {{ latestData.longitude | number:'1.4-4' }}</span>
+      </div>
+      <div class="flex items-center gap-2 text-textMuted">
+        <lucide-icon [img]="WifiIcon" class="w-4 h-4 text-teal"></lucide-icon>
+        <span>Connected (LTE)</span>
+      </div>
+      <div class="flex items-center gap-2 text-textMuted">
+        <lucide-icon [img]="BatteryIcon" class="w-4 h-4 text-teal"></lucide-icon>
+        <span>98% Capacity</span>
+      </div>
+      <div class="flex items-center gap-2 text-textMuted">
+        <lucide-icon [img]="ClockIcon" class="w-4 h-4 text-teal"></lucide-icon>
+        <span>{{ latestData.timestamp | date:'mediumTime' }}</span>
+      </div>
+    </div>
+
+    <button class="flex items-center gap-2 text-teal font-medium text-sm hover:text-navy transition-colors w-max">
+      View full report <lucide-icon [img]="ArrowRightIcon" class="w-4 h-4"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- Right: Clean Gauge -->
+  <div class="w-64 flex flex-col items-center justify-center border-l border-border pl-8">
+    <div class="relative w-48 h-28 flex justify-center">
+      <svg class="w-full h-full" viewBox="0 0 140 80">
+        <!-- Background Track -->
+        <path
+          d="M 10 70 A 60 60 0 0 1 130 70"
+          fill="none"
+          stroke="#e2e8f0"
+          stroke-width="12"
+          stroke-linecap="round"
+        />
+        <!-- Value Arc -->
+        <path
+          d="M 10 70 A 60 60 0 0 1 130 70"
+          fill="none"
+          [attr.stroke]="arcColor"
+          stroke-width="12"
+          stroke-linecap="round"
+          [attr.stroke-dasharray]="circumference"
+          [attr.stroke-dashoffset]="dashoffset"
+          class="transition-all duration-1000 ease-out"
+        />
+      </svg>
+      <div class="absolute bottom-0 flex flex-col items-center">
+        <div class="text-4xl font-bold text-navy flex items-baseline gap-1">
+          {{ score }} <span class="text-lg text-textMuted font-medium">/ 100</span>
+        </div>
+        <div class="text-xs text-textMuted font-medium mt-1">Water Safety Score</div>
+      </div>
+    </div>
+    
+    <div class="mt-4 text-center">
+      <div class="text-sm font-medium text-navy">{{ confidence | number:'1.1-1' }}% confidence</div>
+      <div class="text-xs text-textMuted">AI Classification Model</div>
+    </div>
+  </div>
+</div>

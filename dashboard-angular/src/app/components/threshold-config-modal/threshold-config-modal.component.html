@@ -1,0 +1,89 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+  <div class="relative w-full max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div class="flex items-center space-x-2">
+        <lucide-icon [img]="SlidersIcon" class="h-5 w-5 text-cyan-400"></lucide-icon>
+        <h3 class="text-lg font-bold text-white">Threshold Calibration</h3>
+      </div>
+      <button
+        (click)="close()"
+        class="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white"
+      >
+        <lucide-icon [img]="XIcon" class="h-5 w-5"></lucide-icon>
+      </button>
+    </div>
+
+    <form *ngIf="thresholdForm" [formGroup]="thresholdForm" class="mt-4 max-h-[60vh] space-y-4 overflow-y-auto pr-2 text-sm text-slate-300">
+      
+      <!-- pH Bounds -->
+      <div formGroupName="ph" class="rounded-xl border border-slate-800/80 bg-slate-950/40 p-4">
+        <h4 class="font-semibold text-cyan-400">pH Bounds (Two-Sided)</h4>
+        <div class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div>
+            <label class="text-xs text-slate-400">Warning Min</label>
+            <input type="number" step="0.1" formControlName="warnMin"
+                   class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-white focus:border-cyan-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="text-xs text-slate-400">Safe Min</label>
+            <input type="number" step="0.1" formControlName="safeMin"
+                   class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-white focus:border-cyan-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="text-xs text-slate-400">Safe Max</label>
+            <input type="number" step="0.1" formControlName="safeMax"
+                   class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-white focus:border-cyan-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="text-xs text-slate-400">Warning Max</label>
+            <input type="number" step="0.1" formControlName="warnMax"
+                   class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-white focus:border-cyan-500 focus:outline-none" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Other Metrics -->
+      <div *ngFor="let param of metrics" [formGroupName]="param.id" class="rounded-xl border border-slate-800/80 bg-slate-950/40 p-4">
+        <h4 class="font-semibold text-slate-200">{{ param.label }}</h4>
+        <div class="mt-3 grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-slate-400">Safe Upper Limit (🟢)</label>
+            <input type="number" [step]="param.step" formControlName="safeMax"
+                   class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-white focus:border-cyan-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="text-xs text-slate-400">Warning Upper Limit (🟡)</label>
+            <input type="number" [step]="param.step" formControlName="warnMax"
+                   class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-white focus:border-cyan-500 focus:outline-none" />
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="mt-6 flex flex-col sm:flex-row items-center justify-between border-t border-slate-800 pt-4 gap-4 sm:gap-0">
+      <button
+        (click)="handleReset()"
+        class="flex w-full sm:w-auto items-center justify-center space-x-1.5 rounded-lg border border-slate-700 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white"
+      >
+        <lucide-icon [img]="RotateCcwIcon" class="h-4 w-4"></lucide-icon>
+        <span>Reset CPCB Defaults</span>
+      </button>
+      <div class="flex w-full sm:w-auto space-x-3">
+        <button
+          (click)="close()"
+          class="flex-1 sm:flex-none rounded-lg px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="handleSave()"
+          class="flex flex-1 sm:flex-none items-center justify-center space-x-1.5 rounded-lg bg-cyan-600 px-5 py-2 text-xs font-semibold text-white hover:bg-cyan-500 shadow-lg shadow-cyan-900/30"
+        >
+          <lucide-icon [img]="SaveIcon" class="h-4 w-4"></lucide-icon>
+          <span>Save Changes</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="flex min-h-screen bg-background text-textMain">
+  <!-- Mobile Overlay -->
+  <div *ngIf="isSidebarOpen"
+       class="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+       (click)="isSidebarOpen = false">
+  </div>
+
+  <!-- Left Navigation -->
+  <app-sidebar 
+    [(activeTab)]="activeTab" 
+    [isSidebarOpen]="isSidebarOpen"
+    (isSidebarOpenChange)="onSidebarToggle($event)">
+  </app-sidebar>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <app-navbar 
+      [lastSyncTime]="lastSyncTime" 
+      (openSidebar)="onSidebarToggle(true)">
+    </app-navbar>
+
+    <main class="flex-1 p-6 overflow-y-auto">
+      <div class="max-w-[1600px] mx-auto flex flex-col gap-6">
+        
+        <!-- Top Grid: Hero & Map -->
+        <div *ngIf="activeTab === 'overview'" class="grid grid-cols-1 xl:grid-cols-12 gap-6 h-auto xl:h-[300px]">
+          <div class="xl:col-span-7 h-full">
+            <app-safety-hero-card [latestData]="latestData"></app-safety-hero-card>
+          </div>
+          <div class="xl:col-span-5 h-[300px] xl:h-full">
+            <app-node-map [latestData]="latestData"></app-node-map>
+          </div>
+        </div>
+
+        <!-- Middle Section: Sensor Cards -->
+        <div *ngIf="activeTab === 'overview'" class="w-full">
+          <h3 class="text-sm font-semibold text-navy uppercase tracking-wider mb-4 pl-1">Live Telemetry</h3>
+          <app-sensor-metric-grid [latestData]="latestData"></app-sensor-metric-grid>
+        </div>
+
+        <!-- Analytics Grid -->
+        <div *ngIf="activeTab === 'overview'" class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+          <div class="xl:col-span-8">
+            <app-telemetry-charts [historyData]="historyData"></app-telemetry-charts>
+          </div>
+          <div class="xl:col-span-4 h-[400px]">
+            <app-alert-center [alerts]="alerts"></app-alert-center>
+          </div>
+        </div>
+
+        <!-- Intelligence & Hardware Grid -->
+        <div *ngIf="activeTab === 'overview'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <app-camera-screening-panel></app-camera-screening-panel>
+          <app-model-insights [latestData]="latestData"></app-model-insights>
+          <app-device-health></app-device-health>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <app-whatsapp-modal></app-whatsapp-modal>
+  <app-threshold-config-modal></app-threshold-config-modal>
+</div>

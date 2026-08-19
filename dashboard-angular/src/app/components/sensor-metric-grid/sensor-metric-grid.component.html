@@ -1,0 +1,7 @@
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <app-sensor-metric-card
+    *ngFor="let config of PARAMETERS_CONFIG"
+    [config]="config"
+    [value]="getValue(config.id)"
+  ></app-sensor-metric-card>
+</div>

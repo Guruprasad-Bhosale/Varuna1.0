@@ -1,0 +1,48 @@
+<aside class="fixed inset-y-0 left-0 z-50 w-64 bg-navy text-white flex flex-col h-screen transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 shrink-0"
+       [class.translate-x-0]="isSidebarOpen"
+       [class.-translate-x-full]="!isSidebarOpen">
+  
+  <!-- Brand -->
+  <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-teal rounded flex items-center justify-center">
+        <span class="font-bold text-lg leading-none">V</span>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold tracking-wide">VARUNA</h1>
+      </div>
+    </div>
+    <!-- Close Button for Mobile -->
+    <button 
+      (click)="closeSidebar()"
+      class="md:hidden p-1 text-slate-400 hover:text-white"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 py-6 px-4 flex flex-col gap-1 overflow-y-auto">
+    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-2">Menu</div>
+    <button
+      *ngFor="let item of menuItems"
+      (click)="setActiveTab(item.id)"
+      class="flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm font-medium"
+      [ngClass]="activeTab === item.id ? 'bg-teal text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'"
+    >
+      <lucide-icon [img]="item.icon" class="w-4 h-4"></lucide-icon>
+      {{ item.label }}
+    </button>
+  </nav>
+
+  <!-- System Status Footer -->
+  <div class="p-4 border-t border-slate-800">
+    <div class="bg-slate-800 rounded-md p-3 flex items-start gap-3">
+      <lucide-icon [img]="CheckCircle2Icon" class="w-5 h-5 text-teal shrink-0 mt-0.5"></lucide-icon>
+      <div>
+        <div class="text-sm font-medium text-white">All systems operational</div>
+        <div class="text-xs text-slate-400 mt-1">Network & ML services healthy</div>
+      </div>
+    </div>
+  </div>
+</aside>

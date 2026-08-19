@@ -1,0 +1,36 @@
+<div class="card-panel p-6 flex flex-col h-[400px] bg-white rounded-xl border border-border shadow-sm">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+    <div>
+      <h3 class="text-base font-semibold text-navy">Historical Trends</h3>
+      <p class="text-xs text-textMuted">Analyze sensor telemetry across time windows</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <select 
+        [ngModel]="metric"
+        (ngModelChange)="onMetricChange($event)"
+        class="text-sm bg-background border border-border rounded-md px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal text-textMain"
+      >
+        <option value="safety_score">Water Safety Score</option>
+        <option value="ph">pH Level</option>
+        <option value="turbidity_ntu">Turbidity</option>
+        <option value="ec_us_cm">Electrical Conductivity</option>
+      </select>
+
+      <div class="flex bg-background border border-border rounded-md p-0.5">
+        <button 
+          *ngFor="let t of ['24h', '7d', '30d']"
+          (click)="onTimeRangeChange(t)"
+          class="text-xs px-3 py-1 rounded transition-colors"
+          [ngClass]="timeRange === t ? 'bg-white shadow-sm text-navy font-medium' : 'text-textMuted hover:text-navy'"
+        >
+          {{ t }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 w-full min-h-0">
+    <div echarts [options]="chartOptions" [autoResize]="true" class="w-full h-full"></div>
+  </div>
+</div>

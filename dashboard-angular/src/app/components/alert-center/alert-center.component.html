@@ -1,0 +1,46 @@
+<div class="card-panel flex flex-col h-full bg-white rounded-xl border border-border shadow-sm">
+  <div class="p-4 border-b border-border flex justify-between items-center bg-surfaceHover">
+    <div class="flex items-center gap-2">
+      <h3 class="font-semibold text-navy">Alert Center</h3>
+      <button (click)="toggleMute($event)" class="text-xs text-textMuted hover:text-navy px-1">
+        {{ isMuted ? 'Unmute' : 'Mute' }}
+      </button>
+    </div>
+    <span class="text-xs font-medium bg-moderateBg text-moderate px-2 py-1 rounded-full">
+      {{ alerts?.length || 0 }} Recent Events
+    </span>
+  </div>
+
+  <div class="flex-1 overflow-y-auto p-2">
+    <div *ngIf="!alerts || alerts.length === 0" class="h-full flex items-center justify-center text-textMuted text-sm">
+      No active alerts in this time period.
+    </div>
+
+    <div *ngIf="alerts && alerts.length > 0" class="flex flex-col gap-2">
+      <div *ngFor="let alert of alerts | slice:0:8" class="flex gap-3 p-3 rounded-md hover:bg-surfaceHover transition-colors border border-transparent hover:border-border">
+        
+        <div class="mt-0.5 p-2 rounded-full shrink-0 h-max" [ngClass]="getAlertStyles(alert.predicted_safety_level).bg + ' ' + getAlertStyles(alert.predicted_safety_level).color">
+          <lucide-icon [img]="getAlertStyles(alert.predicted_safety_level).icon" class="w-4 h-4"></lucide-icon>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between items-start mb-1">
+            <div class="font-medium text-sm text-navy truncate">
+              {{ getTriggerText(alert) }}
+            </div>
+            <div class="text-[10px] text-textMuted whitespace-nowrap ml-2">
+              {{ alert.timestamp | date:'shortTime' }}
+            </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-textMuted truncate">Node: {{ alert.node_id }}</div>
+            <button class="text-teal hover:text-navy text-[10px] font-semibold uppercase tracking-wider transition-colors">
+              Acknowledge
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
