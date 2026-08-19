@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Info, AlertCircle, CheckCircle2, AlertTriangle } from 'lucide-angular';
 import { ThresholdService } from '../../services/threshold.service';
@@ -16,14 +16,13 @@ export class SensorMetricCardComponent {
   @Input() config: any;
   @Input() value: number | null | undefined = null;
 
+  private thresholdService = inject(ThresholdService);
   thresholds = toSignal(this.thresholdService.thresholds$);
 
   readonly InfoIcon = Info;
   readonly AlertCircleIcon = AlertCircle;
   readonly CheckCircle2Icon = CheckCircle2;
   readonly AlertTriangleIcon = AlertTriangle;
-
-  constructor(private thresholdService: ThresholdService) {}
 
   get health() {
     const t = this.thresholds();

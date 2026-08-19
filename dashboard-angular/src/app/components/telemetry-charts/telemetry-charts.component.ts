@@ -56,12 +56,12 @@ export class TelemetryChartsComponent implements OnChanges {
     
     const values = sortedData.map(d => d[this.metric]);
 
-    const markAreas = [];
+    const markAreas: any[] = [];
     if (this.metric === 'safety_score') {
       markAreas.push(
-        { itemStyle: { color: 'rgba(220, 252, 231, 0.4)' }, yAxis: 75 },
-        { itemStyle: { color: 'rgba(254, 243, 199, 0.4)' }, yAxis: 45 },
-        { itemStyle: { color: 'rgba(254, 226, 226, 0.4)' }, yAxis: 0 }
+        [{ yAxis: 75, itemStyle: { color: 'rgba(220, 252, 231, 0.4)' } }, { yAxis: 100 }],
+        [{ yAxis: 45, itemStyle: { color: 'rgba(254, 243, 199, 0.4)' } }, { yAxis: 75 }],
+        [{ yAxis: 0, itemStyle: { color: 'rgba(254, 226, 226, 0.4)' } }, { yAxis: 45 }]
       );
     } else {
       if (activeConf.dangerHigh) {
@@ -115,11 +115,7 @@ export class TelemetryChartsComponent implements OnChanges {
           } : undefined,
           markArea: markAreas.length > 0 ? {
             silent: true,
-            data: this.metric === 'safety_score' ? [
-              [{ yAxis: 75, itemStyle: { color: 'rgba(220, 252, 231, 0.4)' } }, { yAxis: 100 }],
-              [{ yAxis: 45, itemStyle: { color: 'rgba(254, 243, 199, 0.4)' } }, { yAxis: 75 }],
-              [{ yAxis: 0, itemStyle: { color: 'rgba(254, 226, 226, 0.4)' } }, { yAxis: 45 }]
-            ] : markAreas
+            data: markAreas
           } : undefined
         }
       ]

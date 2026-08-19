@@ -10,6 +10,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes),
     provideHttpClient(),
-    provideEcharts({ echarts: () => import('echarts') })
+    provideEcharts()
   ]
 };

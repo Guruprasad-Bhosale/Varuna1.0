@@ -33,14 +33,14 @@ services:
 
   dashboard:
     build:
-      context: .
-      dockerfile: infra/nginx/Dockerfile
+      context: ./dashboard-angular
+      dockerfile: Dockerfile
+    container_name: varuna_dashboard
+    restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - "3000:80"
     depends_on:
       - backend
-    restart: always
 
   whatsapp_gateway:
     build:
