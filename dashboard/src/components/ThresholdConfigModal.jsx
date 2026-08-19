@@ -137,24 +137,24 @@ export default function ThresholdConfigModal() {
           ))}
         </div>
 
-        <div className="mt-6 flex items-center justify-between border-t border-slate-800 pt-4">
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between border-t border-slate-800 pt-4 gap-4 sm:gap-0">
           <button
             onClick={handleReset}
-            className="flex items-center space-x-1.5 rounded-lg border border-slate-700 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white"
+            className="flex w-full sm:w-auto items-center justify-center space-x-1.5 rounded-lg border border-slate-700 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white"
           >
             <RotateCcw className="h-4 w-4" />
             <span>Reset CPCB Defaults</span>
           </button>
-          <div className="flex space-x-3">
+          <div className="flex w-full sm:w-auto space-x-3">
             <button
               onClick={() => setIsThresholdModalOpen(false)}
-              className="rounded-lg px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white"
+              className="flex-1 sm:flex-none rounded-lg px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="flex items-center space-x-1.5 rounded-lg bg-cyan-600 px-5 py-2 text-xs font-semibold text-white hover:bg-cyan-500 shadow-lg shadow-cyan-900/30"
+              className="flex flex-1 sm:flex-none items-center justify-center space-x-1.5 rounded-lg bg-cyan-600 px-5 py-2 text-xs font-semibold text-white hover:bg-cyan-500 shadow-lg shadow-cyan-900/30"
             >
               <Save className="h-4 w-4" />
               <span>Save Changes</span>

@@ -20,6 +20,7 @@ function App() {
   const [alerts, setAlerts] = useState([])
   const [lastSyncTime, setLastSyncTime] = useState(null)
   const [isWaModalOpen, setIsWaModalOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const fetchData = async () => {
     try {
@@ -53,12 +54,20 @@ function App() {
 
   return (
     <div className="flex min-h-screen bg-background">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Left Navigation */}
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        <Navbar lastSyncTime={lastSyncTime} />
+        <Navbar lastSyncTime={lastSyncTime} setIsSidebarOpen={setIsSidebarOpen} />
 
         <main className="flex-1 p-6 overflow-y-auto">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-6">
@@ -90,7 +99,7 @@ function App() {
             </div>
 
             {/* Intelligence & Hardware Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <CameraScreeningPanel />
               <ModelInsights latestData={latestData} />
               <DeviceHealth />

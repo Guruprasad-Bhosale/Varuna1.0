@@ -1,7 +1,7 @@
 import React from 'react';
 import { LayoutDashboard, Map, Activity, Bell, Camera, Settings, Network, CheckCircle2 } from 'lucide-react';
 
-export default function Sidebar({ activeTab, setActiveTab }) {
+export default function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOpen }) {
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'map', label: 'River Nodes', icon: Map },
@@ -13,9 +13,9 @@ export default function Sidebar({ activeTab, setActiveTab }) {
   ];
 
   return (
-    <aside className="w-64 bg-navy text-white flex flex-col h-screen sticky top-0 shrink-0">
+    <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-navy text-white flex flex-col h-screen transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 shrink-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       {/* Brand */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-800">
+      <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-teal rounded flex items-center justify-center">
             <span className="font-bold text-lg leading-none">V</span>
@@ -24,6 +24,13 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             <h1 className="text-lg font-bold tracking-wide">VARUNA</h1>
           </div>
         </div>
+        {/* Close Button for Mobile */}
+        <button 
+          onClick={() => setIsSidebarOpen(false)}
+          className="md:hidden p-1 text-slate-400 hover:text-white"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
       </div>
 
       {/* Navigation */}

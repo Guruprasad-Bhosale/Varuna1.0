@@ -2,23 +2,26 @@ import React from 'react';
 import { Search, Bell, User, Menu } from 'lucide-react';
 import { ThresholdSettingsButton } from './ThresholdSettingsButton';
 
-export default function Navbar({ lastSyncTime }) {
+export default function Navbar({ lastSyncTime, setIsSidebarOpen }) {
   const currentDate = new Date().toLocaleDateString('en-US', { 
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
   });
 
   return (
-    <header className="h-16 bg-surface border-b border-border px-6 flex items-center justify-between sticky top-0 z-30">
+    <header className="h-16 bg-surface border-b border-border px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
       {/* Left side: Page Title & Date */}
-      <div className="flex items-center gap-4">
-        <button className="lg:hidden text-textMuted hover:text-navy">
-          <Menu className="w-5 h-5" />
+      <div className="flex items-center gap-3 sm:gap-4">
+        <button 
+          className="md:hidden text-textMuted hover:text-navy p-1"
+          onClick={() => setIsSidebarOpen(true)}
+        >
+          <Menu className="w-6 h-6" />
         </button>
         <div>
-          <h2 className="text-lg font-semibold text-navy">River Intelligence</h2>
-          <div className="flex items-center gap-2 text-xs text-textMuted">
-            <span>{currentDate}</span>
-            <span className="w-1 h-1 rounded-full bg-border"></span>
+          <h2 className="text-base sm:text-lg font-semibold text-navy">River Intelligence</h2>
+          <div className="flex items-center gap-2 text-[10px] sm:text-xs text-textMuted">
+            <span className="hidden sm:inline">{currentDate}</span>
+            <span className="hidden sm:inline w-1 h-1 rounded-full bg-border"></span>
             <span>Last sync: {lastSyncTime ? new Date(lastSyncTime).toLocaleTimeString() : 'Connecting...'}</span>
           </div>
         </div>
