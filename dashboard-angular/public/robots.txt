@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /dashboard/
+Disallow: /api/
+Allow: /
+
+Sitemap: https://varuna-iot.org/sitemap.xml

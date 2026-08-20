@@ -39,6 +39,21 @@ export class SensorMetricCardComponent {
     );
   }
 
+  get dynamicBaseline() {
+    const t = this.thresholds();
+    if (!t || !this.config) return this.config?.baselineText;
+    const th = t[this.config.id];
+    if (!th) return this.config?.baselineText;
+
+    if (this.config.id === 'ph') {
+      return `${th.safeMin} - ${th.safeMax} ${this.config.unit}`;
+    }
+    if (this.config.id === 'temperature_c') {
+      return `18.0 - ${th.safeMax} ${this.config.unit}`;
+    }
+    return `≤ ${th.safeMax} ${this.config.unit}`;
+  }
+
   getIconForStatus(status: string) {
     if (status === 'safe') return this.CheckCircle2Icon;
     if (status === 'moderate') return this.AlertTriangleIcon;

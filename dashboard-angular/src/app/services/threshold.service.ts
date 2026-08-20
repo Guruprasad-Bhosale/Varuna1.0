@@ -52,9 +52,9 @@ export class ThresholdService {
       return {
         status: 'safe',
         label: 'NO DATA',
-        cardClass: 'border-slate-800 bg-slate-900/50',
-        badgeClass: 'border-slate-700 bg-slate-800 text-slate-400',
-        barColor: 'bg-slate-700',
+        cardClass: 'border-slate-200 bg-white',
+        badgeClass: 'border-slate-200 bg-slate-100 text-slate-600',
+        barColor: 'bg-slate-300',
         barGlow: ''
       };
     }
@@ -63,20 +63,20 @@ export class ThresholdService {
     let status = 'safe';
 
     if (paramKey === 'ph') {
-      if (value >= th.safeMin && value <= th.safeMax) {
-        status = 'safe';
-      } else if (value >= th.warnMin && value <= th.warnMax) {
+      if (value < th.warnMin || value > th.warnMax) {
+        status = 'dangerous';
+      } else if (value < th.safeMin || value > th.safeMax) {
         status = 'moderate';
       } else {
-        status = 'dangerous';
+        status = 'safe';
       }
     } else {
-      if (value <= th.safeMax) {
-        status = 'safe';
-      } else if (value <= th.warnMax) {
+      if (value > th.warnMax) {
+        status = 'dangerous';
+      } else if (value > th.safeMax) {
         status = 'moderate';
       } else {
-        status = 'dangerous';
+        status = 'safe';
       }
     }
 
@@ -84,26 +84,26 @@ export class ThresholdService {
       safe: {
         status: 'safe',
         label: 'NOMINAL',
-        cardClass: 'border-emerald-500/20 bg-emerald-950/10',
-        badgeClass: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
-        barColor: 'bg-emerald-400',
-        barGlow: 'shadow-[0_0_10px_rgba(52,211,153,0.5)]'
+        cardClass: 'border-emerald-200 bg-emerald-50/50',
+        badgeClass: 'border-emerald-200 bg-emerald-100 text-emerald-700',
+        barColor: 'bg-emerald-500',
+        barGlow: 'shadow-[0_0_10px_rgba(52,211,153,0.3)]'
       },
       moderate: {
         status: 'moderate',
         label: 'WARNING',
-        cardClass: 'border-amber-500/20 bg-amber-950/10',
-        badgeClass: 'border-amber-500/30 bg-amber-500/10 text-amber-400',
-        barColor: 'bg-amber-400',
-        barGlow: 'shadow-[0_0_10px_rgba(251,191,36,0.5)]'
+        cardClass: 'border-amber-200 bg-amber-50/50',
+        badgeClass: 'border-amber-200 bg-amber-100 text-amber-700',
+        barColor: 'bg-amber-500',
+        barGlow: 'shadow-[0_0_10px_rgba(251,191,36,0.3)]'
       },
       dangerous: {
         status: 'dangerous',
         label: 'CRITICAL',
-        cardClass: 'border-rose-500/30 bg-rose-950/20',
-        badgeClass: 'animate-pulse border-rose-500/40 bg-rose-500/10 text-rose-400',
+        cardClass: 'border-rose-200 bg-rose-50/50',
+        badgeClass: 'animate-pulse border-rose-200 bg-rose-100 text-rose-700',
         barColor: 'bg-rose-500',
-        barGlow: 'shadow-[0_0_12px_rgba(244,63,94,0.7)]'
+        barGlow: 'shadow-[0_0_12px_rgba(244,63,94,0.4)]'
       }
     };
 

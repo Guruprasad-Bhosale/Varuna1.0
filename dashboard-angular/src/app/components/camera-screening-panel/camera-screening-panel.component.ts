@@ -30,10 +30,6 @@ export class CameraScreeningPanelComponent implements OnInit {
 
   // Cache-Busting Image URL logic as requested
   get latestCaptureUrl(): string {
-    // In a real app this would point to actual image:
-    // return `http://localhost:8000/api/v1/captures/latest_screen.jpg?t=${this.lastUpdatedTimestamp}`;
-    
-    // Returning dummy path to prevent 404 since we use SVG in this demo
-    return ``;
+    return `http://localhost:8000/api/v1/captures/latest_screen.jpg?t=${this.lastUpdatedTimestamp}`;
   }
 }

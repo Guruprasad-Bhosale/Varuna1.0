@@ -1,0 +1,25 @@
+# Project VARUNA — AI System Context & API Manifest
+
+## Platform Overview
+Project VARUNA is an automated river water quality monitoring and environmental intelligence platform. It replaces delayed manual grab sampling with continuous, real-time IoT telemetry, powered by Edge AI and geospatial mapping.
+
+## Hardware Specifications
+- **Microcontroller**: ESP32 for state machine, I2C polling, and power management.
+- **Edge Inference**: Raspberry Pi 4 Model B (4GB RAM) running SQLite buffering and Python OpenCV pipelines.
+- **Sensors**: Analog EC/TDS (Platinum K=1.0), Industrial Glass pH (E-201-C), Optical Turbidity (TS-300B), Dallas DS18B20 Temp, Pi Camera v3 HDR (Particulate Analysis).
+- **Communications**: Sim800L LTE/4G module for MQTT/HTTP REST cloud sync.
+
+## Software Architecture
+- **Frontend**: Angular 18 Standalone, Tailwind CSS, RxJS Signals, NgxEcharts, Leaflet GIS.
+- **Backend**: FastAPI (Python), PostgreSQL, Gunicorn/Uvicorn.
+- **Alerts**: Meta WhatsApp Cloud API, Telegram webhooks, SMS Gateway.
+
+## AI & ML Pipeline
+- **Morphological Segmentation**: OpenCV edge processing dynamically calculates average particle size (mm) using an adaptive Gaussian threshold.
+- **Classification**: A deployed Random Forest model classifies raw multiparameter telemetry into 'Safe', 'Moderate', or 'Dangerous' states, emitting a 0-100 Water Safety Score. Inference runs in <500ms on the edge.
+
+## Data Endpoints (Internal)
+- `GET /api/telemetry/latest`
+- `GET /api/telemetry/history`
+- `GET /api/alerts/recent`
+*(Authentication required)*

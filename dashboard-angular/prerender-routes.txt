@@ -1,0 +1,13 @@
+/
+/about
+/case-studies
+/faq
+/contact
+/privacy
+/terms
+/blog
+/features/iot-hardware-node
+/features/edge-ai-classification
+/features/optical-particle-screener
+/features/gis-river-mapping
+/features/automated-alert-gateway

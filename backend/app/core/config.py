@@ -3,6 +3,8 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     # Database Configuration (Supports SQLite locally or PostgreSQL in Prod)
     DATABASE_URL: str = "sqlite:///./varuna.db"
+    ENVIRONMENT: str = "development"
+    CORS_ORIGINS: str = ""
     
     # Alert Dispatcher API Keys
     TELEGRAM_BOT_TOKEN: str = ""

@@ -1,0 +1,64 @@
+services:
+  # -------------------------------------------------------------
+  # 1. FASTAPI BACKEND & ML SERVICE
+  # -------------------------------------------------------------
+  - type: web
+    name: varuna-api
+    env: python
+    region: oregon
+    plan: starter
+    rootDir: backend
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install .
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --workers 2
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: varuna-db
+          property: connectionString
+      - key: CORS_ORIGINS
+        value: https://varuna-portal.onrender.com,http://localhost:4200
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: PHONE_NUMBER_ID
+        sync: false
+      - key: WABA_ID
+        sync: false
+
+  # -------------------------------------------------------------
+  # 2. ANGULAR 18 STATIC SITE
+  # -------------------------------------------------------------
+  - type: static
+    name: varuna-portal
+    region: oregon
+    plan: free
+    rootDir: dashboard-angular
+    buildCommand: npm ci && npm run build:render
+    publishPath: dist/dashboard-angular/browser
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
+# ---------------------------------------------------------------
+# 3. MANAGED POSTGRESQL DATABASE
+# ---------------------------------------------------------------
+databases:
+  - name: varuna-db
+    region: oregon
+    plan: starter
+    ipAllowList: []

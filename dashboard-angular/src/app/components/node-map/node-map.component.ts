@@ -39,13 +39,26 @@ export class NodeMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
     this.map = L.map(this.mapElement.nativeElement, {
       center: [lat, lng],
-      zoom: 13,
+      zoom: 14,
       zoomControl: true,
       scrollWheelZoom: false
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // Use CartoDB Dark Matter for a sleeker dashboard look
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
+    }).addTo(this.map);
+
+    // Add a coverage radius to indicate sensor range
+    L.circle([lat, lng], {
+      color: '#0ea5e9',
+      fillColor: '#0ea5e9',
+      fillOpacity: 0.1,
+      radius: 800, // 800 meters coverage
+      weight: 1,
+      dashArray: '4'
     }).addTo(this.map);
 
     this.createOrUpdateMarker(lat, lng);
@@ -61,23 +74,24 @@ export class NodeMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   private createOrUpdateMarker(lat: number, lng: number) {
     const status = this.latestData?.predicted_safety_level || 'Safe';
-    let color = '#16a34a'; // safe
-    if (status === 'Moderate') color = '#d97706';
-    if (status === 'Dangerous') color = '#dc2626';
+    let color = '#10b981'; // safe
+    if (status === 'Moderate') color = '#f59e0b';
+    if (status === 'Dangerous') color = '#ef4444';
 
+    // Animated pulsing marker
     const svgIcon = `
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="#ffffff" stroke-width="2"/>
-        <circle cx="12" cy="10" r="3" fill="#ffffff"/>
-      </svg>
+      <div class="relative flex items-center justify-center w-8 h-8">
+        <span class="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style="background-color: ${color}"></span>
+        <span class="relative inline-flex rounded-full h-4 w-4 border-2 border-slate-900" style="background-color: ${color}"></span>
+      </div>
     `;
 
     const icon = L.divIcon({
       html: svgIcon,
-      className: 'custom-leaflet-icon',
-      iconSize: [24, 24],
-      iconAnchor: [12, 24],
-      popupAnchor: [0, -24]
+      className: 'bg-transparent border-0',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16]
     });
 
     if (this.marker) {

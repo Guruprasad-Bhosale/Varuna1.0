@@ -1,31 +1,31 @@
 <div *ngIf="config"
-     class="relative rounded-xl border p-5 backdrop-blur-md transition-all duration-700 ease-in-out"
+     class="relative rounded-xl border p-5 backdrop-blur-md transition-all duration-700 ease-in-out hover:z-50"
      [ngClass]="health?.cardClass">
      
   <div class="flex items-center justify-between">
     <div class="flex items-center space-x-2">
-      <span class="text-sm font-semibold tracking-wide text-slate-200">
+      <span class="text-sm font-semibold tracking-wide text-slate-800">
         {{ config.title }}
       </span>
 
       <div class="group relative flex items-center">
         <button
           type="button"
-          class="text-slate-500 transition-colors duration-200 hover:text-cyan-400 focus:outline-none"
+          class="text-slate-500 transition-colors duration-200 hover:text-cyan-700 focus:outline-none"
           [attr.aria-label]="'Hardware details for ' + config.title"
         >
           <lucide-icon [img]="InfoIcon" class="h-4 w-4 cursor-pointer"></lucide-icon>
         </button>
 
-        <div class="pointer-events-none absolute -left-2 top-7 z-50 w-72 rounded-lg border border-slate-700/80 bg-slate-900/95 p-3.5 text-xs shadow-2xl backdrop-blur-md opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
-          <div class="border-b border-slate-800 pb-2">
-            <p class="font-semibold text-cyan-400">{{ config.sensorName }}</p>
-            <p class="text-[11px] text-slate-400">{{ config.sensorModel }}</p>
+        <div class="pointer-events-none absolute -left-2 top-7 z-[100] w-72 rounded-lg border border-slate-200 bg-white/95 p-3.5 text-xs shadow-xl backdrop-blur-md opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
+          <div class="border-b border-slate-100 pb-2">
+            <p class="font-semibold text-teal-700">{{ config.sensorName }}</p>
+            <p class="text-[11px] text-slate-500">{{ config.sensorModel }}</p>
           </div>
-          <div class="mt-2 space-y-1.5 text-slate-300">
-            <p><span class="font-medium text-slate-400">Principle:</span> {{ config.principle }}</p>
-            <p><span class="font-medium text-slate-400">Location:</span> {{ config.placement }}</p>
-            <p><span class="font-medium text-slate-400">Calibration:</span> {{ config.calibration }}</p>
+          <div class="mt-2 space-y-1.5 text-slate-600">
+            <p><span class="font-medium text-slate-800">Principle:</span> {{ config.principle }}</p>
+            <p><span class="font-medium text-slate-800">Location:</span> {{ config.placement }}</p>
+            <p><span class="font-medium text-slate-800">Calibration:</span> {{ config.calibration }}</p>
           </div>
         </div>
       </div>
@@ -41,24 +41,24 @@
   </div>
 
   <div class="mt-4 flex items-baseline space-x-2">
-    <span class="font-mono text-3xl font-bold tracking-tight text-white transition-colors duration-500">
+    <span class="font-mono text-3xl font-bold tracking-tight text-slate-800 transition-colors duration-500">
       <ng-container *ngIf="value !== null && value !== undefined; else noValue">
         {{ value | number:'1.' + (config.precision || 1) + '-' + (config.precision || 1) }}
       </ng-container>
       <ng-template #noValue>--</ng-template>
     </span>
-    <span class="text-sm font-medium text-slate-400">{{ config.unit }}</span>
+    <span class="text-sm font-medium text-slate-600">{{ config.unit }}</span>
   </div>
 
-  <p class="mt-1 text-xs text-slate-400">
-    Standard: <span class="text-slate-300 font-mono">{{ config.baselineText }}</span>
+  <p class="mt-1 text-xs text-slate-500">
+    Standard: <span class="text-slate-600 font-mono font-medium">{{ dynamicBaseline }}</span>
   </p>
 
   <div class="mt-4">
-    <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-800/80">
+    <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-300/60">
       <div
         class="h-full rounded-full transition-all duration-700 ease-out"
-        [ngClass]="health?.barColor + ' ' + health?.barGlow"
+        [ngClass]="health?.barColor"
         [style.width.%]="progressPercent"
       ></div>
     </div>

@@ -1,0 +1,14 @@
+node_modules/
+**/node_modules/
+.git/
+.github/
+.vscode/
+.angular/
+dist/
+__pycache__/
+*.pyc
+*.db
+.env
+venv/
+env/
+.idea/

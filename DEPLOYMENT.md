@@ -73,3 +73,21 @@ Then restart the backend:
 ```bash
 sudo docker compose -f docker-compose.prod.yml up -d --build backend
 ```
+
+## 8. Automated Cloud Deployment (Render Blueprint)
+
+VARUNA can be deployed dynamically on [Render](https://render.com) using the included `render.yaml` blueprint. This provides zero-downtime deployments, managed PostgreSQL, and static hosting without manual server configuration.
+
+### Steps to Deploy:
+1. Create a free account at [Render](https://render.com).
+2. Navigate to the **Blueprints** tab and click **New Blueprint Instance**.
+3. Connect your GitHub repository containing the VARUNA codebase.
+4. Render will automatically detect the `render.yaml` file and parse the three services:
+   - **varuna-db**: Managed PostgreSQL instance.
+   - **varuna-api**: FastAPI backend service.
+   - **varuna-portal**: Angular frontend static site.
+5. Review the plan and click **Apply**.
+6. Render will sequentially provision the database, build and deploy the backend, and publish the frontend dashboard.
+7. Once completed, your dashboard will be available at `https://varuna-portal.onrender.com` (or your chosen subdomain).
+
+*Note: The backend service will automatically create the required database tables on startup.*
