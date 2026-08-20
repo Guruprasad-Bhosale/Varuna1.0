@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafetyHeroCardComponent } from '../../../../components/safety-hero-card/safety-hero-card.component';
 import { SensorMetricGridComponent } from '../../../../components/sensor-metric-grid/sensor-metric-grid.component';
@@ -17,11 +17,11 @@ import { TelemetryService, TelemetryData } from '../../../../services/telemetry.
         </h2>
         
         <!-- Anomaly Simulation Dock -->
-        <div class="flex items-center gap-2 text-xs bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
-          <span class="text-slate-500 font-medium px-2 border-r border-slate-200">Simulate Spikes:</span>
-          <button (click)="simulateSpike('industrial')" class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 transition-all font-medium">Industrial Dump</button>
-          <button (click)="simulateSpike('rain')" class="px-3 py-1.5 rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 border border-cyan-200 transition-all font-medium">Heavy Rain</button>
-          <button (click)="simulateSpike('alkaline')" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200 transition-all font-medium">Alkaline Spill</button>
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 w-full text-xs bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-slate-500 font-medium px-2 border-r border-slate-200 shrink-0">Simulate Spikes:</span>
+          <button (click)="simulateSpike('industrial')" class="shrink-0 min-h-[44px] px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 transition-all font-medium">Industrial Dump</button>
+          <button (click)="simulateSpike('rain')" class="shrink-0 min-h-[44px] px-3 py-1.5 rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 border border-cyan-200 transition-all font-medium">Heavy Rain</button>
+          <button (click)="simulateSpike('alkaline')" class="shrink-0 min-h-[44px] px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200 transition-all font-medium">Alkaline Spill</button>
         </div>
       </div>
 
@@ -39,17 +39,22 @@ import { TelemetryService, TelemetryData } from '../../../../services/telemetry.
 export class LiveMonitoringViewComponent implements OnInit, OnDestroy {
   latestData: TelemetryData | null = null;
   private telemetryService = inject(TelemetryService);
+  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
   private intervalId: any;
 
   ngOnInit() {
     this.fetchData();
-    this.intervalId = setInterval(() => this.fetchData(), 3000);
+    this.ngZone.runOutsideAngular(() => {
+      this.intervalId = setInterval(() => this.fetchData(), 3000);
+    });
   }
 
   async fetchData() {
     try {
       const resp = await this.telemetryService.getLatest();
       this.latestData = resp.data;
+      this.cdr.markForCheck();
     } catch (e) {
       console.error(e);
     }

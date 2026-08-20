@@ -9,12 +9,12 @@ import { DashboardTab } from '../../pages/dashboard/dashboard.component';
   imports: [CommonModule, LucideAngularModule],
   template: `
     <!-- Mobile Sidebar Backdrop -->
-    <div *ngIf="isSidebarOpen" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden" (click)="closeSidebar()"></div>
+    <div *ngIf="isSidebarOpen" class="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity z-[1050] lg:hidden" (click)="closeSidebar()"></div>
 
     <aside
       [class.translate-x-0]="isSidebarOpen"
       [class.-translate-x-full]="!isSidebarOpen"
-      class="fixed inset-y-0 left-0 z-50 w-64 bg-white backdrop-blur-xl border-r border-slate-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-72 flex flex-col shadow-xl">
+      class="fixed inset-y-0 left-0 z-[1100] w-72 bg-slate-950 text-slate-200 border-r border-slate-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-10 flex flex-col shadow-xl">
       
       <!-- Brand Header -->
       <div class="h-20 flex items-center px-6 border-b border-slate-200">

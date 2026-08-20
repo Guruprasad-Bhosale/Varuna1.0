@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, signal, inject, ChangeDetectionStrategy, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LucideAngularModule, Map as MapIcon } from 'lucide-angular';
@@ -64,8 +64,8 @@ export interface RiverStation {
       <!-- Main GIS Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <!-- Leaflet Map Container -->
-        <div class="lg:col-span-3 rounded-2xl border border-slate-200 bg-white/60 overflow-hidden relative shadow-md h-[620px]">
-          <div id="gis-leaflet-map" class="h-full w-full"></div>
+        <div class="lg:col-span-3 rounded-2xl border border-slate-200 bg-white/60 overflow-hidden relative shadow-md h-[380px] sm:h-[480px] lg:h-[640px]" style="isolation: isolate; z-index: 1;">
+          <div id="gis-leaflet-map" class="h-full w-full" style="touch-action: pan-x pan-y;"></div>
           
           <!-- Map Legend Overlay -->
           <div class="absolute bottom-4 left-4 z-[1000] bg-white/90 backdrop-blur-md p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1.5 shadow-xl">
@@ -133,6 +133,8 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
 
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private ngZone = inject(NgZone);
+  private resizeObserver?: ResizeObserver;
 
   readonly stations: RiverStation[] = [
     {
@@ -191,9 +193,20 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initMap();
-    setTimeout(() => {
-      this.map?.invalidateSize();
-    }, 200);
+    
+    this.ngZone.runOutsideAngular(() => {
+      let resizeTimeout: any;
+      const mapContainer = L.DomUtil.get('gis-leaflet-map');
+      if (mapContainer) {
+        this.resizeObserver = new ResizeObserver(() => {
+          if (resizeTimeout) clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            this.map?.invalidateSize();
+          }, 50);
+        });
+        this.resizeObserver.observe(mapContainer);
+      }
+    });
   }
 
   private initMap(): void {
@@ -206,8 +219,11 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     this.map = L.map('gis-leaflet-map', {
       center: [16.1200, 73.6200],
       zoom: 11,
-      zoomControl: true
-    });
+      preferCanvas: true,
+      tap: true,
+      zoomControl: false
+    } as any);
+    L.control.zoom({ position: 'bottomright' }).addTo(this.map);
 
     this.currentTileLayerGroup.addTo(this.map);
     this.riverLinesGroup.addTo(this.map);
@@ -237,7 +253,13 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
       layerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     }
 
-    L.tileLayer(layerUrl, { attribution, maxZoom: 19 }).addTo(this.currentTileLayerGroup);
+    L.tileLayer(layerUrl, { 
+      attribution, 
+      maxZoom: 19,
+      keepBuffer: 4,
+      updateWhenIdle: true,
+      errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+    }).addTo(this.currentTileLayerGroup);
   }
 
   private renderRiverPath(): void {
@@ -319,6 +341,7 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.resizeObserver?.disconnect();
     this.riverLinesGroup.clearLayers();
     this.markersLayerGroup.clearLayers();
     this.currentTileLayerGroup.clearLayers();

@@ -19,6 +19,16 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     logger.info("Initializing database...")
     Base.metadata.create_all(bind=engine)
+    with engine.connect() as conn:
+        conn.execute(text("""
+            CREATE INDEX IF NOT EXISTS ix_telemetry_node_timestamp 
+            ON telemetry_records (node_id, timestamp DESC);
+        """))
+        conn.execute(text("""
+            CREATE INDEX IF NOT EXISTS ix_telemetry_alert_timestamp 
+            ON telemetry_records (alert_sent, timestamp DESC);
+        """))
+        conn.commit()
     logger.info("Database initialized successfully.")
     yield
     logger.info("Shutting down gracefully.")

@@ -95,11 +95,12 @@ def get_latest_telemetry(node_id: str = "VARUNA-001", db: Session = Depends(get_
     return record
 
 @router.get("/history", response_model=List[TelemetryResponse])
-def get_history(node_id: str = "VARUNA-001", limit: int = 50, db: Session = Depends(get_db)):
-    records = db.query(TelemetryRecord).filter(TelemetryRecord.node_id == node_id).order_by(TelemetryRecord.timestamp.desc()).limit(limit).all()
+def get_history(node_id: str = "VARUNA-001", limit: int = 500, db: Session = Depends(get_db)):
+    limit = min(limit, 2000)
+    records = db.query(TelemetryRecord).filter(TelemetryRecord.node_id == node_id).order_by(TelemetryRecord.timestamp.desc()).limit(limit).yield_per(100).all()
     return records[::-1]
 
 @router.get("/alerts", response_model=List[TelemetryResponse])
 def get_alerts(db: Session = Depends(get_db)):
-    records = db.query(TelemetryRecord).filter(TelemetryRecord.alert_sent == True).order_by(TelemetryRecord.timestamp.desc()).limit(50).all()
+    records = db.query(TelemetryRecord).filter(TelemetryRecord.alert_sent == True).order_by(TelemetryRecord.timestamp.desc()).limit(500).yield_per(100).all()
     return records

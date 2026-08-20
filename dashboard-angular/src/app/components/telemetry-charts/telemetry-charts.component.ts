@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import { downsampleLTTB } from '../../core/utils/downsample';
 
 @Component({
   selector: 'app-telemetry-charts',
@@ -49,12 +50,16 @@ export class TelemetryChartsComponent implements OnChanges {
     // Sort chronological
     const sortedData = [...this.historyData].reverse();
     
-    const times = sortedData.map(d => {
-      const date = new Date(d.timestamp);
+    // Decimate to 200 max points using LTTB
+    const tuples: [number, number][] = sortedData.map(d => [new Date(d.timestamp).getTime(), d[this.metric]]);
+    const sampledTuples = downsampleLTTB(tuples, 200);
+
+    const times = sampledTuples.map(t => {
+      const date = new Date(t[0]);
       return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     });
     
-    const values = sortedData.map(d => d[this.metric]);
+    const values = sampledTuples.map(t => t[1]);
 
     const markAreas: any[] = [];
     if (this.metric === 'safety_score') {

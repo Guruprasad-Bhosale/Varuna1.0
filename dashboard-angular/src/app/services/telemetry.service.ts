@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, timer, of, firstValueFrom } from 'rxjs';
+import { shareReplay, retry, catchError, map } from 'rxjs/operators';
 
 export interface TelemetryData {
   id: number;
@@ -27,6 +28,9 @@ export class TelemetryService {
   private readonly API_BASE_URL = 'http://localhost:8000/api/v1/telemetry';
   private currentAnomalyMode = "normal";
   private mockHistory: TelemetryData[] = [];
+  
+  private latestCache = new Map<string, Observable<{ data: TelemetryData, isMock: boolean }>>();
+  private historyCache = new Map<string, Observable<{ data: TelemetryData[], isMock: boolean }>>();
 
   constructor(private http: HttpClient) {
     this.mockHistory = Array.from({ length: 50 }, () => this.generateMockState());
@@ -90,31 +94,54 @@ export class TelemetryService {
       return { data: mock, isMock: true, forcedAnomaly: true };
     }
 
-    try {
-      const response = await firstValueFrom(this.http.get<TelemetryData>(`${this.API_BASE_URL}/latest?node_id=${nodeId}`));
-      return { data: response, isMock: false };
-    } catch (error) {
-      const mock = this.generateMockState();
-      this.mockHistory.unshift(mock);
-      this.mockHistory.pop();
-      return { data: mock, isMock: true };
+    if (!this.latestCache.has(nodeId)) {
+      const request$ = this.http.get<TelemetryData>(`${this.API_BASE_URL}/latest?node_id=${nodeId}`).pipe(
+        retry({
+          count: 3,
+          delay: (error, retryCount) => timer(Math.pow(2, retryCount) * 1000)
+        }),
+        map(response => ({ data: response, isMock: false })),
+        catchError(error => {
+          const mock = this.generateMockState();
+          this.mockHistory.unshift(mock);
+          this.mockHistory.pop();
+          return of({ data: mock, isMock: true });
+        }),
+        shareReplay({ bufferSize: 1, windowTime: 5000, refCount: true })
+      );
+      this.latestCache.set(nodeId, request$);
     }
+    
+    return firstValueFrom(this.latestCache.get(nodeId)!);
   }
   
-  async getHistory(nodeId = "VARUNA-001", limit = 50) {
+  async getHistory(nodeId = "VARUNA-001", limit = 500) {
     if (this.currentAnomalyMode !== "normal") {
       return { data: this.mockHistory.slice(0, limit), isMock: true, forcedAnomaly: true };
     }
 
-    try {
-      const response = await firstValueFrom(this.http.get<TelemetryData[]>(`${this.API_BASE_URL}/history?node_id=${nodeId}&limit=${limit}`));
-      if (response && response.length === 0) {
-        return { data: this.mockHistory.slice(0, limit), isMock: true };
-      }
-      return { data: response, isMock: false };
-    } catch (error) {
-      return { data: this.mockHistory.slice(0, limit), isMock: true };
+    const cacheKey = `${nodeId}-${limit}`;
+    if (!this.historyCache.has(cacheKey)) {
+      const request$ = this.http.get<TelemetryData[]>(`${this.API_BASE_URL}/history?node_id=${nodeId}&limit=${limit}`).pipe(
+        retry({
+          count: 3,
+          delay: (error, retryCount) => timer(Math.pow(2, retryCount) * 1000)
+        }),
+        map(response => {
+          if (response && response.length === 0) {
+            return { data: this.mockHistory.slice(0, limit), isMock: true };
+          }
+          return { data: response, isMock: false };
+        }),
+        catchError(error => {
+          return of({ data: this.mockHistory.slice(0, limit), isMock: true });
+        }),
+        shareReplay({ bufferSize: 1, windowTime: 60000, refCount: true })
+      );
+      this.historyCache.set(cacheKey, request$);
     }
+    
+    return firstValueFrom(this.historyCache.get(cacheKey)!);
   }
 
   async getAlerts() {
