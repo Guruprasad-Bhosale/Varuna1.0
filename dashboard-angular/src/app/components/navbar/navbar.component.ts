@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Search, Bell, Menu, Sliders } from 'lucide-angular';
 import { ThresholdService } from '../../services/threshold.service';
@@ -10,7 +10,7 @@ import { ThresholdService } from '../../services/threshold.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   @Input() lastSyncTime: string | null = null;
   @Output() openSidebar = new EventEmitter<void>();
 
@@ -24,6 +24,22 @@ export class NavbarComponent {
   });
 
   constructor(private thresholdService: ThresholdService) {}
+
+  isOnline = navigator.onLine;
+
+  ngOnInit() {
+    window.addEventListener('online', this.updateOnlineStatus);
+    window.addEventListener('offline', this.updateOnlineStatus);
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('online', this.updateOnlineStatus);
+    window.removeEventListener('offline', this.updateOnlineStatus);
+  }
+
+  private updateOnlineStatus = () => {
+    this.isOnline = navigator.onLine;
+  };
 
   onOpenSidebar() {
     this.openSidebar.emit();

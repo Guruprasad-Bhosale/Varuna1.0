@@ -16,6 +16,7 @@
             "outputPath": "dist/dashboard-angular",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "serviceWorker": "ngsw-config.json",
             "polyfills": [
               "zone.js"
             ],

@@ -10,17 +10,26 @@ logger = logging.getLogger("VARUNA-ALERTS")
 
 class AlertDispatcher:
     def __init__(self):
-        # In-memory deduplication cache: {node_id: last_alert_timestamp}
-        self._cooldown_cache: Dict[str, datetime] = {}
-        self.cooldown_period = timedelta(minutes=30)
+        # In-memory deduplication cache: {(node_id, safety_level): last_alert_timestamp}
+        self._cooldown_cache: Dict[tuple, datetime] = {}
+        self.cooldown_period = timedelta(minutes=15)
 
-    def should_suppress_alert(self, node_id: str) -> bool:
-        """Prevents notification spam by enforcing a 30-minute cooldown window per node."""
+    def should_suppress_alert(self, node_id: str, safety_level: str) -> bool:
+        """Prevents notification spam by enforcing a 15-minute cooldown window per node and severity."""
         now = datetime.utcnow()
-        if node_id in self._cooldown_cache:
-            if now - self._cooldown_cache[node_id] < self.cooldown_period:
+        key = (node_id, safety_level)
+        
+        # If escalating from Moderate to Dangerous, clear Moderate lock
+        if safety_level == "Dangerous":
+            moderate_key = (node_id, "Moderate")
+            if moderate_key in self._cooldown_cache:
+                del self._cooldown_cache[moderate_key]
+                
+        if key in self._cooldown_cache:
+            if now - self._cooldown_cache[key] < self.cooldown_period:
                 return True
-        self._cooldown_cache[node_id] = now
+                
+        self._cooldown_cache[key] = now
         return False
 
     async def send_telegram_alert(self, bot_token: str, chat_id: str, record: Dict[str, Any]):
@@ -59,8 +68,8 @@ class AlertDispatcher:
         if safety_level not in ["Moderate", "Dangerous"]:
             return
 
-        if self.should_suppress_alert(node_id):
-            logger.info("Alert for node %s suppressed due to active cooldown.", node_id)
+        if self.should_suppress_alert(node_id, safety_level):
+            logger.info("Alert for node %s (%s) suppressed due to active cooldown.", node_id, safety_level)
             return
 
         logger.warning("DISPATCHING ENVIRONMENTAL ALERT for Node: %s [Level: %s]", node_id, safety_level)

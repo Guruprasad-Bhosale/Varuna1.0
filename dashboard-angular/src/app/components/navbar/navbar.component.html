@@ -8,7 +8,15 @@
       <lucide-icon [img]="MenuIcon" class="w-6 h-6"></lucide-icon>
     </button>
     <div class="min-w-0 flex flex-col">
-      <h2 class="text-sm sm:text-lg font-semibold text-navy truncate">VARUNA <span class="hidden sm:inline">Intelligence</span></h2>
+      <div class="flex items-center gap-2">
+        <h2 class="text-sm sm:text-lg font-semibold text-navy truncate">VARUNA <span class="hidden sm:inline">Intelligence</span></h2>
+        <span 
+          class="text-[10px] px-1.5 py-0.5 rounded-md font-medium border"
+          [ngClass]="isOnline ? 'bg-green-50 text-green-700 border-green-200' : 'bg-amber-50 text-amber-700 border-amber-200'"
+        >
+          {{ isOnline ? 'Online' : 'Offline - Cached Data' }}
+        </span>
+      </div>
       <div class="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-textMuted truncate">
         <span class="hidden sm:inline">{{ currentDate }}</span>
         <span class="hidden sm:inline w-1 h-1 rounded-full bg-border"></span>
