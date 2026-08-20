@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://varuna-api.onrender.com/api/v1'
+  apiUrl: 'https://varuna1-0.onrender.com/api/v1'
 };
