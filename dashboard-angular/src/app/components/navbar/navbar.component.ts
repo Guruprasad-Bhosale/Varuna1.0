@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Search, Bell, Menu, Sliders } from 'lucide-angular';
 import { ThresholdService } from '../../services/threshold.service';
@@ -22,23 +22,37 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentDate = new Date().toLocaleDateString('en-US', { 
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
   });
+  
+  private clockInterval: any;
 
-  constructor(private thresholdService: ThresholdService) {}
+  constructor(private thresholdService: ThresholdService, private cdr: ChangeDetectorRef) {}
 
   isOnline = navigator.onLine;
 
   ngOnInit() {
     window.addEventListener('online', this.updateOnlineStatus);
     window.addEventListener('offline', this.updateOnlineStatus);
+    
+    this.clockInterval = setInterval(() => {
+      this.cdr.markForCheck();
+    }, 1000);
   }
 
   ngOnDestroy() {
     window.removeEventListener('online', this.updateOnlineStatus);
     window.removeEventListener('offline', this.updateOnlineStatus);
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+    }
+  }
+
+  currentSyncTime(): string {
+    return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   }
 
   private updateOnlineStatus = () => {
     this.isOnline = navigator.onLine;
+    this.cdr.markForCheck();
   };
 
   onOpenSidebar() {

@@ -27,19 +27,25 @@ export type DashboardTab = 'overview' | 'nodes' | 'live' | 'trends' | 'alerts' |
   template: `
     <div class="flex min-h-screen bg-slate-50 text-slate-800">
       <app-sidebar 
-        [activeTab]="activeTab()" 
-        (activeTabChange)="setTab($event)"
-        [(isSidebarOpen)]="isSidebarOpen">
+        [isOpen]="isSidebarOpen"
+        (close)="isSidebarOpen = false">
       </app-sidebar>
 
-      <div class="flex-1 flex flex-col min-w-0">
+      <div class="flex-1 flex flex-col min-w-0 relative">
         <app-navbar 
           [lastSyncTime]="lastSyncTime" 
           (openSidebar)="isSidebarOpen = true">
         </app-navbar>
+        
+        <!-- Top-bar progress loader -->
+        @if (isNavigating()) {
+          <div class="absolute top-16 left-0 right-0 overflow-hidden z-40">
+             <div class="h-1 bg-gradient-to-r from-teal-500 via-cyan-400 to-emerald-400 animate-pulse w-full"></div>
+          </div>
+        }
 
         <main class="flex-1 p-6 overflow-y-auto">
-          <div class="max-w-[1600px] mx-auto">
+          <div class="max-w-[1600px] mx-auto animate-in fade-in duration-300 slide-in-from-bottom-2" [class.opacity-50]="isNavigating()">
             @switch (activeTab()) {
               @case ('overview') {
                 <app-live-monitoring-view></app-live-monitoring-view>
@@ -75,6 +81,7 @@ export class DashboardComponent implements OnInit {
   private telemetryService = inject(TelemetryService);
 
   activeTab = signal<DashboardTab>('overview');
+  isNavigating = signal<boolean>(false);
   isSidebarOpen: boolean = false;
   lastSyncTime: string | null = null;
 
@@ -87,8 +94,6 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    // We can still maintain a global lastSyncTime if needed by polling a lightweight ping,
-    // or rely on the sub-views to fetch their own data.
     setInterval(() => {
        this.lastSyncTime = new Date().toISOString();
     }, 3000);
@@ -96,11 +101,19 @@ export class DashboardComponent implements OnInit {
 
   setTab(tab: string): void {
     const validTab = tab as DashboardTab;
-    this.activeTab.set(validTab);
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { tab: validTab },
-      queryParamsHandling: 'merge'
-    });
+    
+    // Smooth View Loading Transition
+    this.isNavigating.set(true);
+    
+    setTimeout(() => {
+      this.activeTab.set(validTab);
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { tab: validTab },
+        queryParamsHandling: 'merge'
+      });
+      
+      setTimeout(() => this.isNavigating.set(false), 150);
+    }, 150);
   }
 }

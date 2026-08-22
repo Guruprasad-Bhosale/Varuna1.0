@@ -20,3 +20,11 @@ dist/
 .vite/
 *.log
 package-lock.json
+*.parquet
+*.nc
+*.img
+*.joblib
+*.dll
+*.xlsx
+ML_Model_N/NIRVAAH/data/
+backend/ml/data/

@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # Ensure backend can import relative modules from root
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from backend.app.api.v1 import telemetry
+from backend.app.api.v1 import telemetry, ml
 from backend.app.db.session import engine, Base
 from sqlalchemy import text
 from ml.inference import WaterSafetyPredictor
@@ -49,7 +49,11 @@ async def lifespan(app: FastAPI):
         "ec_us_cm": 450.0, 
         "temperature_c": 25.0,
         "particle_count": 50,
-        "avg_particle_size_mm": 0.5
+        "avg_particle_size_mm": 0.5,
+        "chl": 1.85,
+        "kd490": 0.12,
+        "tsm": 4.50,
+        "wave_height": 1.20
     })
     
     yield
@@ -71,6 +75,7 @@ app.add_middleware(
 )
 
 app.include_router(telemetry.router, prefix="/api/v1/telemetry", tags=["telemetry"])
+app.include_router(ml.router, prefix="/api/v1/ml", tags=["ml"])
 
 @app.get("/")
 def read_root():

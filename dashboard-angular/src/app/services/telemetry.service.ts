@@ -1,159 +1,121 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, timer, of, firstValueFrom } from 'rxjs';
-import { shareReplay, retry, catchError, map } from 'rxjs/operators';
+import { Injectable, signal } from '@angular/core';
+import { BehaviorSubject, Observable, interval, of } from 'rxjs';
+import { TelemetryData } from '../core/models/telemetry.model';
 
-export interface TelemetryData {
-  id: number;
-  node_id: string;
-  timestamp: string;
-  latitude: number;
-  longitude: number;
-  ph: number;
-  turbidity_ntu: number;
-  ec_us_cm: number;
-  temperature_c: number;
-  particle_count: number;
-  avg_particle_size_mm: number;
-  predicted_safety_level: string;
-  confidence_pct: number;
-  safety_score: number;
-  alert_sent: boolean;
-}
+export type { TelemetryData };
 
 @Injectable({
   providedIn: 'root'
 })
 export class TelemetryService {
-  private readonly API_BASE_URL = 'http://localhost:8000/api/v1/telemetry';
-  private currentAnomalyMode = "normal";
-  private mockHistory: TelemetryData[] = [];
-  
-  private latestCache = new Map<string, Observable<{ data: TelemetryData, isMock: boolean }>>();
-  private historyCache = new Map<string, Observable<{ data: TelemetryData[], isMock: boolean }>>();
+  private initialData: TelemetryData = {
+    nodeId: 'VARUNA-001',
+    locationName: 'Sindhudurg District — Gad & Karli Rivers',
+    coordinates: { lat: 16.2699, lng: 73.7148 },
+    timestamp: new Date().toLocaleTimeString(),
+    lastSync: new Date().toLocaleTimeString(),
+    ph: 7.35,
+    turbidity: 4.80,
+    turbidity_ntu: 4.80,
+    ec: 420.0,
+    ec_us_cm: 420.0,
+    temperature: 25.4,
+    temp_c: 25.4,
+    opticalParticulates: 18,
+    optical_count: 18,
+    avgParticleSize: 0.28,
+    avg_particle_size_mm: 0.28,
+    compositeScore: 94.8,
+    confidence: 94.8,
+    confidence_pct: 94.8,
+    status: 'SAFE',
+    bloomProbability: 12.4,
+    reasons: ['Optimal Dissolved Oxygen', 'Nominal Thermal Profile'],
+    recommendations: ['Conditions nominal. Routine automated sampling active.']
+  };
 
-  constructor(private http: HttpClient) {
-    this.mockHistory = Array.from({ length: 50 }, () => this.generateMockState());
+  private telemetrySubject = new BehaviorSubject<TelemetryData>(this.initialData);
+  public telemetry$: Observable<TelemetryData> = this.telemetrySubject.asObservable();
+  public telemetrySignal = signal<TelemetryData>(this.initialData);
+
+  constructor() {
+    // Keep timestamp active
+    interval(3000).subscribe(() => {
+      const current = this.telemetrySubject.value;
+      const updated: TelemetryData = {
+        ...current,
+        timestamp: new Date().toLocaleTimeString(),
+        lastSync: new Date().toLocaleTimeString()
+      };
+      this.telemetrySubject.next(updated);
+      this.telemetrySignal.set(updated);
+    });
   }
 
-  setAnomalyMode(mode: string) {
-    this.currentAnomalyMode = mode;
-  }
+  simulateSpike(type: 'dump' | 'rain' | 'alkaline'): void {
+    const current = this.telemetrySubject.value;
+    let modified: TelemetryData;
 
-  private generateMockState(): TelemetryData {
-    let ph = 6.8 + (Math.random() * 0.8 - 0.4);
-    let turb = 10 + (Math.random() * 5);
-    let ec = 450 + (Math.random() * 50);
-    let temp = 25.5 + (Math.random() * 1.5);
-    let pCount = Math.floor(80 + Math.random() * 20);
-    let pSize = 0.6 + (Math.random() * 0.2);
-
-    if (this.currentAnomalyMode === "industrial") {
-      ph = 4.5 + (Math.random() * 0.5);
-      ec = 1200 + (Math.random() * 200);
-    } else if (this.currentAnomalyMode === "monsoon") {
-      turb = 80 + (Math.random() * 30);
-      pCount = 300 + Math.floor(Math.random() * 100);
-    } else if (this.currentAnomalyMode === "alkaline") {
-      ph = 10.5 + (Math.random() * 0.5);
+    if (type === 'dump') {
+      modified = {
+        ...current,
+        ph: 5.10,
+        turbidity: 42.5,
+        turbidity_ntu: 42.5,
+        ec: 1120.0,
+        ec_us_cm: 1120.0,
+        compositeScore: 32.4,
+        confidence: 96.2,
+        confidence_pct: 96.2,
+        status: 'HAZARD',
+        reasons: ['High Turbidity Spike', 'Acidic Inflow', 'Conductivity Surge'],
+        recommendations: ['Dispatch field response team', 'Halt downstream intake valves']
+      };
+    } else if (type === 'rain') {
+      modified = {
+        ...current,
+        ph: 6.80,
+        turbidity: 18.2,
+        turbidity_ntu: 18.2,
+        ec: 280.0,
+        ec_us_cm: 280.0,
+        compositeScore: 78.0,
+        confidence: 91.0,
+        confidence_pct: 91.0,
+        status: 'MODERATE',
+        reasons: ['Suspended Sediment Washout'],
+        recommendations: ['Monitor silt accumulation at estuarine gates']
+      };
+    } else {
+      modified = {
+        ...current,
+        ph: 9.40,
+        turbidity: 9.1,
+        turbidity_ntu: 9.1,
+        ec: 890.0,
+        ec_us_cm: 890.0,
+        compositeScore: 48.6,
+        confidence: 93.5,
+        confidence_pct: 93.5,
+        status: 'HAZARD',
+        reasons: ['Severe Alkaline Anomaly'],
+        recommendations: ['Isolate industrial discharge canal']
+      };
     }
-    
-    let score = 100;
-    if (ph < 6.5 || ph > 8.5) score -= Math.abs(7.5 - ph) * 8;
-    if (turb > 10) score -= (turb - 10) * 0.5;
-    if (ec > 600) score -= (ec - 600) * 0.05;
-    if (pCount > 100) score -= (pCount - 100) * 0.1;
-    
-    score = Math.max(0, Math.min(100, score));
-    let level = score > 75 ? "Safe" : (score > 45 ? "Moderate" : "Dangerous");
-    
-    return {
-      id: Math.floor(Math.random() * 10000),
-      node_id: "VARUNA-001",
-      timestamp: new Date().toISOString(),
-      latitude: 16.2700 + (Math.random() * 0.001 - 0.0005),
-      longitude: 73.7150 + (Math.random() * 0.001 - 0.0005),
-      ph: ph,
-      turbidity_ntu: turb,
-      ec_us_cm: ec,
-      temperature_c: temp,
-      particle_count: pCount,
-      avg_particle_size_mm: pSize,
-      predicted_safety_level: level,
-      confidence_pct: 92.5 + (Math.random() * 6),
-      safety_score: Math.round(score),
-      alert_sent: level !== "Safe"
-    };
+
+    this.telemetrySubject.next(modified);
+    this.telemetrySignal.set(modified);
   }
 
-  async getLatest(nodeId = "VARUNA-001") {
-    if (this.currentAnomalyMode !== "normal") {
-      const mock = this.generateMockState();
-      this.mockHistory.unshift(mock);
-      this.mockHistory.pop();
-      return { data: mock, isMock: true, forcedAnomaly: true };
-    }
-
-    if (!this.latestCache.has(nodeId)) {
-      const request$ = this.http.get<TelemetryData>(`${this.API_BASE_URL}/latest?node_id=${nodeId}`).pipe(
-        retry({
-          count: 3,
-          delay: (error, retryCount) => timer(Math.pow(2, retryCount) * 1000)
-        }),
-        map(response => ({ data: response, isMock: false })),
-        catchError(error => {
-          const mock = this.generateMockState();
-          this.mockHistory.unshift(mock);
-          this.mockHistory.pop();
-          return of({ data: mock, isMock: true });
-        }),
-        shareReplay({ bufferSize: 1, windowTime: 5000, refCount: true })
-      );
-      this.latestCache.set(nodeId, request$);
-    }
-    
-    return firstValueFrom(this.latestCache.get(nodeId)!);
-  }
-  
   async getHistory(nodeId = "VARUNA-001", limit = 500) {
-    if (this.currentAnomalyMode !== "normal") {
-      return { data: this.mockHistory.slice(0, limit), isMock: true, forcedAnomaly: true };
-    }
+    return { data: [this.telemetrySubject.value], isMock: true };
+  }
 
-    const cacheKey = `${nodeId}-${limit}`;
-    if (!this.historyCache.has(cacheKey)) {
-      const request$ = this.http.get<TelemetryData[]>(`${this.API_BASE_URL}/history?node_id=${nodeId}&limit=${limit}`).pipe(
-        retry({
-          count: 3,
-          delay: (error, retryCount) => timer(Math.pow(2, retryCount) * 1000)
-        }),
-        map(response => {
-          if (response && response.length === 0) {
-            return { data: this.mockHistory.slice(0, limit), isMock: true };
-          }
-          return { data: response, isMock: false };
-        }),
-        catchError(error => {
-          return of({ data: this.mockHistory.slice(0, limit), isMock: true });
-        }),
-        shareReplay({ bufferSize: 1, windowTime: 60000, refCount: true })
-      );
-      this.historyCache.set(cacheKey, request$);
-    }
-    
-    return firstValueFrom(this.historyCache.get(cacheKey)!);
+  async getHotspots() {
+    return [];
   }
 
   async getAlerts() {
-    if (this.currentAnomalyMode !== "normal") {
-      return { data: this.mockHistory.filter(m => m.alert_sent).slice(0, 10), isMock: true, forcedAnomaly: true };
-    }
-
-    try {
-      const response = await firstValueFrom(this.http.get<TelemetryData[]>(`${this.API_BASE_URL}/alerts`));
-      return { data: response, isMock: false };
-    } catch (error) {
-      return { data: this.mockHistory.filter(m => m.alert_sent).slice(0, 10), isMock: true };
-    }
+    return { data: [], isMock: true };
   }
 }

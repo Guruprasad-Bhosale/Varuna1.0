@@ -1,76 +1,87 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Map as MapIcon, Activity, Network, Bell, Camera, Settings, CheckCircle2 } from 'lucide-angular';
-import { DashboardTab } from '../../pages/dashboard/dashboard.component';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+
+interface NavItem {
+  label: string;
+  tab: string;
+  iconPath: string;
+  badge?: number;
+}
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
-    <!-- Mobile Sidebar Backdrop -->
-    <div *ngIf="isSidebarOpen" class="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity z-[1050] lg:hidden" (click)="closeSidebar()"></div>
+    <!-- Mobile Backdrop -->
+    @if (isOpen()) {
+      <div 
+        (click)="close.emit()" 
+        class="fixed inset-0 z-[1050] bg-slate-900/60 backdrop-blur-sm lg:hidden transition-opacity">
+      </div>
+    }
 
-    <aside
-      [class.translate-x-0]="isSidebarOpen"
-      [class.-translate-x-full]="!isSidebarOpen"
-      class="fixed inset-y-0 left-0 z-[1100] w-72 bg-slate-950 text-slate-200 border-r border-slate-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-10 flex flex-col shadow-xl">
+    <!-- Sidebar Container -->
+    <aside 
+      [class.-translate-x-full]="!isOpen()"
+      class="fixed top-0 left-0 bottom-0 z-[1100] w-64 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:z-10 shadow-sm">
       
-      <!-- Brand Header -->
-      <div class="h-20 flex items-center px-6 border-b border-slate-200">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      <!-- Top Brand Header -->
+      <div>
+        <div class="h-16 flex items-center px-6 border-b border-slate-100 gap-3">
+          <div class="h-9 w-9 rounded-xl bg-teal-600 flex items-center justify-center text-white shadow-md shadow-teal-600/30">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent tracking-tight">VARUNA</h1>
-            <div class="text-[10px] text-cyan-600 font-medium tracking-widest uppercase">IoT River Monitor</div>
+            <span class="font-black text-slate-900 text-lg tracking-tight">VARUNA</span>
+            <div class="text-[10px] font-bold text-teal-600 tracking-wider uppercase">IoT River Monitor</div>
           </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="px-3 py-5">
+          <div class="px-3 pb-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+            Mission Control
+          </div>
+          <nav class="space-y-1">
+            @for (item of navItems; track item.tab) {
+              <a 
+                [routerLink]="['/dashboard']"
+                [queryParams]="{ tab: item.tab }"
+                routerLinkActive="bg-teal-50 text-teal-700 font-bold border-r-4 border-teal-600 shadow-sm"
+                [routerLinkActiveOptions]="{ exact: false }"
+                (click)="close.emit()"
+                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                <div class="flex items-center gap-3">
+                  <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.iconPath" />
+                  </svg>
+                  <span>{{ item.label }}</span>
+                </div>
+                @if (item.badge) {
+                  <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-rose-100 text-rose-700">
+                    {{ item.badge }}
+                  </span>
+                }
+              </a>
+            }
+          </nav>
         </div>
       </div>
 
-      <!-- Navigation Links -->
-      <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1.5">
-        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-2">Mission Control</div>
-        
-        @for (item of menuItems; track item.id) {
-          <button
-            (click)="setActiveTab(item.id)"
-            [ngClass]="activeTab === item.id 
-              ? 'bg-cyan-50 text-cyan-700 border-cyan-200 font-semibold shadow-[inset_4px_0_0_rgba(6,182,212,1)]' 
-              : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent'"
-            class="w-full flex items-center justify-between px-3 py-3 rounded-xl border transition-all duration-200 group">
-            
-            <div class="flex items-center gap-3">
-              <i-lucide [name]="item.icon" 
-                [ngClass]="activeTab === item.id ? 'text-cyan-600' : 'text-slate-400 group-hover:text-slate-600'"
-                class="w-5 h-5 transition-colors">
-              </i-lucide>
-              <span class="text-sm">{{ item.label }}</span>
-            </div>
-
-            <!-- Optional badges like alert count -->
-            @if (item.badge) {
-              <span class="bg-rose-500/20 text-rose-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-rose-500/30 animate-pulse">
-                {{ item.badge }}
-              </span>
-            }
-          </button>
-        }
-      </nav>
-
-      <!-- System Status Footer -->
-      <div class="p-4 border-t border-slate-200 bg-slate-50">
-        <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3">
-          <div class="relative flex h-3 w-3">
+      <!-- Bottom Gateway Status Widget -->
+      <div class="p-4 border-t border-slate-100">
+        <div class="p-3 bg-emerald-50/80 border border-emerald-200/70 rounded-xl flex items-center gap-3">
+          <span class="relative flex h-3 w-3">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-          </div>
+          </span>
           <div>
-            <div class="text-xs text-slate-700 font-medium">Gateway Online</div>
-            <div class="text-[10px] text-slate-500">All edge nodes active</div>
+            <div class="text-xs font-bold text-emerald-950">Gateway Online</div>
+            <div class="text-[10px] text-emerald-700 font-medium">All edge nodes active</div>
           </div>
         </div>
       </div>
@@ -78,30 +89,16 @@ import { DashboardTab } from '../../pages/dashboard/dashboard.component';
   `
 })
 export class SidebarComponent {
-  @Input() activeTab: string = 'nodes';
-  @Output() activeTabChange = new EventEmitter<string>();
+  isOpen = input<boolean>(false);
+  close = output<void>();
 
-  @Input() isSidebarOpen: boolean = false;
-  @Output() isSidebarOpenChange = new EventEmitter<boolean>();
-
-  menuItems: {id: string, label: string, icon: string, badge?: number}[] = [
-    { id: 'overview', label: 'Overview', icon: 'layout-dashboard' },
-    { id: 'nodes', label: 'River Nodes', icon: 'map' },
-    { id: 'live', label: 'Live Monitoring', icon: 'activity' },
-    { id: 'trends', label: 'Historical Trends', icon: 'network' },
-    { id: 'alerts', label: 'Alerts', icon: 'bell', badge: 2 },
-    { id: 'camera', label: 'Camera Screening', icon: 'camera' },
-    { id: 'settings', label: 'Settings', icon: 'settings' },
+  readonly navItems: NavItem[] = [
+    { label: 'Overview', tab: 'overview', iconPath: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
+    { label: 'River Nodes', tab: 'nodes', iconPath: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z' },
+    { label: 'Live Monitoring', tab: 'live', iconPath: 'M13 10V3L4 14h7v7l9-11h-7z' },
+    { label: 'Historical Trends', tab: 'trends', iconPath: 'M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z' },
+    { label: 'Alerts', tab: 'alerts', iconPath: 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9', badge: 2 },
+    { label: 'Camera Screening', tab: 'camera', iconPath: 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z' },
+    { label: 'Settings', tab: 'settings', iconPath: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z' }
   ];
-
-  setActiveTab(id: string) {
-    this.activeTabChange.emit(id);
-    if(window.innerWidth < 1024) {
-      this.closeSidebar();
-    }
-  }
-
-  closeSidebar() {
-    this.isSidebarOpenChange.emit(false);
-  }
 }

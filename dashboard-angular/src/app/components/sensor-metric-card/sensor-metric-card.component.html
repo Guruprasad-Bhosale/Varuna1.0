@@ -1,17 +1,16 @@
 <div *ngIf="config"
-     class="relative rounded-xl border p-5 backdrop-blur-md transition-all duration-700 ease-in-out hover:z-50"
-     [ngClass]="health?.cardClass">
+     class="relative bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-700 ease-in-out hover:z-50">
      
   <div class="flex items-center justify-between">
     <div class="flex items-center space-x-2">
-      <span class="text-sm font-semibold tracking-wide text-slate-800">
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
         {{ config.title }}
       </span>
 
       <div class="group relative flex items-center">
         <button
           type="button"
-          class="text-slate-500 transition-colors duration-200 hover:text-cyan-700 focus:outline-none"
+          class="text-slate-500 transition-colors duration-200 hover:text-teal-700 focus:outline-none"
           [attr.aria-label]="'Hardware details for ' + config.title"
         >
           <lucide-icon [img]="InfoIcon" class="h-4 w-4 cursor-pointer"></lucide-icon>
@@ -33,15 +32,15 @@
 
     <span
       class="flex items-center space-x-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold tracking-wider transition-all duration-500 ease-in-out"
-      [ngClass]="health?.badgeClass"
+      [ngClass]="health?.status === 'safe' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : (health?.status === 'moderate' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-rose-50 text-rose-700 border-rose-200')"
     >
       <lucide-icon *ngIf="health?.status" [img]="getIconForStatus(health.status)" class="h-3.5 w-3.5"></lucide-icon>
-      <span>{{ health?.label }}</span>
+      <span>{{ health?.label || 'NOMINAL' }}</span>
     </span>
   </div>
 
   <div class="mt-4 flex items-baseline space-x-2">
-    <span class="font-mono text-3xl font-bold tracking-tight text-slate-800 transition-colors duration-500">
+    <span class="font-mono text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-2 mb-1 transition-colors duration-500">
       <ng-container *ngIf="value !== null && value !== undefined; else noValue">
         {{ value | number:'1.' + (config.precision || 1) + '-' + (config.precision || 1) }}
       </ng-container>
@@ -54,13 +53,9 @@
     Standard: <span class="text-slate-600 font-mono font-medium">{{ dynamicBaseline }}</span>
   </p>
 
-  <div class="mt-4">
-    <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-300/60">
-      <div
-        class="h-full rounded-full transition-all duration-700 ease-out"
-        [ngClass]="health?.barColor"
-        [style.width.%]="progressPercent"
-      ></div>
-    </div>
+  <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-3">
+    <div class="h-full rounded-full transition-all duration-500"
+         [ngClass]="health?.status === 'safe' ? 'bg-teal-500' : (health?.status === 'moderate' ? 'bg-amber-500' : 'bg-rose-500')"
+         [style.width.%]="progressPercent"></div>
   </div>
 </div>

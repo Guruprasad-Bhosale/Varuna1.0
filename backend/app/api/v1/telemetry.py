@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
-from typing import List
+from typing import List, Literal
+import pandas as pd
+from pathlib import Path
 
 from backend.app.schemas.telemetry import TelemetryIngestPayload, TelemetryResponse
 from backend.app.models.telemetry import TelemetryRecord
@@ -94,11 +96,62 @@ def get_latest_telemetry(node_id: str = "VARUNA-001", db: Session = Depends(get_
         raise HTTPException(status_code=404, detail="No telemetry records found.")
     return record
 
-@router.get("/history", response_model=List[TelemetryResponse])
-def get_history(node_id: str = "VARUNA-001", limit: int = 500, db: Session = Depends(get_db)):
-    limit = min(limit, 2000)
-    records = db.query(TelemetryRecord).filter(TelemetryRecord.node_id == node_id).order_by(TelemetryRecord.timestamp.desc()).limit(limit).yield_per(100).all()
-    return records[::-1]
+@router.get("/history")
+def get_telemetry_history(
+    node_id: str = "VARUNA-001",
+    limit: int = Query(200, le=2000),
+    source: Literal["live", "parquet", "hybrid"] = "hybrid",
+    db: Session = Depends(get_db)
+):
+    live_records = []
+    if source in ["live", "hybrid"]:
+        live_records = db.query(TelemetryRecord).filter(TelemetryRecord.node_id == node_id).order_by(TelemetryRecord.timestamp.desc()).limit(limit).all()
+        # Ensure we return them in ascending order of timestamp or descending based on original logic
+        # Original logic returned them in [::-1] (ascending).
+    
+    parquet_records = []
+    if source in ["parquet", "hybrid"]:
+        try:
+            parquet_path = Path(__file__).resolve().parent.parent.parent.parent / "ml" / "data" / "nirvaah_features.parquet"
+            if parquet_path.exists():
+                df = pd.read_parquet(parquet_path)
+                # Just take the last 'limit' rows as mock history
+                df_subset = df.tail(limit).to_dict(orient="records")
+                for row in df_subset:
+                    parquet_records.append({
+                        "node_id": node_id,
+                        "timestamp": row.get("time", datetime.utcnow()),
+                        "latitude": row.get("latitude", 16.27),
+                        "longitude": row.get("longitude", 73.71),
+                        "ph": 7.0, # default since not in parquet
+                        "turbidity_ntu": 5.0,
+                        "ec_us_cm": 400.0,
+                        "temperature_c": 25.0,
+                        "particle_count": 50,
+                        "avg_particle_size_mm": 0.5,
+                        "predicted_safety_level": "UNKNOWN",
+                        "confidence_pct": 0.0,
+                        "safety_score": 50,
+                        "alert_sent": False
+                    })
+        except Exception as e:
+            print(f"Failed to read parquet history: {e}")
+
+    # Combine based on source
+    combined = []
+    if source == "parquet":
+        combined = parquet_records
+    elif source == "live":
+        combined = live_records
+    else:
+        # hybrid
+        combined = parquet_records + live_records
+
+    # Apply limit to combined and reverse if needed
+    combined = combined[-limit:]
+    
+    # We can return as dicts or objects, FastAPI handles dicts fine for response_model if they match.
+    return combined[::-1]
 
 @router.get("/alerts", response_model=List[TelemetryResponse])
 def get_alerts(db: Session = Depends(get_db)):

@@ -28,7 +28,7 @@ export class SensorMetricGridComponent {
       calibration: '2-Point Standard Buffer (pH 4.01 / 7.00)'
     },
     {
-      id: 'turbidity_ntu',
+      id: 'turbidity',
       title: 'Turbidity (Clarity)',
       unit: 'NTU',
       precision: 0,
@@ -41,7 +41,7 @@ export class SensorMetricGridComponent {
       calibration: 'Formazin 0–1000 NTU approximation curve'
     },
     {
-      id: 'ec_us_cm',
+      id: 'ec',
       title: 'Conductivity (EC)',
       unit: 'µS/cm',
       precision: 0,
@@ -54,7 +54,7 @@ export class SensorMetricGridComponent {
       calibration: '1413 µS/cm KCl reference standard with 2%/°C temp comp'
     },
     {
-      id: 'temperature_c',
+      id: 'temperature',
       title: 'Water Temperature',
       unit: '°C',
       precision: 1,
@@ -67,7 +67,7 @@ export class SensorMetricGridComponent {
       calibration: 'Factory calibrated ±0.5°C from -10°C to +85°C'
     },
     {
-      id: 'particle_count',
+      id: 'opticalParticulates',
       title: 'Optical Particulates',
       unit: 'count',
       precision: 0,
@@ -80,7 +80,7 @@ export class SensorMetricGridComponent {
       calibration: 'Adaptive Gaussian threshold with min 6px noise filter'
     },
     {
-      id: 'avg_particle_size_mm',
+      id: 'avgParticleSize',
       title: 'Avg Particle Size',
       unit: 'mm',
       precision: 3,

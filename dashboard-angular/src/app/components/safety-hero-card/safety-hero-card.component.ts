@@ -15,7 +15,6 @@ export class SafetyHeroCardComponent implements OnChanges {
 
   score = 0;
   level = "Safe";
-  confidence = 0;
   statusColor = "text-safe";
   statusBg = "bg-safeBg";
   arcColor = "#16a34a";
@@ -36,23 +35,22 @@ export class SafetyHeroCardComponent implements OnChanges {
   }
 
   private updateStatus() {
-    this.score = this.latestData?.safety_score || 0;
-    this.level = this.latestData?.predicted_safety_level || "Safe";
-    this.confidence = this.latestData?.confidence_pct || 0;
+    this.score = this.latestData?.compositeScore || 0;
+    this.level = this.latestData?.status || "SAFE";
 
     this.statusColor = "text-safe";
     this.statusBg = "bg-safeBg";
     this.arcColor = "#16a34a";
     this.message = "Suitable under current monitored conditions";
 
-    if (this.level === "Moderate") {
-      this.statusColor = "text-moderate";
-      this.statusBg = "bg-moderateBg";
+    if (this.level.toUpperCase() === "MODERATE") {
+      this.statusColor = "text-amber-600";
+      this.statusBg = "bg-amber-50";
       this.arcColor = "#d97706";
       this.message = "Water quality degraded. Exercise caution.";
-    } else if (this.level === "Dangerous") {
-      this.statusColor = "text-dangerous";
-      this.statusBg = "bg-dangerousBg";
+    } else if (this.level.toUpperCase() === "DANGEROUS" || this.level.toUpperCase() === "HAZARD") {
+      this.statusColor = "text-rose-600";
+      this.statusBg = "bg-rose-50";
       this.arcColor = "#dc2626";
       this.message = "Hazardous conditions detected. Immediate attention required.";
     }
@@ -60,5 +58,9 @@ export class SafetyHeroCardComponent implements OnChanges {
     const radius = 60;
     this.circumference = Math.PI * radius;
     this.dashoffset = this.circumference - (this.score / 100) * this.circumference;
+  }
+
+  get confidenceValue(): number {
+    return this.latestData?.confidence ?? this.latestData?.confidence_pct ?? 94.8;
   }
 }

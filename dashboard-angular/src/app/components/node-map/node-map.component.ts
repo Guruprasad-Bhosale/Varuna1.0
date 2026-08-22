@@ -1,7 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
-import { TelemetryData } from '../../services/telemetry.service';
+import { TelemetryData } from '../../core/models/telemetry.model';
+import { TelemetryService } from '../../services/telemetry.service';
 
 @Component({
   selector: 'app-node-map',
@@ -17,8 +18,11 @@ export class NodeMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private map!: L.Map;
   private marker!: L.Marker | L.CircleMarker;
 
+  constructor(private telemetryService: TelemetryService) {}
+
   ngAfterViewInit() {
     this.initMap();
+    this.loadHotspots();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -101,15 +105,37 @@ export class NodeMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       this.marker = L.marker([lat, lng], { icon }).addTo(this.map);
     }
 
+    const reasonsHtml = this.latestData?.reasons?.length ? `<div class="text-[10px] mt-1 text-red-500 font-semibold">${this.latestData.reasons.join(', ')}</div>` : '';
+    const recomHtml = this.latestData?.recommendations?.length ? `<div class="text-[10px] mt-1 text-slate-600">${this.latestData.recommendations.join(', ')}</div>` : '';
+
     const popupContent = `
       <div class="p-1 font-sans">
         <div class="font-semibold text-slate-900 mb-1">${this.latestData?.node_id || 'VARUNA-001'}</div>
         <div class="text-xs text-slate-700 mb-1">Status: <strong>${status}</strong></div>
-        <div class="text-xs text-slate-500">WQI Score: ${this.latestData?.safety_score || 0}/100</div>
+        <div class="text-xs text-slate-500">Composite Score: ${this.latestData?.compositeScore || this.latestData?.safety_score || 0}/100</div>
+        ${reasonsHtml}
+        ${recomHtml}
         <div class="text-[10px] text-slate-500 mt-2">${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
       </div>
     `;
 
     this.marker.bindPopup(popupContent);
+  }
+
+  async loadHotspots() {
+    try {
+      const hotspots = await this.telemetryService.getHotspots();
+      hotspots.forEach((spot: any) => {
+        L.circle([spot.latitude, spot.longitude], {
+          color: '#ef4444',
+          fillColor: '#ef4444',
+          fillOpacity: 0.4,
+          radius: 1200,
+          weight: 0
+        }).addTo(this.map).bindPopup(\`<div class="text-xs"><b>Algal Bloom Hotspot</b><br/>Lat: \${spot.latitude.toFixed(3)}, Lng: \${spot.longitude.toFixed(3)}</div>\`);
+      });
+    } catch (e) {
+      console.error("Failed to load hotspots", e);
+    }
   }
 }

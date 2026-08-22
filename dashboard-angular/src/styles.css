@@ -11,3 +11,64 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Professional Algae Bloom Radar Marker */
+@keyframes bloom-radar-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes bloom-core-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.8), 0 0 20px rgba(245, 158, 11, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(245, 158, 11, 0.9), 0 0 30px rgba(16, 185, 129, 0.6);
+    transform: scale(1.1);
+  }
+}
+
+.bloom-forecast-radar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  animation: bloom-radar-pulse 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  pointer-events: none;
+}
+
+.bloom-forecast-radar.delay-1 {
+  animation-delay: 0.75s;
+}
+
+.bloom-forecast-core {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b 0%, #10b981 100%);
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  animation: bloom-core-glow 2s ease-in-out infinite;
+  cursor: pointer;
+}
