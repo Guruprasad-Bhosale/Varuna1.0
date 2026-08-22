@@ -14,6 +14,8 @@ class PredictPayload(BaseModel):
     turbidity_ntu: float
     ec_us_cm: float
     temperature_c: float
+    particle_count: int
+    avg_particle_size_mm: float
     # Optional parameters (satellite / wave)
     chl: Optional[float] = None
     kd490: Optional[float] = None

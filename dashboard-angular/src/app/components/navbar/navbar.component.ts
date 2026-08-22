@@ -23,6 +23,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
   });
   
+  currentTimeStr: string = this.getFormattedTime();
+  
   private clockInterval: any;
 
   constructor(private thresholdService: ThresholdService, private cdr: ChangeDetectorRef) {}
@@ -34,6 +36,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     window.addEventListener('offline', this.updateOnlineStatus);
     
     this.clockInterval = setInterval(() => {
+      this.currentTimeStr = this.getFormattedTime();
       this.cdr.markForCheck();
     }, 1000);
   }
@@ -46,7 +49,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  currentSyncTime(): string {
+  getFormattedTime(): string {
     return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   }
 

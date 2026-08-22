@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, X, RotateCcw, Save, Sliders } from 'lucide-angular';
 import { ThresholdService } from '../../services/threshold.service';
 import { Subscription } from 'rxjs';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-threshold-config-modal',
@@ -34,7 +35,8 @@ export class ThresholdConfigModalComponent implements OnInit, OnDestroy {
 
   constructor(
     private thresholdService: ThresholdService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -86,12 +88,14 @@ export class ThresholdConfigModalComponent implements OnInit, OnDestroy {
   handleSave() {
     if (this.thresholdForm.valid) {
       this.thresholdService.updateThresholds(this.thresholdForm.value);
+      this.toast.show("CPCB Thresholds updated successfully", "success");
       this.close();
     }
   }
 
   handleReset() {
     this.thresholdService.resetThresholds();
+    this.toast.show("Reset to default CPCB standards", "info");
     this.close();
   }
 

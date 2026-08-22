@@ -1,9 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { downsampleLTTB } from '../../core/utils/downsample';
+import { TelemetryService } from '../../services/telemetry.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-telemetry-charts',
@@ -12,10 +14,14 @@ import { downsampleLTTB } from '../../core/utils/downsample';
   templateUrl: './telemetry-charts.component.html',
   styleUrls: ['./telemetry-charts.component.css']
 })
-export class TelemetryChartsComponent implements OnChanges {
+export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy {
   @Input() historyData: any[] = [];
-
-  metric = 'safety_score';
+  @Input() metric = 'safety_score';
+  
+  private telemetryService = inject(TelemetryService);
+  private cdr = inject(ChangeDetectorRef);
+  private sub?: Subscription;
+  private currentStreamData: any[] = [];
   timeRange = '24h';
   chartOptions: EChartsOption = {};
 
@@ -26,32 +32,59 @@ export class TelemetryChartsComponent implements OnChanges {
     ec_us_cm: { name: 'EC (µS/cm)', color: '#0ea5e9', domain: [0, 1000], dangerHigh: 600 }
   };
 
+  ngOnInit() {
+    this.sub = this.telemetryService.telemetry$.subscribe((data) => {
+      if (!data) return;
+      if (this.currentStreamData.length === 0) return; // Wait for initial history
+
+      // Parse timestamp robustly since live stream might send localized time strings
+      let timeMs = new Date(data.timestamp).getTime();
+      if (isNaN(timeMs)) {
+        timeMs = Date.now();
+      }
+
+      // Append new live data and slide window
+      const liveData = { ...data, timestamp: new Date(timeMs).toISOString() };
+      this.currentStreamData.push(liveData);
+      const maxPoints = this.timeRange === '1H' ? 50 : 150;
+      if (this.currentStreamData.length > maxPoints) {
+        this.currentStreamData.shift();
+      }
+      this.refreshChart(this.currentStreamData);
+    });
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['historyData'] && this.historyData.length > 0) {
-      this.updateChart();
+      // Sort chronologically (oldest to newest)
+      this.currentStreamData = [...this.historyData].sort((a,b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+      this.refreshChart(this.currentStreamData);
+    } else if (changes['metric']) {
+      this.refreshChart(this.currentStreamData);
     }
   }
 
   onMetricChange(newMetric: string) {
     this.metric = newMetric;
-    this.updateChart();
+    this.refreshChart(this.currentStreamData);
   }
 
   onTimeRangeChange(newTimeRange: string) {
     this.timeRange = newTimeRange;
-    this.updateChart();
+    this.refreshChart(this.currentStreamData);
   }
 
-  private updateChart() {
-    if (!this.historyData || this.historyData.length === 0) return;
+  private refreshChart(dataToRender: any[]) {
+    if (!dataToRender || dataToRender.length === 0) return;
 
     const activeConf = this.config[this.metric];
     
-    // Sort chronological
-    const sortedData = [...this.historyData].reverse();
-    
-    // Decimate to 200 max points using LTTB
-    const tuples: [number, number][] = sortedData.map(d => [new Date(d.timestamp).getTime(), d[this.metric]]);
+    // Decimate max points using LTTB if needed, though stream might be short
+    const tuples: [number, number][] = dataToRender.map(d => [new Date(d.timestamp).getTime(), d[this.metric]]);
     const sampledTuples = downsampleLTTB(tuples, 200);
 
     const times = sampledTuples.map(t => {
@@ -81,9 +114,24 @@ export class TelemetryChartsComponent implements OnChanges {
       grid: { top: 10, right: 10, bottom: 20, left: 30 },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
         borderColor: '#e2e8f0',
-        textStyle: { color: '#0f172a', fontSize: 13, fontWeight: 600 }
+        borderWidth: 1,
+        textStyle: { color: '#0f172a', fontSize: 12, fontWeight: 600 },
+        formatter: (params: any) => {
+          const item = Array.isArray(params) ? params[0] : params;
+          const val = typeof item.value === 'number' ? item.value.toFixed(1) : Number(item.value[1]).toFixed(1);
+          return `
+            <div style="padding: 2px 4px;">
+              <div style="font-size: 11px; color: #64748b; font-weight: 500; margin-bottom: 2px;">${item.name || item.axisValue}</div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #0d9488;"></span>
+                <span style="font-weight: 700; color: #0f172a;">${item.seriesName}:</span>
+                <span style="font-family: monospace; font-weight: 800; color: #0d9488;">${val}%</span>
+              </div>
+            </div>
+          `;
+        }
       },
       xAxis: {
         type: 'category',
@@ -125,5 +173,7 @@ export class TelemetryChartsComponent implements OnChanges {
         }
       ]
     };
+    
+    this.cdr.markForCheck();
   }
 }

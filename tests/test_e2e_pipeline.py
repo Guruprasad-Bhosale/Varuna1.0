@@ -33,7 +33,7 @@ def test_ingest_dangerous_payload():
     data = response.json()
     
     # ML Prediction validation - should be flagged as an anomaly
-    assert "status" in data
+    assert "predicted_safety_level" in data
     assert data["predicted_safety_level"] == "Dangerous"
     assert data["alert_sent"] == True
     
@@ -54,3 +54,36 @@ def test_ingest_dangerous_payload():
     test_alerts = [a for a in alerts_data if a["node_id"] == "VARUNA-TEST-001"]
     assert len(test_alerts) > 0
     assert test_alerts[0]["predicted_safety_level"] == "Dangerous"
+
+def test_health_api():
+    response = client.get("/api/v1/health")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "healthy"
+    assert data["ml_engine"] in ["scikit-learn", "xgboost"]
+
+def test_ml_predict():
+    payload = {
+        "ph": 7.2, 
+        "turbidity_ntu": 5.0, 
+        "ec_us_cm": 450.0, 
+        "temperature_c": 25.0,
+        "particle_count": 50,
+        "avg_particle_size_mm": 0.5,
+        "chl": 1.85,
+        "kd490": 0.12,
+        "tsm": 4.50,
+        "wave_height": 1.20
+    }
+    response = client.post("/api/v1/ml/predict", json=payload)
+    print(response.json())
+    assert response.status_code == 200
+    data = response.json()
+    assert "prediction" in data
+    assert "safety_score" in data
+
+def test_ml_hotspots():
+    response = client.get("/api/v1/ml/hotspots")
+    assert response.status_code == 200
+    data = response.json()
+    assert "hotspots" in data

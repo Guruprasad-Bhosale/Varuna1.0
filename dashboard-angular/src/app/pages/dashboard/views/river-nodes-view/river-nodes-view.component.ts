@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, OnDestroy, signal, ChangeDetectionStrategy, inject, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, Map } from 'lucide-angular';
 import * as L from 'leaflet';
 
 export interface BloomForecastNode {
@@ -28,7 +28,7 @@ export interface BloomForecastNode {
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <i-lucide name="map" class="h-6 w-6 text-teal-600"></i-lucide>
+            <lucide-icon [img]="MapIcon" class="h-6 w-6 text-teal-600"></lucide-icon>
             Sindhudurg Basin Network & Bloom Forecast
           </h2>
           <p class="text-xs text-slate-500 mt-1 font-medium">
@@ -138,6 +138,7 @@ export interface BloomForecastNode {
   `
 })
 export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
+  readonly MapIcon = Map;
   private ngZone = inject(NgZone);
 
   activeTileLayer = signal<'voyager' | 'satellite' | 'dark'>('voyager');
@@ -179,6 +180,15 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
       riskTier: 'Elevated',
       recommendation: 'Alert coastal aquaculture units and increase automated sampling frequency.'
     }
+  ];
+
+  readonly riverNodes = [
+    { id: 'NODE-01', name: 'Gad River Headwaters', lat: 16.1750, lng: 73.6100, status: 'SAFE', ph: 7.4, temp: 24.2, ec: 310 },
+    { id: 'NODE-02', name: 'Malvan Estuary', lat: 16.1250, lng: 73.5350, status: 'WARNING', ph: 6.8, temp: 26.5, ec: 850 },
+    { id: 'NODE-03', name: 'Gad Outfall', lat: 16.0750, lng: 73.4750, status: 'SAFE', ph: 7.8, temp: 25.1, ec: 420 },
+    { id: 'NODE-04', name: 'Kudal Upstream', lat: 16.0050, lng: 73.5900, status: 'SAFE', ph: 7.2, temp: 23.9, ec: 280 },
+    { id: 'NODE-05', name: 'Karli Bridge', lat: 15.9850, lng: 73.5300, status: 'HAZARD', ph: 5.8, temp: 28.1, ec: 1120 },
+    { id: 'NODE-06', name: 'Devbag Confluence', lat: 15.9760, lng: 73.4930, status: 'WARNING', ph: 6.9, temp: 27.0, ec: 940 }
   ];
 
   ngAfterViewInit(): void {
@@ -232,27 +242,48 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
 
   private renderRiverPaths(): void {
     this.riverLinesGroup.clearLayers();
-
-    const gadCoords: [number, number][] = [
-      [16.3200, 73.8000],
-      [16.2700, 73.7150],
-      [16.1800, 73.6000],
-      [16.1200, 73.5200],
-      [16.0750, 73.4750]
-    ];
-    L.polyline(gadCoords, { color: '#06b6d4', weight: 4, opacity: 0.85, dashArray: '6, 8' }).addTo(this.riverLinesGroup);
-
-    const karliCoords: [number, number][] = [
-      [16.0500, 73.8200],
-      [16.0080, 73.6820],
-      [15.9950, 73.5800],
-      [15.9850, 73.4900]
-    ];
-    L.polyline(karliCoords, { color: '#2dd4bf', weight: 4, opacity: 0.85, dashArray: '6, 8' }).addTo(this.riverLinesGroup);
+    // Removed inaccurate dashed lines. Nodes now represent monitoring points.
   }
 
   private renderBloomForecastMarkers(): void {
     this.bloomForecastLayerGroup.clearLayers();
+    this.markersLayerGroup.clearLayers();
+
+    // Render 6 monitoring nodes
+    this.riverNodes.forEach(node => {
+      let colorClass = 'bg-emerald-500';
+      let statusClass = 'background: #f1f5f9; color: #0f172a; border: 1px solid #e2e8f0;';
+      if (node.status === 'WARNING') {
+        colorClass = 'bg-amber-500';
+        statusClass = 'background: #fffbeb; color: #d97706; border: 1px solid #fde68a;';
+      }
+      if (node.status === 'HAZARD') {
+        colorClass = 'bg-rose-500';
+        statusClass = 'background: #fef2f2; color: #e11d48; border: 1px solid #fecdd3;';
+      }
+      
+      const nodeIcon = L.divIcon({
+        className: 'custom-node-icon',
+        html: `<div class="h-4 w-4 rounded-full border-2 border-white shadow-md ${colorClass}"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
+
+      const nodePopup = `
+        <div style="background: #ffffff; color: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; min-width: 220px; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <h4 style="margin: 0; font-weight: 700; font-size: 13px;">${node.name}</h4>
+            <span style="font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 9999px; text-transform: uppercase; ${statusClass}">${node.status}</span>
+          </div>
+          <div style="margin-top: 10px; font-size: 11px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 8px;">
+            <div><div style="color: #64748b; margin-bottom: 2px;">pH</div><div style="font-weight: 700; font-family: monospace;">${node.ph.toFixed(1)}</div></div>
+            <div><div style="color: #64748b; margin-bottom: 2px;">Temp</div><div style="font-weight: 700; font-family: monospace;">${node.temp.toFixed(1)}°C</div></div>
+            <div><div style="color: #64748b; margin-bottom: 2px;">Cond</div><div style="font-weight: 700; font-family: monospace;">${node.ec} µS</div></div>
+          </div>
+        </div>
+      `;
+      L.marker([node.lat, node.lng], { icon: nodeIcon }).addTo(this.markersLayerGroup).bindPopup(nodePopup);
+    });
 
     this.bloomForecasts.forEach(bf => {
       // Professional Radar DivIcon with Bio-Pulse SVG
@@ -276,36 +307,36 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
 
       const marker = L.marker([bf.lat, bf.lng], { icon: forecastIcon }).addTo(this.bloomForecastLayerGroup);
 
-      // Glassmorphic Early Warning Popup
+      // Light Theme Early Warning Popup
       const popupHtml = `
-        <div style="background: #090d16; color: #f8fafc; font-family: ui-sans-serif, system-ui, sans-serif; min-width: 250px; padding: 12px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.35); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8);">
+        <div style="background: #ffffff; color: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; min-width: 250px; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <span style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase;">
+            <span style="background: #fffbeb; color: #d97706; border: 1px solid #fde68a; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase;">
               +${bf.forecastWindow} Early Warning
             </span>
-            <span style="font-size: 10px; color: #94a3b8; font-family: monospace;">NIRVAAH XGBoost</span>
+            <span style="font-size: 10px; color: #64748b; font-family: monospace; font-weight: 600;">NIRVAAH XGBoost</span>
           </div>
 
-          <h4 style="margin: 4px 0 2px 0; font-weight: 700; font-size: 13px; color: #ffffff;">${bf.name}</h4>
-          <p style="margin: 0 0 8px 0; font-size: 11px; color: #38bdf8;">${bf.river} • ${bf.location}</p>
+          <h4 style="margin: 4px 0 2px 0; font-weight: 800; font-size: 14px; color: #0f172a;">${bf.name}</h4>
+          <p style="margin: 0 0 10px 0; font-size: 11px; color: #0284c7; font-weight: 600;">${bf.river} • ${bf.location}</p>
 
-          <div style="background: #020617; padding: 8px 10px; border-radius: 8px; border: 1px solid #1e293b; margin-bottom: 8px; font-size: 11px;">
+          <div style="background: #f8fafc; padding: 8px 10px; border-radius: 8px; border: 1px solid #f1f5f9; margin-bottom: 10px; font-size: 11px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-              <span style="color: #94a3b8;">Bloom Probability:</span>
-              <span style="font-weight: 700; color: #fbbf24; font-family: monospace;">${bf.bloomProbability}%</span>
+              <span style="color: #475569; font-weight: 600;">Bloom Probability:</span>
+              <span style="font-weight: 800; color: #d97706; font-family: monospace;">${bf.bloomProbability}%</span>
             </div>
             <div style="display: flex; justify-content: space-between;">
-              <span style="color: #94a3b8;">Chlorophyll-a Est:</span>
-              <span style="font-weight: 700; color: #34d399; font-family: monospace;">${bf.predictedChl} mg/m³</span>
+              <span style="color: #475569; font-weight: 600;">Chlorophyll-a Est:</span>
+              <span style="font-weight: 800; color: #059669; font-family: monospace;">${bf.predictedChl} mg/m³</span>
             </div>
           </div>
 
-          <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px; line-height: 1.3;">
-            <b style="color: #e2e8f0;">Key Drivers:</b> ${bf.triggerFactors.join(', ')}
+          <div style="font-size: 11px; color: #475569; margin-bottom: 8px; line-height: 1.4;">
+            <b style="color: #0f172a;">Key Drivers:</b> ${bf.triggerFactors.join(', ')}
           </div>
 
-          <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; padding: 6px 8px; border-radius: 4px; font-size: 10px; color: #a7f3d0; line-height: 1.3;">
-            <b>Advisory:</b> ${bf.recommendation}
+          <div style="background: #ecfdf5; border-left: 3px solid #10b981; padding: 8px; border-radius: 4px; font-size: 10px; color: #047857; line-height: 1.4;">
+            <b style="font-weight: 800;">Advisory:</b> ${bf.recommendation}
           </div>
         </div>
       `;

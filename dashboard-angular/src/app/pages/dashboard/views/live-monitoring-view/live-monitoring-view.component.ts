@@ -1,14 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TelemetryService } from '../../../../services/telemetry.service';
-import { TelemetryData } from '../../../../core/models/telemetry.model';
+import { TelemetryService, TelemetryData } from '../../../../services/telemetry.service';
+import { ToastService } from '../../../../services/toast.service';
+import { TelemetryChartsComponent } from '../../../../components/telemetry-charts/telemetry-charts.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-live-monitoring-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TelemetryChartsComponent],
   template: `
-    <div class="space-y-6 animate-in fade-in duration-300">
+    <div class="space-y-6 animate-stagger-1">
       
       <!-- Top Action Bar -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -27,16 +29,22 @@ import { TelemetryData } from '../../../../core/models/telemetry.model';
 
       <!-- Station Hero Summary Card -->
       @if (telemetry(); as data) {
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6 animate-stagger-2">
           <div class="space-y-3 w-full lg:w-auto">
             <div class="flex items-center gap-2">
-              <span [ngClass]="data.status === 'SAFE' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider border">
+              <span [ngClass]="data.status === 'SAFE' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider border transition-all duration-300 transform" [class.scale-110]="data.status !== 'SAFE'">
                 {{ data.status }}
               </span>
               <span class="text-xs text-slate-500 font-medium">Suitable under current monitored conditions</span>
             </div>
 
-            <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{{ data.locationName }}</h3>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <div class="relative w-3 h-3">
+                 <div class="absolute inset-0 bg-emerald-500 rounded-full"></div>
+                 <div class="absolute inset-0 bg-emerald-500 rounded-full animate-live-ripple"></div>
+              </div>
+              {{ data.locationName }}
+            </h3>
 
             <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
               <span class="flex items-center gap-1.5">
@@ -54,141 +62,337 @@ import { TelemetryData } from '../../../../core/models/telemetry.model';
             </div>
           </div>
 
-          <!-- Radial Safety Score Display -->
-          <div class="flex items-center gap-5 bg-slate-50 border border-slate-200/80 p-5 rounded-2xl w-full lg:w-72 justify-between shrink-0">
+          <!-- Animated Radial Gauge -->
+          <div class="flex items-center gap-5 bg-slate-50 border border-slate-200/80 p-5 rounded-2xl w-full lg:w-80 justify-between shrink-0 shadow-sm transition-all duration-500"
+               [ngClass]="data.status === 'HAZARD' ? 'border-rose-300 bg-rose-50/40 animate-hazard-glow' : ''">
             <div>
               <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Water Safety Index</div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight">{{ data.compositeScore }}<span class="text-sm font-bold text-slate-400">/100</span></div>
-              <div class="text-[11px] font-bold text-teal-700 mt-1">{{ data.confidence }}% confidence</div>
-              <div class="text-[9px] text-slate-400 uppercase font-mono">NIRVAAH XGBoost</div>
+              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight flex items-baseline gap-1">
+                <span class="transition-all duration-700">{{ data.compositeScore | number:'1.1-1' }}</span>
+                <span class="text-sm font-bold text-slate-400">/100</span>
+              </div>
+              <div class="text-[11px] font-bold mt-1 transition-colors" [ngClass]="data.compositeScore >= 75 ? 'text-teal-700' : 'text-rose-600'">
+                {{ data.confidence }}% confidence
+              </div>
+              <div class="text-[9px] text-slate-400 uppercase font-mono tracking-wider">NIRVAAH XGBoost</div>
             </div>
-            <div class="relative h-16 w-16 flex items-center justify-center">
-              <svg class="h-full w-full -rotate-90" viewBox="0 0 36 36">
-                <path class="text-slate-200" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path [ngClass]="data.compositeScore >= 75 ? 'text-emerald-500' : 'text-rose-500'" stroke-dasharray="100, 100" [attr.stroke-dashoffset]="100 - data.compositeScore" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+
+            <div class="relative h-20 w-20 flex items-center justify-center shrink-0">
+              <svg class="h-full w-full -rotate-90" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="26" stroke-width="5" stroke="#e2e8f0" fill="none" />
+                <circle cx="32" cy="32" r="26" 
+                        stroke-width="5" 
+                        stroke-linecap="round" 
+                        fill="none" 
+                        [attr.stroke]="data.compositeScore >= 75 ? '#0d9488' : '#e11d48'"
+                        stroke-dasharray="163.36" 
+                        [style.strokeDashoffset]="163.36 - (163.36 * (data.compositeScore / 100))"
+                        class="gauge-stroke-transition" />
               </svg>
+              <div class="absolute inset-0 flex items-center justify-center transition-all duration-500">
+                <!-- Safe Shield Icon -->
+                <svg *ngIf="data.compositeScore >= 75" class="w-7 h-7 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <!-- Hazard/Warning Icon -->
+                <svg *ngIf="data.compositeScore < 75" class="w-7 h-7 text-rose-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Complete 6-Card Edge Sensor Array -->
-        <div>
-          <div class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3">Edge Sensor Array</div>
+        <div class="animate-stagger-3">
+          <div class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3 flex justify-between items-center">
+            <span>Edge Sensor Array</span>
+            <span class="text-[10px] font-medium text-slate-400 normal-case">Click a card to view 24h history</span>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             
             <!-- 1. pH Level -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">pH Level</span>
-                <span [ngClass]="data.ph >= 6.5 && data.ph <= 8.5 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border">
-                  {{ data.ph >= 6.5 && data.ph <= 8.5 ? 'NOMINAL' : 'OUTLIER' }}
+            <div (click)="selectMetric('ph')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="[
+                   selectedMetric === 'ph' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300',
+                   data.ph < 6.5 || data.ph > 8.5 ? 'animate-hazard-glow' : ''
+                 ]">
+              <div *ngIf="selectedMetric === 'ph'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="flex items-center justify-between pr-4 relative">
+                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">pH Level</span>
+                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
+                    <span class="text-teal-300 font-bold block mb-1">Source: WHO Guidelines</span>
+                    Measures acidity or alkalinity. Extreme pH levels harm aquatic life and indicate chemical pollution.
+                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
+                  </div>
+                </div>
+                <span [ngClass]="[getStatusFromColor(getPhColor(data.ph)).bg, getStatusFromColor(getPhColor(data.ph)).textCol, getStatusFromColor(getPhColor(data.ph)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="data.ph < 6.5 || data.ph > 8.5">
+                  {{ getStatusFromColor(getPhColor(data.ph)).text }}
                 </span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2">
-                {{ data.ph | number:'1.2-2' }} <span class="text-xs font-semibold text-slate-400 font-sans">pH</span>
+              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
+                <span class="transition-all duration-700">{{ data.ph | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">pH</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: 6.5 – 8.5 pH</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="bg-teal-500 h-full rounded-full" [style.width.%]="(data.ph / 14) * 100"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getPhColor(data.ph)" [style.width.%]="getPercentage(data.ph, 0, 14)"></div>
               </div>
             </div>
 
             <!-- 2. Turbidity -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Turbidity (Clarity)</span>
-                <span [ngClass]="(data.turbidity_ntu ?? data.turbidity) <= 10 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border">
-                  {{ (data.turbidity_ntu ?? data.turbidity) <= 10 ? 'NOMINAL' : 'ELEVATED' }}
+            <div (click)="selectMetric('turbidity_ntu')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="[
+                   selectedMetric === 'turbidity_ntu' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300',
+                   (data.turbidity_ntu ?? data.turbidity) > 10 ? 'animate-hazard-glow' : ''
+                 ]">
+              <div *ngIf="selectedMetric === 'turbidity_ntu'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="flex items-center justify-between pr-4 relative">
+                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Turbidity (Clarity)</span>
+                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
+                    <span class="text-teal-300 font-bold block mb-1">Source: EPA Standards</span>
+                    Measures water clarity based on suspended solids. High turbidity blocks sunlight and harms aquatic ecosystems.
+                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
+                  </div>
+                </div>
+                <span [ngClass]="[getStatusFromColor(getTurbidityColor(data.turbidity_ntu ?? data.turbidity)).bg, getStatusFromColor(getTurbidityColor(data.turbidity_ntu ?? data.turbidity)).textCol, getStatusFromColor(getTurbidityColor(data.turbidity_ntu ?? data.turbidity)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="(data.turbidity_ntu ?? data.turbidity) > 10">
+                  {{ getStatusFromColor(getTurbidityColor(data.turbidity_ntu ?? data.turbidity)).text }}
                 </span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2">
-                {{ (data.turbidity_ntu ?? data.turbidity) | number:'1.2-2' }} <span class="text-xs font-semibold text-slate-400 font-sans">NTU</span>
+              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
+                <span class="transition-all duration-700">{{ (data.turbidity_ntu ?? data.turbidity) | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">NTU</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 10.0 NTU</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="bg-teal-500 h-full rounded-full" [style.width.%]="((data.turbidity_ntu ?? data.turbidity) / 50) * 100"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getTurbidityColor(data.turbidity_ntu ?? data.turbidity)" [style.width.%]="getPercentage(data.turbidity_ntu ?? data.turbidity, 0, 50)"></div>
               </div>
             </div>
 
             <!-- 3. Electrical Conductivity (EC) -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Conductivity (EC)</span>
-                <span [ngClass]="(data.ec_us_cm ?? data.ec) <= 600 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border">
-                  {{ (data.ec_us_cm ?? data.ec) <= 600 ? 'NOMINAL' : 'HIGH' }}
+            <div (click)="selectMetric('ec_us_cm')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="[
+                   selectedMetric === 'ec_us_cm' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300',
+                   (data.ec_us_cm ?? data.ec) > 600 ? 'animate-hazard-glow' : ''
+                 ]">
+              <div *ngIf="selectedMetric === 'ec_us_cm'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="flex items-center justify-between pr-4 relative">
+                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Conductivity (EC)</span>
+                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
+                    <span class="text-teal-300 font-bold block mb-1">Source: WHO & EPA</span>
+                    Measures the water's ability to conduct electricity, indicating dissolved salts or inorganic chemicals (salinity).
+                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
+                  </div>
+                </div>
+                <span [ngClass]="[getStatusFromColor(getEcColor(data.ec_us_cm ?? data.ec)).bg, getStatusFromColor(getEcColor(data.ec_us_cm ?? data.ec)).textCol, getStatusFromColor(getEcColor(data.ec_us_cm ?? data.ec)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="(data.ec_us_cm ?? data.ec) > 600">
+                  {{ getStatusFromColor(getEcColor(data.ec_us_cm ?? data.ec)).text }}
                 </span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2">
-                {{ (data.ec_us_cm ?? data.ec) | number:'1.1-1' }} <span class="text-xs font-semibold text-slate-400 font-sans">&micro;S/cm</span>
+              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
+                <span class="transition-all duration-700">{{ (data.ec_us_cm ?? data.ec) | number:'1.1-1' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">&micro;S/cm</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 600 &micro;S/cm</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="bg-teal-500 h-full rounded-full" [style.width.%]="((data.ec_us_cm ?? data.ec) / 1500) * 100"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getEcColor(data.ec_us_cm ?? data.ec)" [style.width.%]="getPercentage(data.ec_us_cm ?? data.ec, 0, 1500)"></div>
               </div>
             </div>
 
             <!-- 4. Water Temperature -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Water Temperature</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  NOMINAL
+            <div (click)="selectMetric('temperature')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="selectedMetric === 'temperature' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300'">
+              <div *ngIf="selectedMetric === 'temperature'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="flex items-center justify-between pr-4 relative">
+                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Water Temperature</span>
+                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
+                    <span class="text-teal-300 font-bold block mb-1">Source: Local Envt. Baseline</span>
+                    Sudden temperature spikes can reduce dissolved oxygen and trigger algal blooms or thermal shock to marine life.
+                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
+                  </div>
+                </div>
+                <span [ngClass]="[getStatusFromColor(getTempColor(data.temp_c ?? data.temperature)).bg, getStatusFromColor(getTempColor(data.temp_c ?? data.temperature)).textCol, getStatusFromColor(getTempColor(data.temp_c ?? data.temperature)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
+                  {{ getStatusFromColor(getTempColor(data.temp_c ?? data.temperature)).text }}
                 </span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2">
-                {{ (data.temp_c ?? data.temperature) | number:'1.1-1' }} <span class="text-xs font-semibold text-slate-400 font-sans">&deg;C</span>
+              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
+                <span class="transition-all duration-700">{{ (data.temp_c ?? data.temperature) | number:'1.1-1' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">&deg;C</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: 18.0 &ndash; 28.0 &deg;C</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="bg-teal-500 h-full rounded-full" [style.width.%]="(((data.temp_c ?? data.temperature) - 10) / 30) * 100"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getTempColor(data.temp_c ?? data.temperature)" [style.width.%]="getPercentage(data.temp_c ?? data.temperature, 10, 40)"></div>
               </div>
             </div>
 
             <!-- 5. Optical Particulates -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Optical Particulates</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  NOMINAL
+            <div (click)="selectMetric('optical_count')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="selectedMetric === 'optical_count' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300'">
+              <div *ngIf="selectedMetric === 'optical_count'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="flex items-center justify-between pr-4 relative">
+                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Optical Particulates</span>
+                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
+                    <span class="text-teal-300 font-bold block mb-1">Source: Hardware Optics</span>
+                    Counts raw microscopic particulate matter in the water stream to detect sudden sediment or sewage flushes.
+                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
+                  </div>
+                </div>
+                <span [ngClass]="[getStatusFromColor(getOpticalColor(data.optical_count ?? data.opticalParticulates)).bg, getStatusFromColor(getOpticalColor(data.optical_count ?? data.opticalParticulates)).textCol, getStatusFromColor(getOpticalColor(data.optical_count ?? data.opticalParticulates)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
+                  {{ getStatusFromColor(getOpticalColor(data.optical_count ?? data.opticalParticulates)).text }}
                 </span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2">
-                {{ data.optical_count ?? data.opticalParticulates }} <span class="text-xs font-semibold text-slate-400 font-sans">count</span>
+              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
+                <span class="transition-all duration-700">{{ data.optical_count ?? data.opticalParticulates }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">count</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 100 count</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="bg-teal-500 h-full rounded-full" [style.width.%]="((data.optical_count ?? data.opticalParticulates) / 100) * 100"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getOpticalColor(data.optical_count ?? data.opticalParticulates)" [style.width.%]="getPercentage(data.optical_count ?? data.opticalParticulates, 0, 100)"></div>
               </div>
             </div>
 
             <!-- 6. Avg Particle Size -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Avg Particle Size</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  NOMINAL
+            <div (click)="selectMetric('avg_particle_size')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="selectedMetric === 'avg_particle_size' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300'">
+              <div *ngIf="selectedMetric === 'avg_particle_size'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="flex items-center justify-between pr-4 relative">
+                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Avg Particle Size</span>
+                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
+                    <span class="text-teal-300 font-bold block mb-1">Source: Flow Cytometry</span>
+                    Calculates the average diameter of suspended particles. Larger particles often indicate untreated industrial discharge.
+                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
+                  </div>
+                </div>
+                <span [ngClass]="[getStatusFromColor(getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)).bg, getStatusFromColor(getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)).textCol, getStatusFromColor(getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
+                  {{ getStatusFromColor(getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)).text }}
                 </span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2">
-                {{ (data.avg_particle_size_mm ?? data.avgParticleSize) | number:'1.2-2' }} <span class="text-xs font-semibold text-slate-400 font-sans">mm</span>
+              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
+                <span class="transition-all duration-700">{{ (data.avg_particle_size_mm ?? data.avgParticleSize) | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">mm</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 0.60 mm</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="bg-teal-500 h-full rounded-full" [style.width.%]="(((data.avg_particle_size_mm ?? data.avgParticleSize) / 0.60) * 100)"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)" [style.width.%]="getPercentage((data.avg_particle_size_mm ?? data.avgParticleSize), 0, 1.0)"></div>
               </div>
             </div>
 
+          </div>
+
+          <!-- Historical Data Chart Embedded -->
+          <div class="mt-6 h-[400px]">
+            <app-telemetry-charts [historyData]="historyData" [metric]="selectedMetric"></app-telemetry-charts>
           </div>
         </div>
       }
     </div>
   `
 })
-export class LiveMonitoringViewComponent {
+export class LiveMonitoringViewComponent implements OnInit {
   private telemetryService = inject(TelemetryService);
   telemetry = this.telemetryService.telemetrySignal;
+  
+  selectedMetric = 'safety_score';
+  historyData: TelemetryData[] = [];
+
+  constructor(private toast: ToastService) {
+    this.telemetryService.telemetry$.pipe(
+      takeUntilDestroyed()
+    ).subscribe();
+  }
+
+  async ngOnInit() {
+    try {
+      const resp = await this.telemetryService.getHistory();
+      this.historyData = resp.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   simulate(type: 'dump' | 'rain' | 'alkaline'): void {
     this.telemetryService.simulateSpike(type);
+    this.toast.show(`Simulating ${type} conditions...`, 'info');
+  }
+
+  selectMetric(metric: string): void {
+    this.selectedMetric = metric;
+  }
+
+  getPercentage(value: number, min: number, max: number): number {
+    if (value == null) return 5;
+    const pct = ((value - min) / (max - min)) * 100;
+    return Math.min(100, Math.max(5, Math.round(pct)));
+  }
+
+  getPhColor(ph: number): string {
+    if (ph >= 6.5 && ph <= 8.5) return 'bg-emerald-400';
+    if ((ph >= 6.0 && ph < 6.5) || (ph > 8.5 && ph <= 9.0)) return 'bg-amber-400';
+    return 'bg-rose-500';
+  }
+
+  getTurbidityColor(turbidity: number): string {
+    if (turbidity <= 10.0) return 'bg-emerald-400';
+    if (turbidity <= 30.0) return 'bg-amber-400';
+    return 'bg-rose-500';
+  }
+
+  getEcColor(ec: number): string {
+    if (ec <= 600.0) return 'bg-emerald-400';
+    if (ec <= 1200.0) return 'bg-amber-400';
+    return 'bg-rose-500';
+  }
+
+  getTempColor(val: number): string {
+    if (val >= 18.0 && val <= 28.0) return 'bg-emerald-400';
+    if ((val >= 15.0 && val < 18.0) || (val > 28.0 && val <= 32.0)) return 'bg-amber-400';
+    return 'bg-rose-500';
+  }
+  
+  getOpticalColor(val: number): string {
+    if (val <= 100) return 'bg-emerald-400';
+    if (val <= 300) return 'bg-amber-400';
+    return 'bg-rose-500';
+  }
+
+  getSizeColor(val: number): string {
+    if (val <= 0.6) return 'bg-emerald-400';
+    if (val <= 1.0) return 'bg-amber-400';
+    return 'bg-rose-500';
+  }
+
+  getStatusFromColor(colorClass: string) {
+    if (colorClass.includes('emerald')) return { text: 'NOMINAL', bg: 'bg-emerald-50', textCol: 'text-emerald-700', border: 'border-emerald-200' };
+    if (colorClass.includes('amber')) return { text: 'WARNING', bg: 'bg-amber-50', textCol: 'text-amber-700', border: 'border-amber-200' };
+    return { text: 'HAZARD', bg: 'bg-rose-50', textCol: 'text-rose-700', border: 'border-rose-200' };
   }
 }

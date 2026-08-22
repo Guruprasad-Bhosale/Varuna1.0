@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDe
 import { CommonModule } from '@angular/common';
 import { TelemetryChartsComponent } from '../../../../components/telemetry-charts/telemetry-charts.component';
 import { TelemetryService, TelemetryData } from '../../../../services/telemetry.service';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, Download } from 'lucide-angular';
 
 @Component({
   selector: 'app-historical-trends-view',
@@ -13,7 +13,7 @@ import { LucideAngularModule } from 'lucide-angular';
     <div class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
             Historical Data Analytics
           </h2>
           <p class="text-xs text-slate-400 mt-1">Multi-axis chronological plotting and data export</p>
@@ -21,21 +21,26 @@ import { LucideAngularModule } from 'lucide-angular';
 
         <div class="flex items-center flex-wrap gap-4 w-full sm:w-auto">
           <!-- Time Range Filter -->
-          <div class="flex items-center flex-wrap space-x-1 bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 text-xs w-full sm:w-auto overflow-x-auto">
-            <button class="shrink-0 min-h-[44px] px-3 py-1.5 rounded-lg border border-transparent text-slate-400 hover:text-white transition-all font-medium">1H</button>
-            <button class="shrink-0 min-h-[44px] px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 font-medium">24H</button>
-            <button class="shrink-0 min-h-[44px] px-3 py-1.5 rounded-lg border border-transparent text-slate-400 hover:text-white transition-all font-medium">7D</button>
-            <button class="shrink-0 min-h-[44px] px-3 py-1.5 rounded-lg border border-transparent text-slate-400 hover:text-white transition-all font-medium">30D</button>
-            <button class="shrink-0 min-h-[44px] px-3 py-1.5 rounded-lg border border-transparent text-slate-400 hover:text-white transition-all font-medium">All</button>
+          <div class="bg-slate-100 p-1 rounded-xl border border-slate-200 inline-flex items-center gap-1 shadow-inner">
+            @for (range of ['1H', '24H', '7D', '30D', 'All']; track range) {
+              <button 
+                (click)="setTimeRange(range)" 
+                [class]="selectedRange === range ? 'bg-white text-teal-700 font-bold shadow-sm border border-slate-200' : 'text-slate-600 hover:text-slate-900 font-medium'"
+                class="px-3 py-1.5 rounded-lg text-xs transition-all">
+                {{ range }}
+              </button>
+            }
           </div>
 
           <!-- Export Buttons -->
           <div class="flex items-center gap-2">
-            <button (click)="exportData('csv')" class="shrink-0 min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition-all">
-              <i-lucide name="download" class="w-4 h-4"></i-lucide> CSV
+            <button (click)="exportData('csv')" class="px-3 py-1.5 bg-white text-slate-700 font-bold text-xs border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-1.5 shadow-sm">
+              <svg class="h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              CSV
             </button>
-            <button (click)="exportData('json')" class="shrink-0 min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition-all">
-              <i-lucide name="download" class="w-4 h-4"></i-lucide> JSON
+            <button (click)="exportData('json')" class="px-3 py-1.5 bg-white text-slate-700 font-bold text-xs border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-1.5 shadow-sm">
+              <svg class="h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              JSON
             </button>
           </div>
         </div>
@@ -51,11 +56,17 @@ import { LucideAngularModule } from 'lucide-angular';
   `
 })
 export class HistoricalTrendsViewComponent implements OnInit, OnDestroy {
+  readonly DownloadIcon = Download;
   historyData: TelemetryData[] = [];
   private telemetryService = inject(TelemetryService);
   private ngZone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
   private intervalId: any;
+  selectedRange = '24H';
+
+  setTimeRange(range: string) {
+    this.selectedRange = range;
+  }
 
   ngOnInit() {
     this.fetchData();

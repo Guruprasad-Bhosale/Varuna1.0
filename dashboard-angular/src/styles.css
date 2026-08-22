@@ -72,3 +72,42 @@ body {
   animation: bloom-core-glow 2s ease-in-out infinite;
   cursor: pointer;
 }
+
+/* Live Radar Beacon Pulse */
+@keyframes live-ping-ripple {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.6); opacity: 0.3; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.animate-live-ripple {
+  animation: live-ping-ripple 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Staggered View Entrance */
+@keyframes slide-up-fade {
+  0% { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-stagger-1 { animation: slide-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-stagger-2 { animation: slide-up-fade 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards; opacity: 0; }
+.animate-stagger-3 { animation: slide-up-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.16s forwards; opacity: 0; }
+
+/* Hazard Impact Glow Animation */
+@keyframes hazard-pulse-border {
+  0%, 100% { border-color: rgba(244, 63, 94, 0.4); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.2); }
+  50% { border-color: rgba(244, 63, 94, 0.9); box-shadow: 0 0 20px 4px rgba(244, 63, 94, 0.35); }
+}
+.animate-hazard-glow {
+  animation: hazard-pulse-border 1.5s ease-in-out infinite;
+}
+
+/* Smooth Gauge Transition */
+.gauge-stroke-transition {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.6s ease;
+}
+
+/* Loader Animation */
+@keyframes slide-right {
+  0% { left: -40%; }
+  100% { left: 100%; }
+}
