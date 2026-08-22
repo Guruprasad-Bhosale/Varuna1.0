@@ -5,6 +5,176 @@ import { ToastService } from '../../../../services/toast.service';
 import { TelemetryChartsComponent } from '../../../../components/telemetry-charts/telemetry-charts.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+export interface ShapParameterCard {
+  rank: number;
+  key: string;
+  name: string;
+  category: 'Bio-Optical' | 'Spatial' | 'Light Attenuation' | 'Temporal' | 'Hydrodynamic' | 'Seasonal';
+  shapImportance: number;
+  shapLabel: string;
+  source: string;
+  mechanism: string;
+  unit: string;
+  standardRange: string;
+  minVal: number;
+  maxVal: number;
+  safeMin?: number;
+  safeMax?: number;
+  warningMax?: number;
+  invertRisk?: boolean;
+}
+
+export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
+  {
+    rank: 1,
+    key: 'chl',
+    name: 'Chlorophyll-a Concentration',
+    category: 'Bio-Optical',
+    shapImportance: 39.53,
+    shapLabel: 'Primary biological bloom proxy',
+    source: 'ISRO EOS-06 OCM / Oceansat-2 (443–681 nm Radiance)',
+    mechanism: 'Direct measure of photosynthetic phytoplankton biomass. Levels >2.5 mg/m³ indicate rapid microalgae proliferation, leading to surface scums and nocturnal hypoxia.',
+    unit: 'mg/m³',
+    standardRange: '0.10 – 2.50 mg/m³',
+    minVal: 0,
+    maxVal: 20,
+    safeMax: 2.5,
+    warningMax: 5.0
+  },
+  {
+    rank: 2,
+    key: 'lat',
+    name: 'Geodetic Latitude',
+    category: 'Spatial',
+    shapImportance: 24.49,
+    shapLabel: 'Regional coastal upwelling zone',
+    source: 'Differential GPS / Sindhudurg Basin Grid',
+    mechanism: 'Defines latitude-dependent solar radiation angles, coastal bathymetric contours, and proximity to the Gad/Karli estuarine outfall plumes.',
+    unit: '° N',
+    standardRange: '15.80 – 16.50° N',
+    minVal: 15.5,
+    maxVal: 16.8
+  },
+  {
+    rank: 3,
+    key: 'lng',
+    name: 'Geodetic Longitude',
+    category: 'Spatial',
+    shapImportance: 12.25,
+    shapLabel: 'Offshore distance & tidal flush',
+    source: 'Differential GPS / Sindhudurg Basin Grid',
+    mechanism: 'Governs distance from the continental shelf break. Nearshore coordinates indicate shallower depths with reduced tidal dilution and higher nutrient retention.',
+    unit: '° E',
+    standardRange: '73.30 – 73.90° E',
+    minVal: 73.0,
+    maxVal: 74.2
+  },
+  {
+    rank: 4,
+    key: 'kd490',
+    name: 'Light Attenuation Coefficient [Kd490]',
+    category: 'Light Attenuation',
+    shapImportance: 10.22,
+    shapLabel: 'Photic zone solar absorption',
+    source: 'ISRO EOS-06 OCM (490 nm Spectral Band)',
+    mechanism: 'Measures rate of blue-green light decay in the water column. High attenuation traps solar energy in the surface layer, triggering rapid thermal stratification.',
+    unit: 'm⁻¹',
+    standardRange: '0.04 – 0.15 m⁻¹',
+    minVal: 0.0,
+    maxVal: 0.6,
+    safeMax: 0.15,
+    warningMax: 0.30
+  },
+  {
+    rank: 5,
+    key: 'season',
+    name: 'Seasonal Climate Regime',
+    category: 'Seasonal',
+    shapImportance: 6.20,
+    shapLabel: 'Monsoon nutrient runoff cycle',
+    source: 'Indian Meteorological Department (IMD) / Calendar Model',
+    mechanism: 'Post-Monsoon transition introduces extensive terrestrial nitrate/phosphate runoff combined with clear sunny skies, creating optimal bloom growth conditions.',
+    unit: 'Regime',
+    standardRange: 'Post-Monsoon (High Risk) / Pre-Monsoon',
+    minVal: 1,
+    maxVal: 4
+  },
+  {
+    rank: 6,
+    key: 'tsm',
+    name: 'Total Suspended Matter [TSM]',
+    category: 'Bio-Optical',
+    shapImportance: 3.39,
+    shapLabel: 'Sediment plume vs algae separator',
+    source: 'ISRO EOS-06 OCM / Oceansat-2 (670–870 nm)',
+    mechanism: 'Quantifies non-algal mineral sediment and inorganic solids. Used in the CHL/TSM ratio to isolate real photosynthetic blooms from muddy sediment plumes.',
+    unit: 'g/m³',
+    standardRange: '0.50 – 5.00 g/m³',
+    minVal: 0,
+    maxVal: 25,
+    safeMax: 5.0,
+    warningMax: 12.0
+  },
+  {
+    rank: 7,
+    key: 'doy',
+    name: 'Day of Year [DOY]',
+    category: 'Temporal',
+    shapImportance: 1.42,
+    shapLabel: 'Solar photoperiod & diurnal cycle',
+    source: 'Astronomical & Ephemeris Clock',
+    mechanism: 'Captures continuous 365-day solar elevation cycles, daylight photoperiod duration, and recurring annual coastal upwelling time windows.',
+    unit: 'Day',
+    standardRange: 'Day 1 – 365',
+    minVal: 1,
+    maxVal: 365
+  },
+  {
+    rank: 8,
+    key: 'waveHeight',
+    name: 'Significant Wave Height [Hs]',
+    category: 'Hydrodynamic',
+    shapImportance: 1.00,
+    shapLabel: 'Vertical water-column mixing',
+    source: 'Hydrodynamic Marine Wave NetCDF Reanalysis',
+    mechanism: 'Mechanical wave energy dilutes surface phytoplankton. Calm waters (<0.8m) create stagnant, warm boundary layers that allow bloom colonies to form surface slicks.',
+    unit: 'm',
+    standardRange: '1.00 – 3.50 m (Optimal Mixing)',
+    minVal: 0.1,
+    maxVal: 4.0,
+    safeMin: 1.0,
+    invertRisk: true
+  },
+  {
+    rank: 9,
+    key: 'month',
+    name: 'Calendar Month',
+    category: 'Temporal',
+    shapImportance: 0.84,
+    shapLabel: 'Sea surface thermal baseline',
+    source: 'System Temporal Timestamp',
+    mechanism: 'Maps monthly sea surface temperature (SST) baselines and localized trade-wind circulation patterns along the Konkan coast.',
+    unit: 'Month',
+    standardRange: 'Jan (1) – Dec (12)',
+    minVal: 1,
+    maxVal: 12
+  },
+  {
+    rank: 10,
+    key: 'year',
+    name: 'Observation Epoch Year',
+    category: 'Temporal',
+    shapImportance: 0.25,
+    shapLabel: 'Long-term decadal climatic shift',
+    source: 'Historical Satellite Decadal Baseline',
+    mechanism: 'Accounts for multi-year oceanic warming trends, Indian Ocean Dipole (IOD) positive phases, and long-term Arabian Sea environmental shifts.',
+    unit: 'Year',
+    standardRange: '2024 – 2026 Epoch',
+    minVal: 2020,
+    maxVal: 2030
+  }
+];
+
 @Component({
   selector: 'app-live-monitoring-view',
   standalone: true,
@@ -102,6 +272,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
             </div>
           </div>
         </div>
+
 
         <!-- Complete 6-Card Edge Sensor Array -->
         <div class="animate-stagger-3">
@@ -308,6 +479,99 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
           </div>
 
+          <!-- SHAP Model Driver Grid Section -->
+          <div class="mt-8 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
+              <div>
+                <h3 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                  <span>NIRVAAH AI & Satellite Feature Drivers</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
+                    Ranked by SHAP Weight
+                  </span>
+                </h3>
+                <p class="text-xs text-slate-500">
+                  Top 10 earth observation and contextual features driving the 27-feature XGBoost bloom prediction model
+                </p>
+              </div>
+              <span class="text-[11px] font-mono text-slate-400">ISRO EOS-06 / Oceansat-2 Calibrated</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+              @for (item of shapRegistry; track item.rank) {
+                @if (telemetry(); as data) {
+                  @let valObj = getShapParamValue(item, data);
+                  @let status = getShapStatus(item, valObj.numVal);
+
+                  <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md hover:border-teal-300 transition-all flex flex-col justify-between group relative">
+                    
+                    <!-- Top Row: Rank & Status Pill -->
+                    <div>
+                      <div class="flex items-center justify-between gap-1.5 mb-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold font-mono bg-slate-100 text-slate-700 border border-slate-200 group-hover:bg-teal-50 group-hover:text-teal-700 transition-colors">
+                          #{{ item.rank }} • {{ item.shapImportance }}%
+                        </span>
+                        <span [class]="status.badgeClass" class="px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase border">
+                          {{ status.label }}
+                        </span>
+                      </div>
+
+                      <!-- Title & Tooltip Trigger -->
+                      <div class="flex items-start justify-between gap-1">
+                        <div>
+                          <h4 class="text-xs font-bold text-slate-900 line-clamp-1 group-hover:text-teal-700 transition-colors">
+                            {{ item.name }}
+                          </h4>
+                          <div class="text-[10px] text-slate-400 font-medium line-clamp-1">
+                            {{ item.shapLabel }}
+                          </div>
+                        </div>
+
+                        <!-- Tooltip Icon -->
+                        <div class="relative group/tooltip shrink-0">
+                          <button type="button" class="text-slate-400 hover:text-teal-600 p-0.5" aria-label="Info">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <path d="M12 16v-4"></path>
+                              <path d="M12 8h.01"></path>
+                            </svg>
+                          </button>
+
+                          <!-- Rich Glassmorphic Tooltip Card -->
+                          <div class="pointer-events-none absolute bottom-full right-0 mb-2 hidden w-64 rounded-xl bg-slate-950/95 p-3 text-[11px] text-slate-200 shadow-2xl backdrop-blur-md border border-slate-800 group-hover/tooltip:block z-[1200]">
+                            <div class="font-bold text-teal-400 mb-1 flex items-center justify-between">
+                              <span>{{ item.name }}</span>
+                              <span class="text-[9px] text-slate-400 font-mono">Rank #{{ item.rank }}</span>
+                            </div>
+                            <div class="text-slate-300 mb-2 leading-relaxed">
+                              {{ item.mechanism }}
+                            </div>
+                            <div class="border-t border-slate-800/80 pt-1.5 text-[10px] text-slate-400">
+                              <span class="text-slate-200 font-semibold">Source:</span> {{ item.source }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Value Display -->
+                      <div class="text-2xl font-black text-slate-900 font-mono tracking-tight my-2">
+                        {{ valObj.display }}
+                      </div>
+                      <div class="text-[10px] text-slate-400 font-medium">
+                        Standard: {{ item.standardRange }}
+                      </div>
+                    </div>
+
+                    <!-- Bottom Dynamic Safety Meter Line -->
+                    <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
+                      <div [class]="status.barClass" class="h-full rounded-full transition-all duration-700 ease-out" [style.width.%]="status.pct"></div>
+                    </div>
+
+                  </div>
+                }
+              }
+            </div>
+          </div>
+
           <!-- Historical Data Chart Embedded -->
           <div class="mt-6 h-[400px]">
             <app-telemetry-charts [historyData]="historyData" [metric]="selectedMetric"></app-telemetry-charts>
@@ -323,6 +587,8 @@ export class LiveMonitoringViewComponent implements OnInit {
   
   selectedMetric = 'safety_score';
   historyData: TelemetryData[] = [];
+  
+  shapRegistry = TOP_10_SHAP_REGISTRY;
 
   constructor(private toast: ToastService) {
     this.telemetryService.telemetry$.pipe(
@@ -394,5 +660,47 @@ export class LiveMonitoringViewComponent implements OnInit {
     if (colorClass.includes('emerald')) return { text: 'NOMINAL', bg: 'bg-emerald-50', textCol: 'text-emerald-700', border: 'border-emerald-200' };
     if (colorClass.includes('amber')) return { text: 'WARNING', bg: 'bg-amber-50', textCol: 'text-amber-700', border: 'border-amber-200' };
     return { text: 'HAZARD', bg: 'bg-rose-50', textCol: 'text-rose-700', border: 'border-rose-200' };
+  }
+
+  getShapParamValue(item: ShapParameterCard, data: TelemetryData): { display: string; numVal: number } {
+    switch (item.key) {
+      case 'chl': return { display: (data.chl ?? 2.10).toFixed(2), numVal: data.chl ?? 2.10 };
+      case 'lat': return { display: `${data.coordinates?.lat ?? 16.2699}° N`, numVal: data.coordinates?.lat ?? 16.2699 };
+      case 'lng': return { display: `${data.coordinates?.lng ?? 73.7148}° E`, numVal: data.coordinates?.lng ?? 73.7148 };
+      case 'kd490': return { display: (data.kd490 ?? 0.14).toFixed(3), numVal: data.kd490 ?? 0.14 };
+      case 'season': return { display: 'Post-Monsoon', numVal: 3 };
+      case 'tsm': return { display: (data.tsm ?? 4.80).toFixed(2), numVal: data.tsm ?? 4.80 };
+      case 'doy': {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 0);
+        const diff = now.getTime() - start.getTime();
+        const doy = Math.floor(diff / (1000 * 60 * 60 * 24));
+        return { display: `Day ${doy}`, numVal: doy };
+      }
+      case 'waveHeight': return { display: `${(data.waveHeight ?? 1.20).toFixed(2)} m`, numVal: data.waveHeight ?? 1.20 };
+      case 'month': return { display: new Date().toLocaleString('default', { month: 'short' }), numVal: new Date().getMonth() + 1 };
+      case 'year': return { display: `${new Date().getFullYear()}`, numVal: new Date().getFullYear() };
+      default: return { display: '--', numVal: 0 };
+    }
+  }
+
+  getShapStatus(item: ShapParameterCard, numVal: number): { label: string; badgeClass: string; barClass: string; pct: number } {
+    // Inverted risk for wave height (low wave = hazard)
+    if (item.invertRisk) {
+      const pct = Math.min(100, Math.max(5, (numVal / item.maxVal) * 100));
+      if (numVal < 0.6) return { label: 'STAGNANT (HAZARD)', badgeClass: 'bg-rose-50 text-rose-700 border-rose-200', barClass: 'bg-rose-500', pct };
+      if (numVal < 1.0) return { label: 'LOW MIXING', badgeClass: 'bg-amber-50 text-amber-700 border-amber-200', barClass: 'bg-amber-500', pct };
+      return { label: 'ACTIVE MIXING', badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200', barClass: 'bg-teal-500', pct };
+    }
+
+    // Threshold evaluation for bio-optical metrics
+    const pct = Math.min(100, Math.max(5, ((numVal - item.minVal) / (item.maxVal - item.minVal)) * 100));
+    if (item.warningMax && numVal > item.warningMax) {
+      return { label: 'HAZARD SPIKE', badgeClass: 'bg-rose-50 text-rose-700 border-rose-200', barClass: 'bg-rose-500', pct };
+    }
+    if (item.safeMax && numVal > item.safeMax) {
+      return { label: 'ELEVATED', badgeClass: 'bg-amber-50 text-amber-700 border-amber-200', barClass: 'bg-amber-500', pct };
+    }
+    return { label: 'NOMINAL', badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200', barClass: 'bg-teal-500', pct };
   }
 }

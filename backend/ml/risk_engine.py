@@ -15,40 +15,50 @@ Output:
 - Recommended action
 """
 
+def clamp(val, min_val, max_val):
+    return max(min_val, min(val, max_val))
+
 def evaluate_ph(ph):
-    if ph < 6.0 or ph > 9.0:
-        return "HIGH", 2
-    elif 6.0 <= ph < 6.5 or 8.5 < ph <= 9.0:
-        return "WARNING", 1
+    if 6.5 <= ph <= 8.5:
+        i_ph = 0.0
+    elif ph < 6.5:
+        i_ph = min(1.0, (6.5 - ph) / 1.5)
     else:
-        return "NORMAL", 0
+        i_ph = min(1.0, (ph - 8.5) / 1.5)
+
+    if i_ph >= 0.66:
+        return "HIGH", 2, i_ph
+    elif i_ph > 0.0:
+        return "WARNING", 1, i_ph
+    else:
+        return "NORMAL", 0, i_ph
 
 def evaluate_turbidity(turbidity):
-    if turbidity > 30:
-        return "HIGH", 2
-    elif 10 <= turbidity <= 30:
-        return "WARNING", 1
+    i_turb = clamp((turbidity - 10.0) / 20.0, 0.0, 1.0)
+    if i_turb >= 0.66:
+        return "HIGH", 2, i_turb
+    elif i_turb > 0.0:
+        return "WARNING", 1, i_turb
     else:
-        return "NORMAL", 0
+        return "NORMAL", 0, i_turb
 
 def evaluate_ec(ec):
-    if ec < 400:
-        return "WARNING", 1
-    elif 400 <= ec <= 600:
-        return "NORMAL", 0
-    elif 600 < ec <= 1200:
-        return "WARNING", 1
+    i_ec = clamp((ec - 600.0) / 600.0, 0.0, 1.0)
+    if i_ec >= 0.66:
+        return "HIGH", 2, i_ec
+    elif i_ec > 0.0:
+        return "WARNING", 1, i_ec
     else:
-        return "HIGH", 2
+        return "NORMAL", 0, i_ec
 
 def evaluate_temperature(temp_anomaly):
-    deviation = abs(temp_anomaly)
-    if deviation >= 3:
-        return "HIGH", 2
-    elif deviation >= 1:
-        return "WARNING", 1
+    i_dt = clamp((temp_anomaly - 0.5) / 2.5, 0.0, 1.0)
+    if i_dt >= 0.66:
+        return "HIGH", 2, i_dt
+    elif i_dt > 0.0:
+        return "WARNING", 1, i_dt
     else:
-        return "NORMAL", 0
+        return "NORMAL", 0, i_dt
 
 def evaluate_ml_probability(bloom_probability):
     if bloom_probability >= 0.90:
@@ -62,10 +72,10 @@ def evaluate_ml_probability(bloom_probability):
 
 def calculate_nirvaah_risk(bloom_probability, ph, turbidity, ec, temperature_anomaly):
     ml_risk, ml_score = evaluate_ml_probability(bloom_probability)
-    ph_risk, ph_score = evaluate_ph(ph)
-    turbidity_risk, turbidity_score = evaluate_turbidity(turbidity)
-    ec_risk, ec_score = evaluate_ec(ec)
-    temperature_risk, temperature_score = evaluate_temperature(temperature_anomaly)
+    ph_risk, ph_score, i_ph = evaluate_ph(ph)
+    turbidity_risk, turbidity_score, i_turb = evaluate_turbidity(turbidity)
+    ec_risk, ec_score, i_ec = evaluate_ec(ec)
+    temperature_risk, temperature_score, i_dt = evaluate_temperature(temperature_anomaly)
 
     environmental_score = ph_score + turbidity_score + ec_score + temperature_score
 
@@ -106,6 +116,16 @@ def calculate_nirvaah_risk(bloom_probability, ph, turbidity, ec, temperature_ano
     else:
         recommendation = "NORMAL: Area currently shows low bloom-risk signals."
 
+    # Mathematical Equation from Architecture Spec
+    safety_score = 100.0 * (1.0 - clamp(
+        0.45 * bloom_probability +
+        0.20 * i_ph +
+        0.15 * i_turb +
+        0.10 * i_ec +
+        0.10 * i_dt,
+        0.0, 1.0
+    ))
+
     return {
         "bloom_probability": bloom_probability,
         "ml_risk": ml_risk,
@@ -122,5 +142,5 @@ def calculate_nirvaah_risk(bloom_probability, ph, turbidity, ec, temperature_ano
         "final_level": final_level,
         "reasons": reasons,
         "recommendation": recommendation,
-        "composite_score": 100 - (final_level * 25) - (environmental_score * 5) # Adding composite score for UI gauge
+        "composite_score": safety_score
     }

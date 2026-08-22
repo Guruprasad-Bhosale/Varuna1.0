@@ -1,14 +1,44 @@
 import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, interval, of } from 'rxjs';
-import { TelemetryData } from '../core/models/telemetry.model';
-
-export type { TelemetryData };
+export interface TelemetryData {
+  nodeId: string;
+  locationName: string;
+  coordinates: { lat: number; lng: number };
+  timestamp: string;
+  lastSync: string;
+  ph: number;
+  turbidity: number;
+  turbidity_ntu: number;
+  ec: number;
+  ec_us_cm: number;
+  temperature: number;
+  temp_c: number;
+  opticalParticulates: number;
+  optical_count: number;
+  avgParticleSize: number;
+  avg_particle_size_mm: number;
+  compositeScore: number;
+  confidence: number;
+  confidence_pct: number;
+  status: string;
+  bloomProbability: number;
+  reasons: string[];
+  recommendations: string[];
+  // Earth Observation & Satellite Parameters
+  chl: number;           // Chlorophyll-a (mg/m³)
+  kd490: number;         // Diffuse Attenuation Coefficient at 490nm (m⁻¹)
+  tsm: number;           // Total Suspended Matter (g/m³)
+  waveHeight: number;    // Significant Wave Height Hs (m)
+  rrs443?: number;       // Remote Sensing Reflectance at 443nm (sr⁻¹)
+  rrs555?: number;       // Remote Sensing Reflectance at 555nm (sr⁻¹)
+  satellitePassTime?: string; // e.g. "EOS-06 OCM Pass: Today 11:42 AM IST"
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class TelemetryService {
-  private initialData: TelemetryData = {
+  private baseState: TelemetryData = {
     nodeId: 'VARUNA-001',
     locationName: 'Sindhudurg District — Gad & Karli Rivers',
     coordinates: { lat: 16.2699, lng: 73.7148 },
@@ -31,12 +61,17 @@ export class TelemetryService {
     status: 'SAFE',
     bloomProbability: 12.4,
     reasons: ['Optimal Dissolved Oxygen', 'Nominal Thermal Profile'],
-    recommendations: ['Conditions nominal. Routine automated sampling active.']
+    recommendations: ['Conditions nominal. Routine automated sampling active.'],
+    chl: 2.10,
+    kd490: 0.14,
+    tsm: 4.80,
+    waveHeight: 1.20,
+    satellitePassTime: 'EOS-06 OCM: Nominal Overpass'
   };
 
-  private telemetrySubject = new BehaviorSubject<TelemetryData>(this.initialData);
+  private telemetrySubject = new BehaviorSubject<TelemetryData>(this.baseState);
   public telemetry$: Observable<TelemetryData> = this.telemetrySubject.asObservable();
-  public telemetrySignal = signal<TelemetryData>(this.initialData);
+  public telemetrySignal = signal<TelemetryData>(this.baseState);
 
   private isSimulated = false;
 
@@ -72,8 +107,8 @@ export class TelemetryService {
   simulateSpike(type: 'dump' | 'rain' | 'alkaline' | 'reset'): void {
     if (type === 'reset') {
       this.isSimulated = false;
-      this.telemetrySubject.next(this.initialData);
-      this.telemetrySignal.set(this.initialData);
+      this.telemetrySubject.next(this.baseState);
+      this.telemetrySignal.set(this.baseState);
       return;
     }
 
@@ -94,7 +129,10 @@ export class TelemetryService {
         compositeScore: 31.5,
         confidence: 97.4,
         status: 'HAZARD',
-        reasons: ['Severe Acidic Inflow (pH 5.12)', 'Turbidity Surge (44.8 NTU)', 'High Conductivity'],
+        bloomProbability: 88.5,
+        chl: 8.90,
+        tsm: 42.5,
+        reasons: ['Severe Acidic Inflow (pH 5.12)', 'Turbidity Surge (44.8 NTU)', 'High Conductivity', 'Spike in ISRO TSM & CHL parameters'],
         recommendations: ['Dispatch field rapid response team', 'Close municipal water intake gates']
       };
     } else if (type === 'rain') {
@@ -108,7 +146,11 @@ export class TelemetryService {
         compositeScore: 76.2,
         confidence: 91.8,
         status: 'MODERATE',
-        reasons: ['Sediment Washout from Runoff'],
+        bloomProbability: 45.2,
+        chl: 3.40,
+        tsm: 18.2,
+        waveHeight: 2.8,
+        reasons: ['Sediment Washout from Runoff', 'Elevated Wave Dynamics'],
         recommendations: ['Monitor silt buildup across lower estuary']
       };
     } else {
@@ -122,7 +164,10 @@ export class TelemetryService {
         compositeScore: 46.8,
         confidence: 94.2,
         status: 'HAZARD',
-        reasons: ['Extreme Alkaline Chemical Anomaly'],
+        bloomProbability: 72.1,
+        chl: 1.10,
+        tsm: 7.2,
+        reasons: ['Extreme Alkaline Chemical Anomaly', 'Suppressed Bio-optical Activity'],
         recommendations: ['Isolate industrial discharge canal #2']
       };
     }
@@ -153,7 +198,7 @@ export class TelemetryService {
       currentScore = 100 - (Math.abs(7.5 - currentPh) * 10 + currentTurb * 0.5);
 
       mockData.push({
-        ...this.initialData,
+        ...this.baseState,
         timestamp: new Date(currentTime).toISOString(), // Generate valid ISO string for echarts
         ph: currentPh,
         turbidity: currentTurb,
