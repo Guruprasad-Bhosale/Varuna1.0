@@ -1,192 +1,361 @@
 # 🌊 Sagar Drishti
 
+<div align="center">
+
 ### AI-Powered River & Coastal Water Intelligence Platform
 
-> A low-cost, edge-to-cloud environmental monitoring system that combines **IoT sensors, Computer Vision, Satellite Data, and Machine Learning** to provide real-time water quality assessment and early environmental risk detection for rivers and coastal ecosystems.
+_Real-time river monitoring using IoT • Computer Vision • Satellite Intelligence • Machine Learning_
 
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?style=flat-square&logo=fastapi)
-![Angular](https://img.shields.io/badge/Angular-18-DD0031?style=flat-square&logo=angular)
-![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-4-C51A4A?style=flat-square&logo=raspberrypi)
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Timescale-4169E1?style=flat-square&logo=postgresql)
-![License](https://img.shields.io/badge/License-MIT-success?style=flat-square)
+<img src="assets/banner.png" width="100%" alt="Sagar Drishti Banner"/>
 
----
+<br>
 
-## 📖 Overview
+![Angular](https://img.shields.io/badge/Angular-18-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-4-C51A4A?style=for-the-badge&logo=raspberrypi&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Timescale-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 
-**Sagar Drishti** is designed to monitor river health through intelligent edge devices deployed along riverbanks. The system periodically collects water samples, analyzes water quality parameters, performs AI-assisted particle screening, and predicts overall environmental risk using a Machine Learning model.
-
-### Key Objectives
-
-- 🌊 Continuous river water monitoring
-- 🧪 Automatic water quality assessment
-- 🤖 AI-assisted suspended particle screening
-- 🛰️ Satellite-enhanced environmental intelligence
-- 📲 Real-time dashboard & WhatsApp alerts
+</div>
 
 ---
 
-## 🏗 System Architecture
+# 🌍 Why Sagar Drishti?
 
-```text
-                River Water
-                     │
-          Peristaltic Sampling
-                     │
-        ┌──────────────────────┐
-        │  Edge Monitoring Node │
-        │ Raspberry Pi + ESP32  │
-        └──────────────────────┘
-                     │
-      pH • TDS • Turbidity • Temp
-                     │
-          Pi Camera + OpenCV
-                     │
-        Random Forest ML Engine
-                     │
-      Water Safety Classification
-                     │
-  Dashboard • WhatsApp • Analytics
+> Rivers are monitored periodically, but pollution happens continuously.
+
+Sagar Drishti is an **edge-to-cloud environmental intelligence system** that automatically samples river water, analyzes water quality, performs AI-assisted particle screening, and predicts environmental risk in real time.
+
+---
+
+# 📊 Project Impact
+
+<table>
+<tr>
+<td align="center" width="25%">
+
+## 🌍
+
+# 2.2B
+
+People lack safely managed drinking water
+
+</td>
+<td align="center" width="25%">
+
+## ⏱️
+
+# 20 min
+
+Automatic sampling interval
+
+</td>
+<td align="center" width="25%">
+
+## 🧪
+
+# 6
+
+Environmental parameters monitored
+
+</td>
+<td align="center" width="25%">
+
+## 🤖
+
+# {"<5ms"}
+
+ML inference latency
+
+</td>
+</tr>
+</table>
+
+**Reference:** WHO / UNICEF Joint Monitoring Programme (JMP)
+
+---
+
+# 🏗 System Architecture
+
+```mermaid
+flowchart LR
+
+A[🌊 River Water]
+
+-->B[Peristaltic Pump]
+
+-->C[Acrylic Sampling Chamber]
+
+-->D[ESP32 Sensor Controller]
+
+-->E[Raspberry Pi 4]
+
+E-->F[OpenCV Particle Screening]
+
+F-->G[Random Forest ML]
+
+G-->H[FastAPI Backend]
+
+H-->I[Angular Dashboard]
+
+H-->J[WhatsApp Alerts]
 ```
 
 ---
 
-## ✨ Features
+# 💡 Core Features
 
-- **Real-time IoT Monitoring** using pH, Turbidity, TDS, Temperature and Water Level sensors
-- **AI-assisted Particle Screening** with Raspberry Pi Camera & OpenCV
-- **Random Forest Water Safety Prediction**
-- **Interactive Angular Dashboard**
-- **Historical Trends & GIS Mapping**
-- **WhatsApp Alert Integration**
-- **Offline-ready Progressive Web App (PWA)**
+- 🌊 Automated river water sampling
+- 🧪 Real-time pH, Turbidity, TDS & Temperature monitoring
+- 📷 AI-assisted suspended particle screening
+- 🛰️ ISRO EOS-06 satellite integration
+- 🤖 Random Forest water safety prediction
+- 📲 WhatsApp & Dashboard alerts
+- 📍 GIS-based river monitoring
 
 ---
 
-## 🧠 AI Prediction Engine
+# 📷 Hardware Monitoring Node
 
-The prediction engine combines multiple environmental data sources into a single safety score.
+<div align="center">
 
-### Inputs
+<img src="assets/hardware-node.png" width="85%" alt="Hardware Node"/>
 
-| Source              | Parameters                              |
-| ------------------- | --------------------------------------- |
-| **IoT Sensors**     | pH, Turbidity, TDS, Temperature         |
-| **Computer Vision** | Particle Count, Average Size, Shape     |
-| **Satellite**       | Chlorophyll-a, SST, Ocean Colour, KD490 |
+</div>
 
-### Output
+| Component          | Purpose             |
+| ------------------ | ------------------- |
+| Raspberry Pi 4     | Edge AI Processing  |
+| ESP32              | Sensor Controller   |
+| Pi Camera Module 3 | Particle Screening  |
+| pH Sensor          | Acidity Measurement |
+| Turbidity Sensor   | Water Clarity       |
+| TDS Sensor         | Dissolved Solids    |
+| DS18B20            | Temperature         |
+| Float Switch       | Chamber Water Level |
+| Peristaltic Pump   | Automatic Sampling  |
 
-- ✅ Safe
-- ⚠️ Moderate
+---
+
+# 🌊 Environmental Parameters
+
+| Parameter      |   Unit |   Good Range |
+| -------------- | -----: | -----------: |
+| pH             |     pH |    6.5 – 8.5 |
+| Turbidity      |    NTU |       0 – 10 |
+| TDS            |    ppm |     50 – 300 |
+| Temperature    |     °C |      24 – 29 |
+| Water Level    | Binary |   High / Low |
+| Particle Count |  Count | AI Generated |
+
+**Source:** WHO Drinking Water Guidelines & BIS IS 10500
+
+---
+
+# 📈 Water Quality Thresholds
+
+```mermaid
+xychart-beta
+title "Operational Monitoring Thresholds"
+x-axis ["pH","Turbidity","TDS","Temp"]
+y-axis "Health %" 0 --> 100
+bar [70,60,65,75]
+bar [20,25,20,15]
+bar [10,15,15,10]
+```
+
+**Legend**
+
+- 🟢 Good
+- 🟡 Moderate
 - 🔴 Dangerous
-- Confidence Score (%)
-- Recommended Action
 
 ---
 
-## 🔬 Hardware Components
+# 🧠 AI Prediction Engine
 
-| Component           | Purpose                    |
-| ------------------- | -------------------------- |
-| Raspberry Pi 4      | Edge AI & Image Processing |
-| ESP32 DevKit        | Sensor Acquisition         |
-| pH Sensor (PH4502C) | Acidity Measurement        |
-| Turbidity Sensor    | Water Clarity              |
-| TDS Sensor          | Dissolved Solids           |
-| DS18B20             | Water Temperature          |
-| Float Switch        | Chamber Water Level        |
-| Pi Camera Module 3  | Particle Screening         |
-| Peristaltic Pump    | Automatic Sampling         |
+```mermaid
+flowchart TD
 
----
+A[IoT Sensors]
 
-## 📊 Water Quality Parameters
+B[Particle Features]
 
-| Parameter   | Unit | Good Range |
-| ----------- | ---- | ---------- |
-| pH          | pH   | 6.5 – 8.5  |
-| Turbidity   | NTU  | 0 – 10     |
-| TDS         | ppm  | 50 – 300   |
-| Temperature | °C   | 24 – 29    |
+C[Satellite Data]
 
-> **Note:** Operational thresholds are prototype ranges derived from WHO/BIS reference guidelines and local calibration.
+A-->D[Feature Engineering]
 
----
+B-->D
 
-## 🧪 AI-Assisted Particle Screening
+C-->D
 
-Unlike laboratory FTIR systems, Sagar Drishti performs **optical suspended-particle screening**.
+D-->E[Random Forest]
 
-### Extracted Features
+E-->F[Safety Score]
 
-- Particle Count
-- Average Size (mm)
-- Shape (Fiber / Fragment / Film / Bead)
-- Color Features
-- Concentration (particles/L)
+F-->G[Safe]
 
-The ML model combines these optical features with sensor telemetry to estimate **Particle Contamination Risk**.
+F-->H[Moderate]
+
+F-->I[Dangerous]
+```
+
+### Model Inputs
+
+| Sensor Data | AI Features        |
+| ----------- | ------------------ |
+| pH          | Particle Count     |
+| Turbidity   | Average Size       |
+| TDS         | Shape              |
+| Temperature | Color Features     |
+| Water Level | Satellite Features |
 
 ---
 
-## 📱 Dashboard Modules
+# 📷 AI-Assisted Particle Screening
 
-- Live Water Safety Score
-- Historical Sensor Trends
-- River Node Status
-- GIS Monitoring Map
-- AI Model Insights
-- Device Health Diagnostics
-- Alert Center
+Unlike laboratory FTIR systems, **Sagar Drishti performs optical suspended-particle screening**.
 
----
+| Extracted Feature | Method                   |
+| ----------------- | ------------------------ |
+| Particle Count    | OpenCV Contour Detection |
+| Average Size      | Pixel Calibration        |
+| Shape             | Contour Geometry         |
+| Color             | RGB / HSV Analysis       |
+| Concentration     | Count + Sample Volume    |
 
-## 🛰 Satellite Intelligence
-
-Satellite observations provide regional environmental context by incorporating:
-
-- Chlorophyll-a
-- KD490
-- Total Suspended Matter (TSM)
-- Sea Surface Temperature
-- Ocean Colour Reflectance
-
-These features improve environmental prediction beyond ground sensors alone.
+> **Note:** The prototype estimates **Particle Contamination Risk**, not laboratory-confirmed polymer identity.
 
 ---
 
-## 🛠 Tech Stack
+# 🛰 Satellite Intelligence
 
-### Frontend
+<div align="center">
+
+<img src="assets/satellite-data.png" width="85%" alt="Satellite"/>
+
+</div>
+
+### ISRO EOS-06 Data Used
+
+| Feature       | Purpose                   |
+| ------------- | ------------------------- |
+| Chlorophyll-a | Algal Bloom Indicator     |
+| KD490         | Water Transparency        |
+| SST           | Thermal Anomaly Detection |
+| Ocean Colour  | Coastal Water Health      |
+| TSM           | Suspended Sediment        |
+
+Ground sensors provide **local truth**, while satellite observations provide **regional environmental context**.
+
+---
+
+# 📊 Example ML Prediction Distribution
+
+```mermaid
+pie showData
+title Prototype Water Safety Classification
+
+"Safe" : 68
+
+"Moderate" : 22
+
+"Dangerous" : 10
+```
+
+---
+
+# 📉 Example Telemetry Trend
+
+```mermaid
+xychart-beta
+title "Turbidity Trend (NTU)"
+x-axis ["9:00","9:20","9:40","10:00","10:20","10:40","11:00"]
+y-axis "NTU" 0 --> 20
+line [4.8,5.2,5.5,6.1,8.9,14.2,18.6]
+```
+
+A sudden increase in turbidity triggers the **Moderate Risk** classification and generates an alert.
+
+---
+
+# 💰 Deployment Cost
+
+```mermaid
+pie showData
+title Hardware Cost Distribution
+
+"Raspberry Pi" : 6000
+
+"Camera" : 2500
+
+"Sensors" : 2659
+
+"ESP32" : 400
+
+"Pump" : 650
+```
+
+| Component             |        Cost |
+| --------------------- | ----------: |
+| Raspberry Pi 4        |      ₹6,000 |
+| Camera Module 3       |      ₹2,500 |
+| Environmental Sensors |      ₹2,659 |
+| ESP32                 |        ₹400 |
+| Peristaltic Pump      |        ₹650 |
+| **Total**             | **₹12,209** |
+
+---
+
+# 🖥 Dashboard Modules
+
+| Module            | Description               |
+| ----------------- | ------------------------- |
+| Live Monitoring   | Real-time telemetry       |
+| Safety Score      | AI-generated health index |
+| Historical Trends | Time-series analytics     |
+| River Map         | GIS monitoring            |
+| Alerts            | Incident management       |
+| Device Health     | Hardware diagnostics      |
+
+<div align="center">
+
+<img src="assets/dashboard.png" width="90%" alt="Dashboard"/>
+
+</div>
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
 
 - Angular 18
 - Tailwind CSS
 - Leaflet GIS
 - Apache ECharts
-- PWA Service Worker
+- Progressive Web App
 
-### Backend
+## Backend
 
 - FastAPI
-- Python 3.11
 - SQLAlchemy
 - PostgreSQL
-- Pandas & NumPy
+- Pandas
+- NumPy
 - Scikit-learn
 - XGBoost
 
-### Hardware
+## Hardware
 
 - Raspberry Pi 4
 - ESP32
 - Pi Camera Module 3
-- Environmental Sensor Array
+- Industrial Sensor Array
 
 ---
 
-## 📁 Project Structure
+# 📁 Project Structure
 
 ```text
 Sagar-Drishti/
@@ -204,8 +373,8 @@ Sagar-Drishti/
 │   └── assets/
 │
 ├── hardware/
-│   ├── wiring/
 │   ├── enclosure/
+│   ├── wiring/
 │   └── calibration/
 │
 └── README.md
@@ -213,7 +382,7 @@ Sagar-Drishti/
 
 ---
 
-## 🚀 Getting Started
+# 🚀 Quick Start
 
 ### Backend
 
@@ -221,6 +390,7 @@ Sagar-Drishti/
 cd backend
 
 python -m venv venv
+
 source venv/bin/activate
 
 pip install -r requirements.txt
@@ -238,76 +408,95 @@ npm install
 npm start
 ```
 
-Frontend: **http://localhost:4200**
-
-Backend API: **http://localhost:8000/docs**
-
----
-
-## 📡 REST API
-
-### Predict Water Safety
-
-```http
-POST /api/v1/ml/predict
-```
-
-Example payload:
-
-```json
-{
-  "ph": 7.4,
-  "turbidity": 5.8,
-  "ec": 410,
-  "temperature": 26.2,
-  "chl": 2.1,
-  "kd490": 0.14,
-  "tsm": 4.8
-}
-```
-
-Returns:
-
-- Water Safety Score
-- Bloom Probability
-- ML Risk Tier
-- Recommendations
-- Confidence
+| Service   | URL                   |
+| --------- | --------------------- |
+| Dashboard | `localhost:4200`      |
+| API Docs  | `localhost:8000/docs` |
 
 ---
 
-## 🌱 Roadmap
+# 🗺 Roadmap
+
+```mermaid
+timeline
+title Sagar Drishti Development Roadmap
+
+2026 Q1 : Dashboard UI
+
+2026 Q1 : ML Engine
+
+2026 Q2 : Hardware Prototype
+
+2026 Q2 : Panchaganga Pilot
+
+2026 Q3 : Satellite Automation
+
+2026 Q4 : Multi-node River Network
+```
 
 - [x] Dashboard UI
 - [x] FastAPI Backend
 - [x] Random Forest Prediction
-- [x] WhatsApp Integration
 - [x] Satellite Data Pipeline
-- [ ] Raspberry Pi Hardware Integration
-- [ ] Sensor Calibration
-- [ ] Field Testing (Panchaganga River)
-- [ ] Multi-node Deployment
+- [ ] Raspberry Pi Integration
+- [ ] Field Deployment
+- [ ] Multi-node Monitoring
 
 ---
 
-## 👥 Contributors
+# 🎯 Sustainable Development Goals
 
-Developed as part of **Capgemini Tech4Positive 2026**.
+<table>
+<tr>
+<td align="center">
 
-**Project:** Sagar Drishti — AI-Powered River & Coastal Water Intelligence
+<img src="assets/sdg6.png" width="90"/>
+
+**SDG 6**
+
+Clean Water
+
+</td>
+<td align="center">
+
+<img src="assets/sdg13.png" width="90"/>
+
+**SDG 13**
+
+Climate Action
+
+</td>
+<td align="center">
+
+<img src="assets/sdg14.png" width="90"/>
+
+**SDG 14**
+
+Life Below Water
+
+</td>
+</tr>
+</table>
 
 ---
 
-## 📚 References
+# 📚 Research References
 
-- WHO Guidelines for Drinking-water Quality
-- BIS IS 10500:2012
-- ISRO EOS-06 Ocean Colour Monitor
-- Raspberry Pi Camera Module 3 Documentation
-- Scikit-learn & XGBoost Documentation
+- **WHO** — Guidelines for Drinking-water Quality (2026)
+- **WHO** — Microplastics in Drinking-water (2019)
+- **WHO / UNICEF JMP** — Global Drinking Water Statistics
+- **BIS IS 10500:2012** — Drinking Water Standards
+- **ISRO EOS-06** — Ocean Colour Monitor Documentation
+- **Raspberry Pi Foundation** — Camera Module 3 Documentation
 
 ---
 
-## 📄 License
+<div align="center">
 
-This project is licensed under the **MIT License**.
+## 🌊 Giving Rivers a Digital Vision
+
+**Built for Capgemini Tech4Positive 2026**
+
+_AI • IoT • Satellite Intelligence • Sustainability_
+
+</div>
