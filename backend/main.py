@@ -86,7 +86,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     logger.error(traceback.format_exc())
     return JSONResponse(
         status_code=500,
-        content={"error": "Internal server error", "request_id": req_id}
+        content={"error": True, "message": "Internal server error", "request_id": req_id}
     )
 
 @app.middleware("http")
@@ -103,12 +103,13 @@ async def add_security_headers(request: Request, call_next):
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://varuna-portal.onrender.com",
         "https://varuna1-0.onrender.com",
-        "http://localhost:4200"
+        "https://varuna-portal.onrender.com",
+        "http://localhost:4200",
+        "http://localhost:3000",
     ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

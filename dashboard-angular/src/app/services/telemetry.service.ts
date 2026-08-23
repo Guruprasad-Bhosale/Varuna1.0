@@ -217,9 +217,8 @@ export class TelemetryService {
         turbidity_ntu: currentTurb,
         ec: currentEc,
         ec_us_cm: currentEc,
-        safety_score: Math.min(100, Math.max(0, currentScore)),
         compositeScore: Math.min(100, Math.max(0, currentScore))
-      } as any);
+      });
 
       currentTime.setMinutes(currentTime.getMinutes() + (24 * 60) / limit);
     }

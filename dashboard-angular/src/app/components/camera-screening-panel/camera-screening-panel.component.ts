@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, HostListener, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, signal, HostListener, DestroyRef, inject, ChangeDetectionStrategy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Camera, AlertCircle, Download, X, Search, Focus, Settings } from 'lucide-angular';
 
@@ -7,7 +7,8 @@ import { LucideAngularModule, Camera, AlertCircle, Download, X, Search, Focus, S
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   templateUrl: './camera-screening-panel.component.html',
-  styleUrls: ['./camera-screening-panel.component.css']
+  styleUrls: ['./camera-screening-panel.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CameraScreeningPanelComponent implements OnInit {
   readonly CameraIcon = Camera;
@@ -19,6 +20,8 @@ export class CameraScreeningPanelComponent implements OnInit {
   readonly SettingsIcon = Settings;
 
   private destroyRef = inject(DestroyRef);
+  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
 
   lastUpdatedTimestamp = Date.now();
   detectedCount = signal<number>(132);
@@ -44,12 +47,15 @@ export class CameraScreeningPanelComponent implements OnInit {
   ];
 
   ngOnInit() {
-    const timer = setInterval(() => {
-      this.lastUpdatedTimestamp = Date.now();
-      this.detectedCount.update(c => Math.max(100, c + Math.floor(Math.random() * 7 - 3)));
-    }, 2500);
-
-    this.destroyRef.onDestroy(() => clearInterval(timer));
+    this.ngZone.runOutsideAngular(() => {
+      const timer = setInterval(() => {
+        this.lastUpdatedTimestamp = Date.now();
+        this.detectedCount.update(c => Math.max(100, c + Math.floor(Math.random() * 7 - 3)));
+        this.cdr.detectChanges();
+      }, 2500);
+      
+      this.destroyRef.onDestroy(() => clearInterval(timer));
+    });
   }
 
   get latestCaptureUrl(): string {
@@ -59,9 +65,12 @@ export class CameraScreeningPanelComponent implements OnInit {
   captureFrame() {
     this.isFlashing.set(true);
     this.detectedCount.update(c => c + Math.floor(Math.random() * 10 - 2));
-    setTimeout(() => {
-      this.isFlashing.set(false);
-    }, 150);
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.isFlashing.set(false);
+        this.cdr.detectChanges();
+      }, 150);
+    });
   }
 
   setViewMode(mode: 'annotated' | 'raw' | 'mask') {

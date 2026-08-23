@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, NgZone, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Search, Bell, Menu, Sliders } from 'lucide-angular';
 import { ThresholdService } from '../../services/threshold.service';
@@ -8,7 +8,8 @@ import { ThresholdService } from '../../services/threshold.service';
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   @Input() lastSyncTime: string | null = null;
@@ -25,7 +26,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   
   currentTimeStr: string = this.getFormattedTime();
   
-  private clockInterval: any;
+  private clockInterval: ReturnType<typeof setInterval> | undefined;
+  private ngZone = inject(NgZone);
 
   constructor(private thresholdService: ThresholdService, private cdr: ChangeDetectorRef) {}
 
@@ -35,10 +37,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     window.addEventListener('online', this.updateOnlineStatus);
     window.addEventListener('offline', this.updateOnlineStatus);
     
-    this.clockInterval = setInterval(() => {
-      this.currentTimeStr = this.getFormattedTime();
-      this.cdr.markForCheck();
-    }, 1000);
+    this.ngZone.runOutsideAngular(() => {
+      this.clockInterval = setInterval(() => {
+        this.currentTimeStr = this.getFormattedTime();
+        this.cdr.detectChanges(); // Use detectChanges to sync the view immediately
+      }, 1000);
+    });
   }
 
   ngOnDestroy() {

@@ -125,7 +125,7 @@ export class NodeMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   async loadHotspots() {
     try {
       const hotspots = await this.telemetryService.getHotspots();
-      hotspots.forEach((spot: any) => {
+      hotspots.forEach((spot: { latitude: number; longitude: number }) => {
         L.circle([spot.latitude, spot.longitude], {
           color: '#ef4444',
           fillColor: '#ef4444',

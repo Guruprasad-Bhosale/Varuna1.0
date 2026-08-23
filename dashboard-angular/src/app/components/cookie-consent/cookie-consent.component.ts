@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, NgZone, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-cookie-consent',
   standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div *ngIf="showBanner" class="fixed bottom-0 left-0 right-0 z-[100] md:bottom-6 md:left-auto md:right-6 md:max-w-sm bg-slate-900 border-t md:border border-slate-700 shadow-2xl md:rounded-xl p-5 transform transition-all duration-500 ease-out translate-y-0 opacity-100">
+    <div *ngIf="showBanner()" class="fixed bottom-0 left-0 right-0 z-[100] md:bottom-6 md:left-auto md:right-6 md:max-w-sm bg-slate-900 border-t md:border border-slate-700 shadow-2xl md:rounded-xl p-5 transform transition-all duration-500 ease-out translate-y-0 opacity-100">
       <div class="flex justify-between items-start mb-3">
         <h4 class="text-white font-semibold text-sm">Telemetry Consent</h4>
       </div>
@@ -22,23 +23,30 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class CookieConsentComponent implements OnInit {
-  showBanner = false;
+  showBanner = signal(false);
   private readonly CONSENT_KEY = 'varuna_cookie_consent';
+  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
     // Only show if not previously acknowledged
     if (!localStorage.getItem(this.CONSENT_KEY)) {
-      setTimeout(() => this.showBanner = true, 1500); // delay show
+      this.ngZone.runOutsideAngular(() => {
+        setTimeout(() => {
+          this.showBanner.set(true);
+          this.cdr.detectChanges();
+        }, 1500); // delay show
+      });
     }
   }
 
   accept() {
     localStorage.setItem(this.CONSENT_KEY, 'accepted');
-    this.showBanner = false;
+    this.showBanner.set(false);
   }
 
   decline() {
     localStorage.setItem(this.CONSENT_KEY, 'declined');
-    this.showBanner = false;
+    this.showBanner.set(false);
   }
 }

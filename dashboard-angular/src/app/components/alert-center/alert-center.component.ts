@@ -1,16 +1,30 @@
-import { Component, Input, OnChanges, SimpleChanges, HostListener } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, AlertCircle, AlertTriangle, CheckCircle } from 'lucide-angular';
+
+export interface Alert {
+  id: string;
+  timestamp: string;
+  timeAgo: string;
+  station: string;
+  river: string;
+  severity: 'CRITICAL' | 'WARNING' | 'INFO';
+  title: string;
+  description: string;
+  parameters: string;
+  status: 'ACTIVE' | 'RESOLVED' | 'DISPATCHED';
+}
 
 @Component({
   selector: 'app-alert-center',
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   templateUrl: './alert-center.component.html',
-  styleUrls: ['./alert-center.component.css']
+  styleUrls: ['./alert-center.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AlertCenterComponent implements OnChanges {
-  @Input() alerts: any[] = [];
+  @Input() alerts: Alert[] = [];
 
   readonly AlertCircleIcon = AlertCircle;
   readonly AlertTriangleIcon = AlertTriangle;

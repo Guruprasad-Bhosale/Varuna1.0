@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, inject, NgZone, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, inject, NgZone, HostListener, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-waves-shader',
@@ -10,7 +10,8 @@ import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, inject, NgZ
   `,
   styles: [`
     :host { display: block; width: 100%; height: 100%; }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WavesShaderComponent implements AfterViewInit, OnDestroy {
   @ViewChild('glCanvas') private canvasRef!: ElementRef<HTMLCanvasElement>;

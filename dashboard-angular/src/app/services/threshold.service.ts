@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-export const DEFAULT_CPCB_THRESHOLDS: any = {
+export interface MetricThreshold {
+  safeMin?: number;
+  safeMax: number;
+  warnMin?: number;
+  warnMax: number;
+}
+
+export type ThresholdConfig = Record<string, MetricThreshold>;
+
+export const DEFAULT_CPCB_THRESHOLDS: ThresholdConfig = {
   ph: { safeMin: 6.5, safeMax: 8.5, warnMin: 6.0, warnMax: 9.0 },
   turbidity_ntu: { safeMax: 10, warnMax: 30 },
   ec_us_cm: { safeMax: 600, warnMax: 1200 },
@@ -16,7 +25,7 @@ export const DEFAULT_CPCB_THRESHOLDS: any = {
 export class ThresholdService {
   private readonly STORAGE_KEY = 'varuna_custom_thresholds_v1';
   
-  private thresholdsSubject = new BehaviorSubject<any>(this.loadThresholds());
+  private thresholdsSubject = new BehaviorSubject<ThresholdConfig>(this.loadThresholds());
   public thresholds$ = this.thresholdsSubject.asObservable();
 
   private isModalOpenSubject = new BehaviorSubject<boolean>(false);
@@ -24,7 +33,7 @@ export class ThresholdService {
 
   constructor() {}
 
-  private loadThresholds() {
+  private loadThresholds(): ThresholdConfig {
     try {
       const saved = localStorage.getItem(this.STORAGE_KEY);
       return saved ? JSON.parse(saved) : DEFAULT_CPCB_THRESHOLDS;
@@ -33,7 +42,7 @@ export class ThresholdService {
     }
   }
 
-  updateThresholds(newThresholds: any) {
+  updateThresholds(newThresholds: ThresholdConfig) {
     this.thresholdsSubject.next(newThresholds);
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(newThresholds));
   }
@@ -47,7 +56,7 @@ export class ThresholdService {
     this.isModalOpenSubject.next(isOpen);
   }
 
-  evaluateParameterHealth(paramKey: string, value: number | null | undefined, currentThresholds: any) {
+  evaluateParameterHealth(paramKey: string, value: number | null | undefined, currentThresholds: ThresholdConfig) {
     if (value === undefined || value === null) {
       return {
         status: 'safe',
@@ -60,12 +69,12 @@ export class ThresholdService {
     }
 
     const th = currentThresholds[paramKey] || DEFAULT_CPCB_THRESHOLDS[paramKey];
-    let status = 'safe';
+    let status: 'safe' | 'moderate' | 'dangerous' = 'safe';
 
     if (paramKey === 'ph') {
-      if (value < th.warnMin || value > th.warnMax) {
+      if (value < (th.warnMin ?? 0) || value > th.warnMax) {
         status = 'dangerous';
-      } else if (value < th.safeMin || value > th.safeMax) {
+      } else if (value < (th.safeMin ?? 0) || value > th.safeMax) {
         status = 'moderate';
       } else {
         status = 'safe';
@@ -80,7 +89,7 @@ export class ThresholdService {
       }
     }
 
-    const styles: any = {
+    const styles: Record<string, { status: string; label: string; cardClass: string; badgeClass: string; barColor: string; barGlow: string }> = {
       safe: {
         status: 'safe',
         label: 'NOMINAL',

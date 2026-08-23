@@ -289,13 +289,13 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
           
           <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
             <span class="font-semibold text-slate-900">Latitude:</span>
-            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ data.coordinates?.lat ?? 16.2699 }}° N</span>
+            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ data.coordinates.lat }}° N</span>
             <span class="text-[9px] text-slate-500 font-bold">(#2 • 24.49%)</span>
           </div>
 
           <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
             <span class="font-semibold text-slate-900">Longitude:</span>
-            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ data.coordinates?.lng ?? 73.7148 }}° E</span>
+            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ data.coordinates.lng }}° E</span>
             <span class="text-[9px] text-slate-500 font-bold">(#3 • 12.25%)</span>
           </div>
 
@@ -365,7 +365,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             <div (click)="selectMetric('turbidity_ntu')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
                  [ngClass]="[
                    selectedMetric() === 'turbidity_ntu' ? 'ring-2 ring-slate-900 bg-slate-50' : '',
-                   (data.turbidity_ntu ?? data.turbidity) > 10 ? 'border-rose-900 bg-rose-50' : ''
+                   data.turbidity_ntu > 10 ? 'border-rose-900 bg-rose-50' : ''
                  ]">
               <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-6 shadow-[2px_2px_0px_0px_#0f172a]">
                 <div class="text-[10px] font-black text-slate-900">02</div>
@@ -383,12 +383,12 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                     <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
                   </div>
                 </div>
-                <span [ngClass]="[turbidityStatus().bg, turbidityStatus().textCol, turbidityStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="(data.turbidity_ntu ?? data.turbidity) > 10">
+                <span [ngClass]="[turbidityStatus().bg, turbidityStatus().textCol, turbidityStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="data.turbidity_ntu > 10">
                   {{ turbidityStatus().text }}
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ (data.turbidity_ntu ?? data.turbidity) | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">NTU</span>
+                <span class="transition-all duration-700">{{ data.turbidity_ntu | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">NTU</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 10.0 NTU</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
@@ -400,7 +400,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             <div (click)="selectMetric('ec_us_cm')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
                  [ngClass]="[
                    selectedMetric() === 'ec_us_cm' ? 'ring-2 ring-slate-900 bg-slate-50' : '',
-                   (data.ec_us_cm ?? data.ec) > 600 ? 'border-rose-900 bg-rose-50' : ''
+                   data.ec_us_cm > 600 ? 'border-rose-900 bg-rose-50' : ''
                  ]">
               <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform -rotate-6 shadow-[2px_2px_0px_0px_#0f172a]">
                 <div class="text-[10px] font-black text-slate-900">03</div>
@@ -418,12 +418,12 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                     <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
                   </div>
                 </div>
-                <span [ngClass]="[ecStatus().bg, ecStatus().textCol, ecStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="(data.ec_us_cm ?? data.ec) > 600">
+                <span [ngClass]="[ecStatus().bg, ecStatus().textCol, ecStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="data.ec_us_cm > 600">
                   {{ ecStatus().text }}
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ (data.ec_us_cm ?? data.ec) | number:'1.1-1' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">&micro;S/cm</span>
+                <span class="transition-all duration-700">{{ data.ec_us_cm | number:'1.1-1' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">&micro;S/cm</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 600 &micro;S/cm</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
@@ -455,7 +455,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ (data.temp_c ?? data.temperature) | number:'1.1-1' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">&deg;C</span>
+                <span class="transition-all duration-700">{{ data.temp_c | number:'1.1-1' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">&deg;C</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: 18.0 &ndash; 28.0 &deg;C</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">

@@ -1,10 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges, OnInit, OnDestroy, inject, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit, NgZone } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit, OnDestroy, inject, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import type * as echarts from 'echarts';
 import { downsampleLTTB } from '../../core/utils/downsample';
-import { TelemetryService } from '../../services/telemetry.service';
+import { TelemetryService, TelemetryData } from '../../services/telemetry.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -12,26 +13,27 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule, NgxEchartsModule],
   templateUrl: './telemetry-charts.component.html',
-  styleUrls: ['./telemetry-charts.component.css']
+  styleUrls: ['./telemetry-charts.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy, AfterViewInit {
-  @Input() historyData: any[] = [];
+  @Input() historyData: TelemetryData[] = [];
   @Input() metric = 'safety_score';
   
   private telemetryService = inject(TelemetryService);
   private cdr = inject(ChangeDetectorRef);
   private ngZone = inject(NgZone);
   private sub?: Subscription;
-  private currentStreamData: any[] = [];
+  private currentStreamData: TelemetryData[] = [];
   private resizeObserver?: ResizeObserver;
-  private chartInstance: any;
+  private chartInstance?: echarts.ECharts;
 
   @ViewChild('chartContainer') chartContainer!: ElementRef;
 
   timeRange = '24h';
   chartOptions: EChartsOption = {};
 
-  config: any = {
+  config: Record<string, { name: string; color: string; domain: [number, number]; dangerLow?: number; dangerHigh?: number }> = {
     safety_score: { name: 'Safety Score', color: '#16a34a', domain: [0, 100] },
     ph: { name: 'pH Level', color: '#0d9488', domain: [0, 14], dangerLow: 6.5, dangerHigh: 8.5 },
     turbidity_ntu: { name: 'Turbidity (NTU)', color: '#d97706', domain: [0, 50], dangerHigh: 10 },
@@ -62,7 +64,7 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy, A
 
   ngAfterViewInit(): void {
     this.ngZone.runOutsideAngular(() => {
-      let resizeTimeout: any;
+      let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
       this.resizeObserver = new ResizeObserver(() => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
@@ -76,7 +78,7 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy, A
     });
   }
 
-  onChartInit(ec: any) {
+  onChartInit(ec: echarts.ECharts) {
     this.chartInstance = ec;
   }
 
@@ -106,13 +108,13 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy, A
     this.refreshChart(this.currentStreamData);
   }
 
-  private refreshChart(dataToRender: any[]) {
+  private refreshChart(dataToRender: TelemetryData[]) {
     if (!dataToRender || dataToRender.length === 0) return;
 
     const activeConf = this.config[this.metric];
     
     // Decimate max points using LTTB if needed, though stream might be short
-    const tuples: [number, number][] = dataToRender.map(d => [new Date(d.timestamp).getTime(), d[this.metric]]);
+    const tuples: [number, number][] = dataToRender.map(d => [new Date(d.timestamp).getTime(), (d as unknown as Record<string, number>)[this.metric]]);
     const sampledTuples = downsampleLTTB(tuples, 150);
 
     const times = sampledTuples.map(t => {
@@ -122,7 +124,7 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy, A
     
     const values = sampledTuples.map(t => t[1]);
 
-    const markAreas: any[] = [];
+    const markAreas: echarts.MarkAreaComponentOption['data'] = [];
     if (this.metric === 'safety_score') {
       markAreas.push(
         [{ yAxis: 75, itemStyle: { color: 'rgba(220, 252, 231, 0.4)' } }, { yAxis: 100 }],
@@ -156,8 +158,9 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy, A
         borderColor: '#e2e8f0',
         borderWidth: 1,
         textStyle: { color: '#0f172a', fontSize: 12, fontWeight: 600 },
-        formatter: (params: any) => {
-          const item = Array.isArray(params) ? params[0] : params;
+        formatter: (params: unknown) => {
+          const paramsArr = Array.isArray(params) ? params : [params];
+          const item = paramsArr[0] as { name: string; axisValue: string; seriesName: string; value: number | [number, number] };
           const val = typeof item.value === 'number' ? item.value.toFixed(1) : Number(item.value[1]).toFixed(1);
           return `
             <div style="padding: 2px 4px;">

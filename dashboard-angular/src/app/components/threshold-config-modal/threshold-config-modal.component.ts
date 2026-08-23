@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, X, RotateCcw, Save, Sliders } from 'lucide-angular';
-import { ThresholdService } from '../../services/threshold.service';
+import { ThresholdService, ThresholdConfig } from '../../services/threshold.service';
 import { Subscription } from 'rxjs';
 import { ToastService } from '../../services/toast.service';
 
@@ -11,7 +11,8 @@ import { ToastService } from '../../services/toast.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
   templateUrl: './threshold-config-modal.component.html',
-  styleUrls: ['./threshold-config-modal.component.css']
+  styleUrls: ['./threshold-config-modal.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ThresholdConfigModalComponent implements OnInit, OnDestroy {
   isOpen = false;
@@ -58,23 +59,23 @@ export class ThresholdConfigModalComponent implements OnInit, OnDestroy {
     this.modalSub?.unsubscribe();
   }
 
-  initForm(initial: any) {
+  initForm(initial: ThresholdConfig) {
     this.thresholdForm = this.fb.group({
       ph: this.fb.group({
-        safeMin: [initial.ph?.safeMin || 0],
-        safeMax: [initial.ph?.safeMax || 0],
-        warnMin: [initial.ph?.warnMin || 0],
-        warnMax: [initial.ph?.warnMax || 0]
+        safeMin: [initial['ph']?.safeMin || 0],
+        safeMax: [initial['ph']?.safeMax || 0],
+        warnMin: [initial['ph']?.warnMin || 0],
+        warnMax: [initial['ph']?.warnMax || 0]
       }),
-      turbidity_ntu: this.createMetricGroup(initial.turbidity_ntu),
-      ec_us_cm: this.createMetricGroup(initial.ec_us_cm),
-      temperature_c: this.createMetricGroup(initial.temperature_c),
-      particle_count: this.createMetricGroup(initial.particle_count),
-      avg_particle_size_mm: this.createMetricGroup(initial.avg_particle_size_mm),
+      turbidity_ntu: this.createMetricGroup(initial['turbidity_ntu']),
+      ec_us_cm: this.createMetricGroup(initial['ec_us_cm']),
+      temperature_c: this.createMetricGroup(initial['temperature_c']),
+      particle_count: this.createMetricGroup(initial['particle_count']),
+      avg_particle_size_mm: this.createMetricGroup(initial['avg_particle_size_mm']),
     });
   }
 
-  createMetricGroup(val: any) {
+  createMetricGroup(val?: { safeMax?: number; warnMax?: number }) {
     return this.fb.group({
       safeMax: [val?.safeMax || 0],
       warnMax: [val?.warnMax || 0]

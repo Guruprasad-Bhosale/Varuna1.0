@@ -13,7 +13,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SensorMetricCardComponent {
-  @Input() config: any;
+  @Input() config: { id: string; name: string; unit?: string; maxScale?: number; baselineText?: string } | undefined;
   @Input() value: number | null | undefined = null;
 
   private thresholdService = inject(ThresholdService);

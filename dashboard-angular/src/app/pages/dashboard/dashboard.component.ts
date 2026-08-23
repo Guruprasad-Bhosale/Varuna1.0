@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -21,6 +21,7 @@ export type DashboardTab = 'overview' | 'nodes' | 'live' | 'trends' | 'alerts' |
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule, SidebarComponent, NavbarComponent,
     RiverNodesViewComponent, LiveMonitoringViewComponent,
@@ -31,14 +32,14 @@ export type DashboardTab = 'overview' | 'nodes' | 'live' | 'trends' | 'alerts' |
   template: `
     <div class="flex min-h-screen bg-slate-50 text-slate-800">
       <app-sidebar 
-        [isOpen]="isSidebarOpen"
-        (close)="isSidebarOpen = false">
+        [isOpen]="isSidebarOpen()"
+        (close)="isSidebarOpen.set(false)">
       </app-sidebar>
 
       <div class="flex-1 flex flex-col min-w-0 relative">
         <app-navbar 
-          [lastSyncTime]="lastSyncTime" 
-          (openSidebar)="isSidebarOpen = true">
+          [lastSyncTime]="lastSyncTime()" 
+          (openSidebar)="isSidebarOpen.set(true)">
         </app-navbar>
         
         <!-- Top-bar progress loader -->
@@ -103,13 +104,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private telemetryService = inject(TelemetryService);
+  private ngZone = inject(NgZone);
 
   activeTab = signal<DashboardTab>('overview');
   isNavigating = signal<boolean>(false);
-  isSidebarOpen: boolean = false;
-  lastSyncTime: string | null = null;
+  isSidebarOpen = signal<boolean>(false);
+  lastSyncTime = signal<string | null>(null);
 
-  private syncInterval: any;
+  private syncInterval: ReturnType<typeof setInterval> | undefined;
 
   ngOnInit(): void {
     // Read ?tab= from URL on load
@@ -120,9 +122,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.syncInterval = setInterval(() => {
-       this.lastSyncTime = new Date().toISOString();
-    }, 3000);
+    this.ngZone.runOutsideAngular(() => {
+      this.syncInterval = setInterval(() => {
+         this.lastSyncTime.set(new Date().toISOString());
+      }, 3000);
+    });
   }
 
   ngOnDestroy(): void {

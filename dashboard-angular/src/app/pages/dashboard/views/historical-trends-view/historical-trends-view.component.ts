@@ -61,7 +61,7 @@ export class HistoricalTrendsViewComponent implements OnInit, OnDestroy {
   private telemetryService = inject(TelemetryService);
   private ngZone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
-  private intervalId: any;
+  private intervalId: ReturnType<typeof setInterval> | undefined;
   selectedRange = '24H';
 
   setTimeRange(range: string) {
@@ -96,7 +96,7 @@ export class HistoricalTrendsViewComponent implements OnInit, OnDestroy {
     this.exportTelemetryData(this.historyData, format);
   }
 
-  private exportTelemetryData(data: any[], format: 'csv' | 'json', filename = 'varuna_telemetry_export'): void {
+  private exportTelemetryData(data: TelemetryData[], format: 'csv' | 'json', filename = 'varuna_telemetry_export'): void {
     if (!data || data.length === 0) return;
 
     if (format === 'json') {

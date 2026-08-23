@@ -205,6 +205,7 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
   showBloomForecast = signal<boolean>(true);
   showSwath = signal<boolean>(false);
   activeTab = signal<'stations' | 'forecasts'>('stations');
+  selectedStation = signal<{ id: string; name: string; lat: number; lng: number; status: string; ph: number; temp: number; ec: number } | null>(null);
 
   private map?: L.Map;
   private currentTileLayerGroup = new L.LayerGroup();
@@ -432,7 +433,12 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
           </div>
         </div>
       `;
-      L.marker([node.lat, node.lng], { icon: nodeIcon }).addTo(this.markersLayerGroup).bindPopup(nodePopup);
+      const marker = L.marker([node.lat, node.lng], { icon: nodeIcon }).addTo(this.markersLayerGroup).bindPopup(nodePopup);
+      marker.on('click', () => {
+        this.ngZone.run(() => {
+          this.selectedStation.set(node);
+        });
+      });
     });
 
     this.bloomForecasts.forEach(bf => {
@@ -514,7 +520,7 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     this.map?.flyTo([bloom.lat, bloom.lng], 14, { duration: 1.2 });
   }
 
-  flyToNode(node: any): void {
+  flyToNode(node: { id: string; name: string; lat: number; lng: number; status: string; ph: number; temp: number; ec: number }): void {
     this.map?.flyTo([node.lat, node.lng], 14, { duration: 1.2 });
   }
 
