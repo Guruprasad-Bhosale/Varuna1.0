@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <div class="flex-1 w-full min-h-0">
-    <div echarts [options]="chartOptions" [autoResize]="true" class="w-full h-full"></div>
+  <div class="flex-1 w-full min-h-0" #chartContainer>
+    <div echarts [options]="chartOptions" [autoResize]="false" (chartInit)="onChartInit($event)" class="w-full h-full"></div>
   </div>
 </div>

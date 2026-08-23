@@ -19,9 +19,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   readonly MenuIcon = Menu;
   readonly SlidersIcon = Sliders;
 
-  currentDate = new Date().toLocaleDateString('en-US', { 
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-  });
+  currentDate = new Date().toLocaleDateString('en-GB', { 
+    year: 'numeric', month: 'short', day: '2-digit' 
+  }).toUpperCase();
   
   currentTimeStr: string = this.getFormattedTime();
   

@@ -36,20 +36,20 @@ export interface BloomForecastNode {
           </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center gap-4">
           <!-- Swath Layer Toggle -->
           <button 
             (click)="toggleSwath()"
-            [ngClass]="showSwath() ? 'bg-amber-50 text-amber-700 border-amber-200 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'"
-            class="px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm">
+            [ngClass]="showSwath() ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'"
+            class="stamp-btn px-4 py-2 border-2 border-slate-900 text-xs font-black uppercase tracking-wider rounded-lg transition-all flex items-center gap-2">
             Satellite Risk Swath
           </button>
 
           <!-- Bloom Forecast Layer Toggle -->
           <button 
             (click)="toggleBloomForecast()"
-            [ngClass]="showBloomForecast() ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'"
-            class="px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm">
+            [ngClass]="showBloomForecast() ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'"
+            class="stamp-btn px-4 py-2 border-2 border-slate-900 text-xs font-black uppercase tracking-wider rounded-lg transition-all flex items-center gap-2">
             <span class="relative flex h-2 w-2">
               @if (showBloomForecast()) {
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -60,22 +60,24 @@ export interface BloomForecastNode {
           </button>
 
           <!-- Tile Selector -->
-          <div class="flex items-center space-x-1 bg-white p-1 rounded-xl border border-slate-200 shadow-sm text-xs">
-            <button (click)="setTileLayer('voyager')" [ngClass]="activeTileLayer() === 'voyager' ? 'bg-teal-50 text-teal-700 border-teal-200 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="px-2.5 py-1 rounded-lg border border-transparent transition-all">Voyager</button>
-            <button (click)="setTileLayer('satellite')" [ngClass]="activeTileLayer() === 'satellite' ? 'bg-teal-50 text-teal-700 border-teal-200 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="px-2.5 py-1 rounded-lg border border-transparent transition-all">Satellite</button>
-            <button (click)="setTileLayer('dark')" [ngClass]="activeTileLayer() === 'dark' ? 'bg-teal-50 text-teal-700 border-teal-200 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="px-2.5 py-1 rounded-lg border border-transparent transition-all">Dark</button>
+          <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a] text-xs">
+            <button (click)="setTileLayer('voyager')" [ngClass]="activeTileLayer() === 'voyager' ? 'bg-slate-900 text-white shadow-none' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="px-3 py-1 rounded-lg font-black uppercase tracking-wider transition-all">Voyager</button>
+            <button (click)="setTileLayer('satellite')" [ngClass]="activeTileLayer() === 'satellite' ? 'bg-slate-900 text-white shadow-none' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="px-3 py-1 rounded-lg font-black uppercase tracking-wider transition-all">Satellite</button>
+            <button (click)="setTileLayer('dark')" [ngClass]="activeTileLayer() === 'dark' ? 'bg-slate-900 text-white shadow-none' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="px-3 py-1 rounded-lg font-black uppercase tracking-wider transition-all">Dark</button>
           </div>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div class="lg:col-span-3 rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden relative h-[420px] sm:h-[500px] lg:h-[640px]" style="isolation: isolate; position: relative; z-index: 1;">
-          <div id="sindhudurg-gis-map" class="h-full w-full" style="touch-action: pan-x pan-y;"></div>
+        <div class="lg:col-span-3 stamp-card washi-tape-top relative h-[420px] sm:h-[500px] lg:h-[640px]" style="isolation: isolate; position: relative; z-index: 1;">
+          <div class="absolute inset-0 rounded-[14px] overflow-hidden z-0">
+            <div id="sindhudurg-gis-map" class="h-full w-full" style="touch-action: pan-x pan-y; transform: translate3d(0,0,0); will-change: transform;"></div>
+          </div>
           
           <!-- High-Contrast Floating Map Legend -->
-          <div class="absolute bottom-6 left-6 z-[1000] bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200/90 shadow-xl w-60 space-y-3 pointer-events-auto">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-              <span class="text-xs font-black text-slate-900 tracking-tight">Map Legend</span>
+          <div class="absolute bottom-6 left-6 z-[1000] stamp-card bg-white/95 backdrop-blur-md p-4 w-60 space-y-3 pointer-events-auto">
+            <div class="flex items-center justify-between border-b-2 border-slate-200 border-dashed pb-2">
+              <span class="text-xs font-black text-slate-900 tracking-tight uppercase">Map Legend</span>
               <span class="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-200">
                 NIRVAAH AI
               </span>
@@ -117,39 +119,45 @@ export interface BloomForecastNode {
 
         <!-- Dual-Mode Intelligence Sidebar -->
         <div class="space-y-4">
-          <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-            <button (click)="activeTab.set('stations')" [ngClass]="activeTab() === 'stations' ? 'bg-white text-teal-700 shadow-sm font-bold' : 'text-slate-600 hover:bg-slate-200 font-medium'" class="flex-1 py-1.5 text-xs rounded-lg transition-all">River Stations</button>
-            <button (click)="activeTab.set('forecasts')" [ngClass]="activeTab() === 'forecasts' ? 'bg-white text-amber-700 shadow-sm font-bold' : 'text-slate-600 hover:bg-slate-200 font-medium'" class="flex-1 py-1.5 text-xs rounded-lg transition-all">Bloom Warnings</button>
+          <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
+            <button (click)="activeTab.set('stations')" [ngClass]="activeTab() === 'stations' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="flex-1 py-1.5 text-xs font-black uppercase tracking-wider rounded-lg transition-all">River Stations</button>
+            <button (click)="activeTab.set('forecasts')" [ngClass]="activeTab() === 'forecasts' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="flex-1 py-1.5 text-xs font-black uppercase tracking-wider rounded-lg transition-all">Bloom Warnings</button>
           </div>
 
-          <div class="space-y-3 max-h-[580px] overflow-y-auto pr-1">
+          <div class="space-y-4 max-h-[580px] overflow-y-auto pr-2 pb-4">
             @if (activeTab() === 'stations') {
-              @for (node of riverNodes; track node.id) {
-                <div class="p-4 rounded-xl bg-white border border-slate-200 hover:border-teal-300 hover:shadow-md transition-all space-y-3">
-                  <div class="flex items-start justify-between gap-2">
-                    <div class="font-semibold text-sm text-slate-900">{{ node.name }}</div>
-                    <div class="h-2.5 w-2.5 rounded-full shrink-0" [ngClass]="node.status === 'SAFE' ? 'bg-emerald-500' : (node.status === 'ELEVATED' ? 'bg-amber-400' : 'bg-rose-500')"></div>
+              @for (node of riverNodes; track node.id; let i = $index) {
+                <div class="stamp-card p-4 bg-white relative space-y-3">
+                  <div class="absolute top-0 bottom-0 left-8 w-[2px] bg-rose-200/50"></div>
+                  <div class="absolute -left-1 top-4 text-[10px] font-black text-slate-400 rotate-[-90deg] w-4 text-center">{{ (i + 1).toString().padStart(2, '0') }}</div>
+                  
+                  <div class="flex items-start justify-between gap-2 pl-6 relative z-10">
+                    <div class="font-bold text-sm text-slate-900 tracking-tight">{{ node.name }}</div>
+                    <div class="h-2.5 w-2.5 rounded-full shrink-0 border border-slate-900 shadow-[1px_1px_0px_0px_#0f172a]" [ngClass]="node.status === 'SAFE' ? 'bg-emerald-500' : (node.status === 'ELEVATED' ? 'bg-amber-400' : 'bg-rose-500')"></div>
                   </div>
                   
-                  <div class="text-[11px] font-mono text-slate-500">
+                  <div class="text-[11px] font-mono font-bold text-slate-700 pl-6 relative z-10 border-b-2 border-slate-100 border-dashed pb-2">
                     pH: {{ node.ph.toFixed(2) }} • Temp: {{ node.temp.toFixed(1) }}°C • Cond: {{ node.ec }} µS
                   </div>
 
-                  <div class="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
-                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase"
-                          [ngClass]="node.status === 'SAFE' ? 'bg-emerald-50 text-emerald-700' : (node.status === 'ELEVATED' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700')">
+                  <div class="flex items-center justify-between text-xs pt-2 pl-6 relative z-10">
+                    <span class="px-2 py-0.5 border border-slate-900 text-[10px] font-black uppercase shadow-[1px_1px_0px_0px_#0f172a]"
+                          [ngClass]="node.status === 'SAFE' ? 'bg-emerald-100 text-emerald-900' : (node.status === 'ELEVATED' ? 'bg-amber-100 text-amber-900' : 'bg-rose-100 text-rose-900')">
                       {{ node.status }}
                     </span>
-                    <button (click)="flyToNode(node)" class="text-teal-600 font-semibold hover:text-teal-700 transition-colors">Inspect on Map &rarr;</button>
+                    <button (click)="flyToNode(node)" class="stamp-btn bg-slate-900 text-white px-3 py-1 rounded text-[10px] uppercase font-bold hover:bg-teal-700">Inspect &rarr;</button>
                   </div>
                 </div>
               }
             } @else {
-              @for (bloom of bloomForecasts; track bloom.id) {
+              @for (bloom of bloomForecasts; track bloom.id; let i = $index) {
                 <div 
                   (click)="flyToBloom(bloom)"
-                  class="p-4 rounded-xl bg-white border border-amber-200 hover:border-amber-400 hover:shadow-md transition-all cursor-pointer space-y-3 group">
-                  <div class="flex items-start justify-between gap-2">
+                  class="stamp-card p-4 bg-amber-50/50 cursor-pointer relative space-y-3 group border-amber-900/50">
+                  <div class="absolute top-0 bottom-0 left-8 w-[2px] bg-rose-200/50"></div>
+                  <div class="absolute -left-1 top-4 text-[10px] font-black text-amber-600/50 rotate-[-90deg] w-4 text-center">{{ (i + 1).toString().padStart(2, '0') }}</div>
+                  
+                  <div class="flex items-start justify-between gap-2 pl-6 relative z-10">
                     <div>
                       <div class="font-semibold text-sm text-slate-900 transition-colors flex items-center gap-1.5">
                         {{ bloom.name }}
@@ -161,24 +169,24 @@ export interface BloomForecastNode {
                     </span>
                   </div>
 
-                  <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 space-y-1.5 text-[11px]">
-                    <div class="flex justify-between items-center text-slate-600">
-                      <span>Bloom Probability:</span>
-                      <span class="font-bold text-amber-600 font-mono">{{ bloom.bloomProbability }}%</span>
+                  <div class="pl-6 relative z-10 bg-white border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a] p-2.5 rounded text-[11px] font-mono font-bold space-y-1.5 mt-3">
+                    <div class="flex justify-between items-center text-slate-700">
+                      <span>Probability:</span>
+                      <span class="text-rose-600">{{ bloom.bloomProbability }}%</span>
                     </div>
-                    <div class="flex justify-between items-center text-slate-600">
-                      <span>Projected Chlorophyll:</span>
-                      <span class="font-bold text-emerald-600 font-mono">{{ bloom.predictedChl }} mg/m³</span>
+                    <div class="flex justify-between items-center text-slate-700">
+                      <span>Est. Chlorophyll:</span>
+                      <span class="text-teal-700">{{ bloom.predictedChl }} mg/m³</span>
                     </div>
                   </div>
 
-                  <div class="text-[11px] text-slate-600 leading-tight">
-                    <span class="text-slate-800 font-medium">Triggers:</span> {{ bloom.triggerFactors.join(', ') }}
+                  <div class="pl-6 relative z-10 text-[11px] text-slate-700 leading-tight border-b-2 border-slate-200 border-dashed pb-2">
+                    <span class="font-black">Triggers:</span> {{ bloom.triggerFactors.join(', ') }}
                   </div>
 
-                  <div class="flex items-center justify-between text-xs text-amber-700 pt-2 border-t border-slate-100">
-                    <span class="text-[10px] text-slate-500 font-semibold">{{ bloom.riskTier }}</span>
-                    <span class="flex items-center gap-1 font-semibold">Inspect on Map &rarr;</span>
+                  <div class="flex items-center justify-between text-xs pt-2 pl-6 relative z-10">
+                    <span class="text-[10px] text-slate-900 font-black uppercase highlighter-amber">{{ bloom.riskTier }}</span>
+                    <button class="stamp-btn bg-slate-900 text-white px-3 py-1 rounded text-[10px] uppercase font-bold group-hover:bg-amber-600">Inspect &rarr;</button>
                   </div>
                 </div>
               }
@@ -204,6 +212,7 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
   private bloomForecastLayerGroup = new L.LayerGroup();
   private riverLinesGroup = new L.LayerGroup();
   private swathLayerGroup = new L.LayerGroup();
+  private sharedCanvasRenderer = L.canvas({ padding: 0.5, tolerance: 8 });
 
   // 48h to 72h Predictive Algal Bloom Forecast Points
   readonly bloomForecasts: BloomForecastNode[] = [
@@ -247,6 +256,13 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.ngZone.runOutsideAngular(() => {
       this.initMap();
+      
+      // Fix for Leaflet tile invalidation inside neo-brutalist containers
+      setTimeout(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      }, 50);
     });
   }
 
@@ -329,10 +345,10 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     }).addTo(this.riverLinesGroup);
   }
 
-  private generateSwathData(): { lat: number; lng: number; prob: number }[] {
+  private generateSwathData(): { lat: number; lng: number; prob: number; color: string }[] {
     const points = [];
-    for (let lat = 15.80; lat <= 17.50; lat += 0.08) {
-      for (let lng = 72.75; lng <= 73.45; lng += 0.07) {
+    for (let lat = 15.80; lat <= 17.50; lat += 0.1) {
+      for (let lng = 72.75; lng <= 73.45; lng += 0.1) {
         // Add slight organic coordinate jitter to emulate satellite raster cells
         const jitterLat = lat + (Math.random() * 0.02 - 0.01);
         const jitterLng = lng + (Math.random() * 0.02 - 0.01);
@@ -343,7 +359,8 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
           ? Math.floor(65 + Math.random() * 25) 
           : Math.floor(10 + Math.random() * 45);
 
-        points.push({ lat: jitterLat, lng: jitterLng, prob });
+        const color = prob >= 80 ? '#ef4444' : prob >= 55 ? '#f97316' : prob >= 25 ? '#eab308' : '#10b981';
+        points.push({ lat: jitterLat, lng: jitterLng, prob, color });
       }
     }
     return points;
@@ -352,36 +369,19 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
   private renderSwathMarkers(): void {
     this.swathLayerGroup.clearLayers();
     const swathData = this.generateSwathData();
-    const canvasRenderer = L.canvas({ padding: 0.5 });
 
     swathData.forEach(pt => {
-      const color = pt.prob >= 80 ? '#ef4444' : pt.prob >= 55 ? '#f97316' : pt.prob >= 25 ? '#eab308' : '#10b981';
-      
-      const tooltipContent = `
-        <div class="satellite-swath-tooltip">
-          <div class="tooltip-header">ISRO EOS-06 / NIRVAAH XGBoost</div>
-          <div class="tooltip-coords">
-            Lat: <b>${pt.lat.toFixed(4)}° N</b> | Lng: <b>${pt.lng.toFixed(4)}° E</b>
-          </div>
-          <div class="tooltip-risk-row">
-            <span class="risk-label">Bloom Risk:</span>
-            <span class="risk-value" style="color: ${color};">${pt.prob}%</span>
-          </div>
-        </div>
-      `;
-
       L.circleMarker([pt.lat, pt.lng], {
-        renderer: canvasRenderer,
-        radius: 4.5,
-        fillColor: color,
-        color: '#ffffff',
-        weight: 0.8,
-        fillOpacity: 0.9
-      }).bindTooltip(tooltipContent, {
-        className: 'custom-swath-leaflet-tooltip',
-        direction: 'right',
-        offset: [10, 0]
-      }).addTo(this.swathLayerGroup);
+        renderer: this.sharedCanvasRenderer,
+        radius: 4,
+        fillColor: pt.color,
+        color: '#0f172a',
+        weight: 1,
+        fillOpacity: 0.85
+      }).bindTooltip(
+        `<b>Lat:</b> ${pt.lat.toFixed(4)}° N | <b>Lng:</b> ${pt.lng.toFixed(4)}° E<br/><b>Bloom Risk:</b> ${pt.prob}%`,
+        { sticky: true, className: 'custom-swath-leaflet-tooltip' }
+      ).addTo(this.swathLayerGroup);
     });
   }
 

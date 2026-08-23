@@ -31,24 +31,24 @@ export interface IncidentAlert {
           <p class="text-xs text-slate-500 mt-1">Real-time anomaly detection logs and automated dispatch status</p>
         </div>
 
-        <div class="bg-slate-100 p-1 rounded-xl border border-slate-200 inline-flex items-center gap-1 shadow-inner">
+        <div class="inline-flex items-center gap-2 p-1 bg-slate-100 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
           <button 
             (click)="setFilter('ALL')" 
-            [class]="activeFilter === 'ALL' ? 'bg-white text-teal-700 font-bold shadow-sm border border-slate-200/60' : 'text-slate-600 hover:text-slate-900'"
-            class="px-3 py-1.5 rounded-lg text-xs transition-all">
+            [class]="activeFilter === 'ALL' ? 'bg-slate-900 text-white' : 'bg-transparent text-slate-700'"
+            class="px-3 py-1 text-xs font-black rounded-lg transition-all">
             All Incidents
           </button>
           <button 
             (click)="setFilter('CRITICAL')" 
-            [class]="activeFilter === 'CRITICAL' ? 'bg-white text-rose-700 font-bold shadow-sm border border-rose-200' : 'text-slate-600 hover:text-rose-600'"
-            class="px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-all">
-            Critical <span class="h-2 w-2 rounded-full bg-rose-500"></span>
+            [class]="activeFilter === 'CRITICAL' ? 'bg-rose-600 text-white' : 'bg-transparent text-rose-700'"
+            class="px-3 py-1 text-xs font-black rounded-lg transition-all flex items-center gap-1.5">
+            Critical <span class="h-2 w-2 rounded-full bg-rose-400"></span>
           </button>
           <button 
             (click)="setFilter('WARNING')" 
-            [class]="activeFilter === 'WARNING' ? 'bg-white text-amber-700 font-bold shadow-sm border border-amber-200' : 'text-slate-600 hover:text-amber-600'"
-            class="px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-all">
-            Warning <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+            [class]="activeFilter === 'WARNING' ? 'bg-amber-500 text-white' : 'bg-transparent text-amber-700'"
+            class="px-3 py-1 text-xs font-black rounded-lg transition-all flex items-center gap-1.5">
+            Warning <span class="h-2 w-2 rounded-full bg-amber-300"></span>
           </button>
         </div>
       </div>

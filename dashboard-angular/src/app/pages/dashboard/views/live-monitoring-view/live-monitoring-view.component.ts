@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TelemetryService, TelemetryData } from '../../../../services/telemetry.service';
 import { ToastService } from '../../../../services/toast.service';
 import { TelemetryChartsComponent } from '../../../../components/telemetry-charts/telemetry-charts.component';
+import { WavesShaderComponent } from '../../../../components/ui/waves-shader/waves-shader.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface ShapParameterCard {
@@ -178,7 +179,8 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
 @Component({
   selector: 'app-live-monitoring-view',
   standalone: true,
-  imports: [CommonModule, TelemetryChartsComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, TelemetryChartsComponent, WavesShaderComponent],
   template: `
     <div class="space-y-6 animate-stagger-1">
       
@@ -199,13 +201,20 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
 
       <!-- Station Hero Summary Card -->
       @if (telemetry(); as data) {
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6 animate-stagger-2">
-          <div class="space-y-3 w-full lg:w-auto">
-            <div class="flex items-center gap-2">
-              <span [ngClass]="data.status === 'SAFE' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider border transition-all duration-300 transform" [class.scale-110]="data.status !== 'SAFE'">
-                {{ data.status }}
+        <div class="stamp-card washi-tape-top relative bg-white p-6 flex flex-col lg:flex-row items-center justify-between gap-6 animate-stagger-2 mt-4 z-10">
+          <!-- WebGL Shader Backdrop with isolated overflow -->
+          <div class="absolute inset-0 rounded-[14px] overflow-hidden z-0">
+            <app-waves-shader class="absolute inset-0 z-0 pointer-events-auto opacity-10 mix-blend-multiply"></app-waves-shader>
+          </div>
+          
+          <div class="relative z-10 space-y-3 w-full lg:w-auto pointer-events-auto">
+            <div class="flex items-center gap-4 mb-2">
+              <span *ngIf="data.status === 'SAFE'" class="border-double border-[3px] border-emerald-600 text-emerald-700 px-3 py-0.5 text-xs font-black uppercase tracking-widest transform -rotate-3 opacity-80 mix-blend-multiply">
+                [ APPROVED CPCB CLASS-A ]
               </span>
-              <span class="text-xs text-slate-500 font-medium">Suitable under current monitored conditions</span>
+              <span *ngIf="data.status !== 'SAFE'" class="border-double border-[3px] border-rose-600 text-rose-700 px-3 py-0.5 text-xs font-black uppercase tracking-widest transform rotate-[4deg] opacity-90 mix-blend-multiply">
+                [ CRITICAL HAZARD DUMP ]
+              </span>
             </div>
 
             <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -213,10 +222,10 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                  <div class="absolute inset-0 bg-emerald-500 rounded-full"></div>
                  <div class="absolute inset-0 bg-emerald-500 rounded-full animate-live-ripple"></div>
               </div>
-              {{ data.locationName }}
+              <span class="bg-white/60 backdrop-blur-sm px-2 py-0.5 rounded-lg">{{ data.locationName }}</span>
             </h3>
 
-            <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
+            <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-700 bg-white/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-200/50">
               <span class="flex items-center gap-1.5">
                 <svg class="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
                 16.2699° N, 73.7148° E
@@ -233,18 +242,18 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
           </div>
 
           <!-- Animated Radial Gauge -->
-          <div class="flex items-center gap-5 bg-slate-50 border border-slate-200/80 p-5 rounded-2xl w-full lg:w-80 justify-between shrink-0 shadow-sm transition-all duration-500"
-               [ngClass]="data.status === 'HAZARD' ? 'border-rose-300 bg-rose-50/40 animate-hazard-glow' : ''">
+          <div class="relative z-10 flex items-center gap-5 bg-white border-2 border-slate-900 p-5 rounded-xl w-full lg:w-80 justify-between shrink-0 shadow-[4px_4px_0px_0px_#0f172a] transition-all duration-500 pointer-events-auto"
+               [ngClass]="data.status === 'HAZARD' ? 'border-rose-900 bg-rose-50/80' : ''">
             <div>
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Water Safety Index</div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight flex items-baseline gap-1">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 underline decoration-slate-300 decoration-2 underline-offset-4">Water Safety Index</div>
+              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight flex items-baseline gap-1 mt-2">
                 <span class="transition-all duration-700">{{ data.compositeScore | number:'1.1-1' }}</span>
                 <span class="text-sm font-bold text-slate-400">/100</span>
               </div>
               <div class="text-[11px] font-bold mt-1 transition-colors" [ngClass]="data.compositeScore >= 75 ? 'text-teal-700' : 'text-rose-600'">
                 {{ data.confidence }}% confidence
               </div>
-              <div class="text-[9px] text-slate-400 uppercase font-mono tracking-wider">NIRVAAH XGBoost</div>
+              <div class="text-[9px] text-slate-900 uppercase font-bold tracking-wider mt-1 highlighter-amber inline-block">NIRVAAH XGBoost</div>
             </div>
 
             <div class="relative h-20 w-20 flex items-center justify-center shrink-0">
@@ -274,37 +283,38 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
         </div>
 
         <!-- Spatial-Temporal Ephemeris Ribbon -->
-        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-3 flex flex-wrap items-center gap-3 animate-stagger-2 mt-4 text-[11px]">
+        <div class="stamp-card bg-white p-4 pt-6 flex flex-wrap items-center gap-3 animate-stagger-2 mt-6 text-[11px] relative">
+          <div class="absolute -top-3 left-4 highlighter-teal px-2 py-0.5 text-[10px] font-black uppercase text-teal-900 border border-teal-200 transform -rotate-2">ISRO Satellite Data Ledger</div>
           <div class="font-bold text-slate-500 uppercase tracking-wider mr-2">Ephemeris Metadata:</div>
           
-          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-            <span class="font-semibold text-slate-600">Latitude:</span>
-            <span class="font-mono font-bold text-teal-700">{{ data.coordinates?.lat ?? 16.2699 }}° N</span>
-            <span class="text-[9px] text-slate-400 font-bold">(#2 • 24.49%)</span>
+          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
+            <span class="font-semibold text-slate-900">Latitude:</span>
+            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ data.coordinates?.lat ?? 16.2699 }}° N</span>
+            <span class="text-[9px] text-slate-500 font-bold">(#2 • 24.49%)</span>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-            <span class="font-semibold text-slate-600">Longitude:</span>
-            <span class="font-mono font-bold text-teal-700">{{ data.coordinates?.lng ?? 73.7148 }}° E</span>
-            <span class="text-[9px] text-slate-400 font-bold">(#3 • 12.25%)</span>
+          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
+            <span class="font-semibold text-slate-900">Longitude:</span>
+            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ data.coordinates?.lng ?? 73.7148 }}° E</span>
+            <span class="text-[9px] text-slate-500 font-bold">(#3 • 12.25%)</span>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-            <span class="font-semibold text-slate-600">Season:</span>
-            <span class="font-bold text-amber-700">Post-Monsoon (High Risk)</span>
-            <span class="text-[9px] text-slate-400 font-bold">(#5 • 6.20%)</span>
+          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed highlighter-amber">
+            <span class="font-semibold text-slate-900">Season:</span>
+            <span class="font-bold text-slate-900">Post-Monsoon (High Risk)</span>
+            <span class="text-[9px] text-slate-700 font-bold">(#5 • 6.20%)</span>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-            <span class="font-semibold text-slate-600">Day of Year:</span>
-            <span class="font-mono font-bold text-teal-700">DOY {{ getDayOfYear() }}</span>
-            <span class="text-[9px] text-slate-400 font-bold">(#7 • 1.42%)</span>
+          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
+            <span class="font-semibold text-slate-900">Day of Year:</span>
+            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">DOY {{ dayOfYear() }}</span>
+            <span class="text-[9px] text-slate-500 font-bold">(#7 • 1.42%)</span>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-            <span class="font-semibold text-slate-600">Epoch:</span>
-            <span class="font-bold text-teal-700">{{ getCurrentEpoch() }}</span>
-            <span class="text-[9px] text-slate-400 font-bold">(#9 & #10 • 1.09%)</span>
+          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
+            <span class="font-semibold text-slate-900">Epoch:</span>
+            <span class="font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ currentEpoch() }}</span>
+            <span class="text-[9px] text-slate-500 font-bold">(#9 & #10 • 1.09%)</span>
           </div>
         </div>
 
@@ -317,14 +327,15 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             
             <!-- 1. pH Level -->
-            <div (click)="selectMetric('ph')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+            <div (click)="selectMetric('ph')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
                  [ngClass]="[
-                   selectedMetric === 'ph' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300',
-                   data.ph < 6.5 || data.ph > 8.5 ? 'animate-hazard-glow' : ''
+                   selectedMetric() === 'ph' ? 'ring-2 ring-slate-900 bg-slate-50' : '',
+                   data.ph < 6.5 || data.ph > 8.5 ? 'border-rose-900 bg-rose-50' : ''
                  ]">
-              <div *ngIf="selectedMetric === 'ph'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
-                <div class="w-2 h-2 bg-white rounded-full"></div>
+              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-12 shadow-[2px_2px_0px_0px_#0f172a]">
+                <div class="text-[10px] font-black text-slate-900">01</div>
               </div>
+              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ pH PROBE</div>
               <div class="flex items-center justify-between pr-4 relative">
                 <div class="flex items-center gap-1.5 group/tooltip relative z-20">
                   <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">pH Level</span>
@@ -337,8 +348,8 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                     <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
                   </div>
                 </div>
-                <span [ngClass]="[getStatusFromColor(getPhColor(data.ph)).bg, getStatusFromColor(getPhColor(data.ph)).textCol, getStatusFromColor(getPhColor(data.ph)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="data.ph < 6.5 || data.ph > 8.5">
-                  {{ getStatusFromColor(getPhColor(data.ph)).text }}
+                <span [ngClass]="[phStatus().bg, phStatus().textCol, phStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="data.ph < 6.5 || data.ph > 8.5">
+                  {{ phStatus().text }}
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
@@ -346,19 +357,20 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: 6.5 – 8.5 pH</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getPhColor(data.ph)" [style.width.%]="getPercentage(data.ph, 0, 14)"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="phColor()" [style.width.%]="phPct()"></div>
               </div>
             </div>
 
             <!-- 2. Turbidity -->
-            <div (click)="selectMetric('turbidity_ntu')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+            <div (click)="selectMetric('turbidity_ntu')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
                  [ngClass]="[
-                   selectedMetric === 'turbidity_ntu' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300',
-                   (data.turbidity_ntu ?? data.turbidity) > 10 ? 'animate-hazard-glow' : ''
+                   selectedMetric() === 'turbidity_ntu' ? 'ring-2 ring-slate-900 bg-slate-50' : '',
+                   (data.turbidity_ntu ?? data.turbidity) > 10 ? 'border-rose-900 bg-rose-50' : ''
                  ]">
-              <div *ngIf="selectedMetric === 'turbidity_ntu'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
-                <div class="w-2 h-2 bg-white rounded-full"></div>
+              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-6 shadow-[2px_2px_0px_0px_#0f172a]">
+                <div class="text-[10px] font-black text-slate-900">02</div>
               </div>
+              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ OPTICS</div>
               <div class="flex items-center justify-between pr-4 relative">
                 <div class="flex items-center gap-1.5 group/tooltip relative z-20">
                   <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Turbidity (Clarity)</span>
@@ -371,8 +383,8 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                     <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
                   </div>
                 </div>
-                <span [ngClass]="[getStatusFromColor(getTurbidityColor(data.turbidity_ntu ?? data.turbidity)).bg, getStatusFromColor(getTurbidityColor(data.turbidity_ntu ?? data.turbidity)).textCol, getStatusFromColor(getTurbidityColor(data.turbidity_ntu ?? data.turbidity)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="(data.turbidity_ntu ?? data.turbidity) > 10">
-                  {{ getStatusFromColor(getTurbidityColor(data.turbidity_ntu ?? data.turbidity)).text }}
+                <span [ngClass]="[turbidityStatus().bg, turbidityStatus().textCol, turbidityStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="(data.turbidity_ntu ?? data.turbidity) > 10">
+                  {{ turbidityStatus().text }}
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
@@ -380,19 +392,20 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 10.0 NTU</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getTurbidityColor(data.turbidity_ntu ?? data.turbidity)" [style.width.%]="getPercentage(data.turbidity_ntu ?? data.turbidity, 0, 50)"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="turbidityColor()" [style.width.%]="turbidityPct()"></div>
               </div>
             </div>
 
             <!-- 3. Electrical Conductivity (EC) -->
-            <div (click)="selectMetric('ec_us_cm')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
+            <div (click)="selectMetric('ec_us_cm')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
                  [ngClass]="[
-                   selectedMetric === 'ec_us_cm' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300',
-                   (data.ec_us_cm ?? data.ec) > 600 ? 'animate-hazard-glow' : ''
+                   selectedMetric() === 'ec_us_cm' ? 'ring-2 ring-slate-900 bg-slate-50' : '',
+                   (data.ec_us_cm ?? data.ec) > 600 ? 'border-rose-900 bg-rose-50' : ''
                  ]">
-              <div *ngIf="selectedMetric === 'ec_us_cm'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
-                <div class="w-2 h-2 bg-white rounded-full"></div>
+              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform -rotate-6 shadow-[2px_2px_0px_0px_#0f172a]">
+                <div class="text-[10px] font-black text-slate-900">03</div>
               </div>
+              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ CONDUCTIVITY</div>
               <div class="flex items-center justify-between pr-4 relative">
                 <div class="flex items-center gap-1.5 group/tooltip relative z-20">
                   <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Conductivity (EC)</span>
@@ -405,8 +418,8 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                     <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
                   </div>
                 </div>
-                <span [ngClass]="[getStatusFromColor(getEcColor(data.ec_us_cm ?? data.ec)).bg, getStatusFromColor(getEcColor(data.ec_us_cm ?? data.ec)).textCol, getStatusFromColor(getEcColor(data.ec_us_cm ?? data.ec)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="(data.ec_us_cm ?? data.ec) > 600">
-                  {{ getStatusFromColor(getEcColor(data.ec_us_cm ?? data.ec)).text }}
+                <span [ngClass]="[ecStatus().bg, ecStatus().textCol, ecStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="(data.ec_us_cm ?? data.ec) > 600">
+                  {{ ecStatus().text }}
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
@@ -414,16 +427,17 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 600 &micro;S/cm</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getEcColor(data.ec_us_cm ?? data.ec)" [style.width.%]="getPercentage(data.ec_us_cm ?? data.ec, 0, 1500)"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="ecColor()" [style.width.%]="ecPct()"></div>
               </div>
             </div>
 
             <!-- 4. Water Temperature -->
-            <div (click)="selectMetric('temperature')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="selectedMetric === 'temperature' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300'">
-              <div *ngIf="selectedMetric === 'temperature'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
-                <div class="w-2 h-2 bg-white rounded-full"></div>
+            <div (click)="selectMetric('temperature')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="selectedMetric() === 'temperature' ? 'ring-2 ring-slate-900 bg-slate-50' : ''">
+              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-3 shadow-[2px_2px_0px_0px_#0f172a]">
+                <div class="text-[10px] font-black text-slate-900">04</div>
               </div>
+              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ THERMAL</div>
               <div class="flex items-center justify-between pr-4 relative">
                 <div class="flex items-center gap-1.5 group/tooltip relative z-20">
                   <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Water Temperature</span>
@@ -436,8 +450,8 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                     <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
                   </div>
                 </div>
-                <span [ngClass]="[getStatusFromColor(getTempColor(data.temp_c ?? data.temperature)).bg, getStatusFromColor(getTempColor(data.temp_c ?? data.temperature)).textCol, getStatusFromColor(getTempColor(data.temp_c ?? data.temperature)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
-                  {{ getStatusFromColor(getTempColor(data.temp_c ?? data.temperature)).text }}
+                <span [ngClass]="[tempStatus().bg, tempStatus().textCol, tempStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
+                  {{ tempStatus().text }}
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
@@ -445,16 +459,17 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: 18.0 &ndash; 28.0 &deg;C</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getTempColor(data.temp_c ?? data.temperature)" [style.width.%]="getPercentage(data.temp_c ?? data.temperature, 10, 40)"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="tempColor()" [style.width.%]="tempPct()"></div>
               </div>
             </div>
 
             <!-- 5. Optical Particulates -->
-            <div (click)="selectMetric('optical_count')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="selectedMetric === 'optical_count' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300'">
-              <div *ngIf="selectedMetric === 'optical_count'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
-                <div class="w-2 h-2 bg-white rounded-full"></div>
+            <div (click)="selectMetric('optical_count')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="selectedMetric() === 'optical_count' ? 'ring-2 ring-slate-900 bg-slate-50' : ''">
+              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform -rotate-12 shadow-[2px_2px_0px_0px_#0f172a]">
+                <div class="text-[10px] font-black text-slate-900">05</div>
               </div>
+              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ CAMERA AI</div>
               <div class="flex items-center justify-between pr-4 relative">
                 <div class="flex items-center gap-1.5 group/tooltip relative z-20">
                   <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Optical Particulates</span>
@@ -467,25 +482,26 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                     <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
                   </div>
                 </div>
-                <span [ngClass]="[getStatusFromColor(getOpticalColor(data.optical_count ?? data.opticalParticulates)).bg, getStatusFromColor(getOpticalColor(data.optical_count ?? data.opticalParticulates)).textCol, getStatusFromColor(getOpticalColor(data.optical_count ?? data.opticalParticulates)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
-                  {{ getStatusFromColor(getOpticalColor(data.optical_count ?? data.opticalParticulates)).text }}
+                <span [ngClass]="[opticalStatus().bg, opticalStatus().textCol, opticalStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
+                  {{ opticalStatus().text }}
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ data.optical_count ?? data.opticalParticulates }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">count</span>
+                <span class="transition-all duration-700">{{ data.optical_count }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">count</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 100 count</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getOpticalColor(data.optical_count ?? data.opticalParticulates)" [style.width.%]="getPercentage(data.optical_count ?? data.opticalParticulates, 0, 100)"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="opticalColor()" [style.width.%]="opticalPct()"></div>
               </div>
             </div>
 
             <!-- 6. Avg Particle Size -->
-            <div (click)="selectMetric('avg_particle_size')" class="bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="selectedMetric === 'avg_particle_size' ? 'ring-2 ring-teal-600 border-teal-500 bg-teal-50/10' : 'border-slate-200 hover:border-slate-300'">
-              <div *ngIf="selectedMetric === 'avg_particle_size'" class="absolute top-0 right-0 w-8 h-8 bg-teal-500 rounded-bl-2xl rounded-tr-2xl flex items-center justify-center">
-                <div class="w-2 h-2 bg-white rounded-full"></div>
+            <div (click)="selectMetric('avg_particle_size')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
+                 [ngClass]="selectedMetric() === 'avg_particle_size' ? 'ring-2 ring-slate-900 bg-slate-50' : ''">
+              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-6 shadow-[2px_2px_0px_0px_#0f172a]">
+                <div class="text-[10px] font-black text-slate-900">06</div>
               </div>
+              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ SEDIMENT</div>
               <div class="flex items-center justify-between pr-4 relative">
                 <div class="flex items-center gap-1.5 group/tooltip relative z-20">
                   <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Avg Particle Size</span>
@@ -498,16 +514,16 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                     <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
                   </div>
                 </div>
-                <span [ngClass]="[getStatusFromColor(getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)).bg, getStatusFromColor(getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)).textCol, getStatusFromColor(getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)).border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
-                  {{ getStatusFromColor(getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)).text }}
+                <span [ngClass]="[sizeStatus().bg, sizeStatus().textCol, sizeStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
+                  {{ sizeStatus().text }}
                 </span>
               </div>
               <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ (data.avg_particle_size_mm ?? data.avgParticleSize) | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">mm</span>
+                <span class="transition-all duration-700">{{ (data.avg_particle_size_mm) | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">mm</span>
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 0.60 mm</div>
               <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="getSizeColor(data.avg_particle_size_mm ?? data.avgParticleSize)" [style.width.%]="getPercentage((data.avg_particle_size_mm ?? data.avgParticleSize), 0, 1.0)"></div>
+                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="sizeColor()" [style.width.%]="sizePct()"></div>
               </div>
             </div>
 
@@ -531,11 +547,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-              @for (item of bioOpticalDrivers; track item.rank) {
-                @if (telemetry(); as data) {
-                  @let valObj = getShapParamValue(item, data);
-                  @let status = getShapStatus(item, valObj.numVal);
-
+              @for (item of computedShapCards(); track item.rank) {
                   <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md hover:border-teal-300 transition-all flex flex-col justify-between group relative">
                     
                     <!-- Top Row: Rank & Status Pill -->
@@ -544,8 +556,8 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                         <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold font-mono bg-slate-100 text-slate-700 border border-slate-200 group-hover:bg-teal-50 group-hover:text-teal-700 transition-colors">
                           #{{ item.rank }} • {{ item.shapImportance }}%
                         </span>
-                        <span [class]="status.badgeClass" class="px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase border">
-                          {{ status.label }}
+                        <span [class]="item.status.badgeClass" class="px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase border">
+                          {{ item.status.label }}
                         </span>
                       </div>
 
@@ -588,7 +600,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
 
                       <!-- Value Display -->
                       <div class="text-2xl font-black text-slate-900 font-mono tracking-tight my-2">
-                        {{ valObj.display }}
+                        {{ item.valObj.display }}
                       </div>
                       <div class="text-[10px] text-slate-400 font-medium">
                         Standard: {{ item.standardRange }}
@@ -597,18 +609,17 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
 
                     <!-- Bottom Dynamic Safety Meter Line -->
                     <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                      <div [class]="status.barClass" class="h-full rounded-full transition-all duration-700 ease-out" [style.width.%]="status.pct"></div>
+                      <div [class]="item.status.barClass" class="h-full rounded-full transition-all duration-700 ease-out" [style.width.%]="item.status.pct"></div>
                     </div>
 
                   </div>
-                }
               }
             </div>
           </div>
 
           <!-- Historical Data Chart Embedded -->
           <div class="mt-6 h-[400px]">
-            <app-telemetry-charts [historyData]="historyData" [metric]="selectedMetric"></app-telemetry-charts>
+            <app-telemetry-charts [historyData]="historyData()" [metric]="selectedMetric()"></app-telemetry-charts>
           </div>
         </div>
       }
@@ -619,14 +630,52 @@ export class LiveMonitoringViewComponent implements OnInit {
   private telemetryService = inject(TelemetryService);
   telemetry = this.telemetryService.telemetrySignal;
   
-  selectedMetric = 'safety_score';
-  historyData: TelemetryData[] = [];
+  selectedMetric = signal('safety_score');
+  historyData = signal<TelemetryData[]>([]);
   
   shapRegistry = TOP_10_SHAP_REGISTRY;
 
-  get bioOpticalDrivers() {
-    return this.shapRegistry.filter(i => ['chl', 'kd490', 'tsm', 'waveHeight'].includes(i.key));
-  }
+  // Pre-calculate time values for template
+  dayOfYear = signal(this.getDayOfYear());
+  currentEpoch = signal(this.getCurrentEpoch());
+
+  // Computed signals for main sensor cards
+  phPct = computed(() => this.getPercentage(this.telemetry().ph, 0, 14));
+  phColor = computed(() => this.getPhColor(this.telemetry().ph));
+  phStatus = computed(() => this.getStatusFromColor(this.phColor()));
+
+  turbidityPct = computed(() => this.getPercentage(this.telemetry().turbidity_ntu ?? this.telemetry().turbidity, 0, 50));
+  turbidityColor = computed(() => this.getTurbidityColor(this.telemetry().turbidity_ntu ?? this.telemetry().turbidity));
+  turbidityStatus = computed(() => this.getStatusFromColor(this.turbidityColor()));
+
+  ecPct = computed(() => this.getPercentage(this.telemetry().ec_us_cm ?? this.telemetry().ec, 0, 1500));
+  ecColor = computed(() => this.getEcColor(this.telemetry().ec_us_cm ?? this.telemetry().ec));
+  ecStatus = computed(() => this.getStatusFromColor(this.ecColor()));
+
+  tempPct = computed(() => this.getPercentage(this.telemetry().temp_c ?? this.telemetry().temperature, 10, 40));
+  tempColor = computed(() => this.getTempColor(this.telemetry().temp_c ?? this.telemetry().temperature));
+  tempStatus = computed(() => this.getStatusFromColor(this.tempColor()));
+
+  opticalPct = computed(() => this.getPercentage(this.telemetry().optical_count, 0, 100));
+  opticalColor = computed(() => this.getOpticalColor(this.telemetry().optical_count));
+  opticalStatus = computed(() => this.getStatusFromColor(this.opticalColor()));
+
+  sizePct = computed(() => this.getPercentage(this.telemetry().avg_particle_size_mm, 0, 1.0));
+  sizeColor = computed(() => this.getSizeColor(this.telemetry().avg_particle_size_mm));
+  sizeStatus = computed(() => this.getStatusFromColor(this.sizeColor()));
+
+  // Computed signal for SHAP drivers
+  computedShapCards = computed(() => {
+    const data = this.telemetry();
+    return this.shapRegistry
+      .filter(i => ['chl', 'kd490', 'tsm', 'waveHeight'].includes(i.key))
+      .map(item => {
+        const valObj = this.getShapParamValue(item, data);
+        const status = this.getShapStatus(item, valObj.numVal);
+        return { ...item, valObj, status };
+      });
+  });
+
 
   getDayOfYear(): number {
     const now = new Date();
@@ -650,7 +699,7 @@ export class LiveMonitoringViewComponent implements OnInit {
   async ngOnInit() {
     try {
       const resp = await this.telemetryService.getHistory();
-      this.historyData = resp.data;
+      this.historyData.set(resp.data);
     } catch (e) {
       console.error(e);
     }
@@ -662,7 +711,7 @@ export class LiveMonitoringViewComponent implements OnInit {
   }
 
   selectMetric(metric: string): void {
-    this.selectedMetric = metric;
+    this.selectedMetric.set(metric);
   }
 
   getPercentage(value: number, min: number, max: number): number {

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit, OnDestroy, inject, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -14,14 +14,20 @@ import { Subscription } from 'rxjs';
   templateUrl: './telemetry-charts.component.html',
   styleUrls: ['./telemetry-charts.component.css']
 })
-export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy {
+export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy, AfterViewInit {
   @Input() historyData: any[] = [];
   @Input() metric = 'safety_score';
   
   private telemetryService = inject(TelemetryService);
   private cdr = inject(ChangeDetectorRef);
+  private ngZone = inject(NgZone);
   private sub?: Subscription;
   private currentStreamData: any[] = [];
+  private resizeObserver?: ResizeObserver;
+  private chartInstance: any;
+
+  @ViewChild('chartContainer') chartContainer!: ElementRef;
+
   timeRange = '24h';
   chartOptions: EChartsOption = {};
 
@@ -54,8 +60,30 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.ngZone.runOutsideAngular(() => {
+      let resizeTimeout: any;
+      this.resizeObserver = new ResizeObserver(() => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          this.chartInstance?.resize({ animation: { duration: 150 } });
+        }, 100);
+      });
+
+      if (this.chartContainer?.nativeElement) {
+        this.resizeObserver.observe(this.chartContainer.nativeElement);
+      }
+    });
+  }
+
+  onChartInit(ec: any) {
+    this.chartInstance = ec;
+  }
+
   ngOnDestroy() {
     this.sub?.unsubscribe();
+    this.resizeObserver?.disconnect();
+    this.chartInstance?.dispose();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -85,7 +113,7 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy {
     
     // Decimate max points using LTTB if needed, though stream might be short
     const tuples: [number, number][] = dataToRender.map(d => [new Date(d.timestamp).getTime(), d[this.metric]]);
-    const sampledTuples = downsampleLTTB(tuples, 200);
+    const sampledTuples = downsampleLTTB(tuples, 150);
 
     const times = sampledTuples.map(t => {
       const date = new Date(t[0]);
@@ -111,7 +139,17 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     this.chartOptions = {
-      grid: { top: 10, right: 10, bottom: 20, left: 30 },
+      backgroundColor: 'transparent',
+      grid: { 
+        show: true,
+        borderColor: '#e2e8f0',
+        borderWidth: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+        top: 10, 
+        right: 10, 
+        bottom: 20, 
+        left: 30 
+      },
       tooltip: {
         trigger: 'axis',
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -154,6 +192,8 @@ export class TelemetryChartsComponent implements OnChanges, OnInit, OnDestroy {
           data: values,
           smooth: true,
           showSymbol: false,
+          sampling: 'lttb',
+          animation: false,
           itemStyle: { color: activeConf.color },
           areaStyle: this.metric === 'safety_score' ? {
             color: {

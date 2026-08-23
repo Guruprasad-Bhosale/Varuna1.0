@@ -16,10 +16,15 @@
       No active alerts in this time period.
     </div>
 
-    <div *ngIf="alerts && alerts.length > 0" class="flex flex-col gap-2">
-      <div *ngFor="let alert of alerts" class="flex gap-4 p-4 rounded-xl bg-white hover:bg-slate-50 transition-all border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md cursor-pointer group">
+    <div *ngIf="alerts && alerts.length > 0" class="flex flex-col gap-4">
+      <div *ngFor="let alert of alerts" class="flex gap-4 p-5 bg-white stamp-card relative group cursor-pointer hover:bg-slate-50 transition-colors">
         
-        <div class="mt-0.5 p-2.5 rounded-full shrink-0 h-max border shadow-sm" [ngClass]="getAlertStyles(alert.severity).bg + ' ' + getAlertStyles(alert.severity).color + ' ' + getAlertStyles(alert.severity).border">
+        <!-- Left Notebook Margin (Serial ID) -->
+        <div class="hidden sm:flex flex-col items-center justify-center border-r-2 border-slate-900 border-dashed pr-4 mr-2">
+          <span class="font-mono text-xs font-black text-slate-400 rotate-180" style="writing-mode: vertical-rl;">{{ alert.id }}</span>
+        </div>
+
+        <div class="mt-0.5 p-2.5 rounded-full shrink-0 h-max border-2 shadow-[2px_2px_0px_0px_#0f172a]" [ngClass]="getAlertStyles(alert.severity).bg + ' ' + getAlertStyles(alert.severity).color + ' ' + getAlertStyles(alert.severity).border">
           <lucide-icon [img]="getAlertStyles(alert.severity).icon" class="w-5 h-5"></lucide-icon>
         </div>
         
@@ -33,24 +38,28 @@
             </div>
           </div>
           
-          <div class="text-xs text-slate-600 mb-2 leading-relaxed">
+          <div class="text-xs text-slate-800 font-medium mb-3 leading-relaxed">
             {{ alert.description }}
           </div>
           
-          <div class="text-[10px] font-mono text-slate-500 mb-3 bg-slate-100 p-1.5 rounded-md inline-block">
+          <div class="text-[10px] font-mono font-bold text-slate-800 mb-4 bg-slate-50 border-2 border-slate-900 px-2 py-1 inline-block shadow-[2px_2px_0px_0px_#0f172a]">
             {{ alert.parameters }}
           </div>
 
-          <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+          <div class="flex justify-between items-center pt-4 border-t-2 border-slate-900 border-dashed mt-1">
             <div class="flex items-center gap-2">
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Node:</span>
-              <span class="text-xs font-bold text-slate-700">{{ alert.station }} <span class="text-slate-400 font-medium">({{ alert.river }})</span></span>
+              <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Node:</span>
+              <span class="text-xs font-black text-slate-700">{{ alert.station }} <span class="text-slate-500 font-mono">({{ alert.river }})</span></span>
             </div>
-            <div class="flex items-center gap-3">
-              <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border shadow-sm" [ngClass]="getStatusStyles(alert.status)">
+            <div class="flex items-center gap-4">
+              <!-- Rubber Stamp -->
+              <span *ngIf="alert.status === 'DISPATCHED'" class="rubber-stamp-dispatched">{{ alert.status }}</span>
+              <span *ngIf="alert.status === 'RESOLVED'" class="rubber-stamp-resolved">{{ alert.status }}</span>
+              <span *ngIf="alert.status === 'ACTIVE'" class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border shadow-sm" [ngClass]="getStatusStyles(alert.status)">
                 {{ alert.status }}
               </span>
-              <button class="text-teal-600 hover:text-teal-700 text-[10px] font-bold uppercase tracking-wider transition-colors hidden sm:block">
+
+              <button class="stamp-btn px-3 py-1 bg-white hover:bg-slate-100 text-slate-900 text-[11px] font-black border-2 border-slate-900 rounded-lg hidden sm:block">
                 Acknowledge
               </button>
             </div>

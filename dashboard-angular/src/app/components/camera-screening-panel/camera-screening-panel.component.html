@@ -1,53 +1,193 @@
-<div class="card-panel flex flex-col h-full bg-white rounded-xl border border-border shadow-sm">
-  <div class="p-4 border-b border-border flex justify-between items-center bg-surfaceHover">
+<div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5 h-full relative">
+  <!-- Header Strip -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
     <div class="flex items-center gap-2">
-      <lucide-icon [img]="CameraIcon" class="w-4 h-4 text-teal"></lucide-icon>
-      <h3 class="font-semibold text-navy">AI-Assisted Particle Screening</h3>
+      <div class="p-2 bg-slate-50 rounded-lg border border-slate-200">
+        <lucide-icon [img]="CameraIcon" class="w-5 h-5 text-slate-700"></lucide-icon>
+      </div>
+      <h3 class="font-bold text-slate-900 text-lg">AI-Assisted Particle Screening</h3>
+    </div>
+
+    <!-- Mode Switcher Pill -->
+    <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+      <button 
+        (click)="setViewMode('annotated')" 
+        [ngClass]="viewMode() === 'annotated' ? 'bg-white text-teal-700 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'"
+        class="px-3 py-1.5 rounded-lg transition-all">
+        Annotated
+      </button>
+      <button 
+        (click)="setViewMode('raw')" 
+        [ngClass]="viewMode() === 'raw' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'"
+        class="px-3 py-1.5 rounded-lg transition-all">
+        Raw Stream
+      </button>
+      <button 
+        (click)="setViewMode('mask')" 
+        [ngClass]="viewMode() === 'mask' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'"
+        class="px-3 py-1.5 rounded-lg transition-all">
+        Binary Mask
+      </button>
     </div>
   </div>
 
-  <div class="p-4 flex-1 flex flex-col gap-4">
-    <!-- Image Display -->
-    <div class="w-full h-48 bg-navy rounded-lg overflow-hidden relative flex items-center justify-center">
-      <div class="absolute top-2 left-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white backdrop-blur">
-        Latest Sample
+  <!-- Dual Optical Viewport -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+    <!-- Pane 1: Raw Ingest Sample -->
+    <div class="stamp-card p-3 pb-10 bg-white relative">
+      <div class="washi-tape-top absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-amber-100/80 z-20 transform -rotate-2"></div>
+      <div class="bg-slate-900 relative aspect-video shadow-inner border-2 border-slate-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] overflow-hidden w-full h-full">
+        <div class="absolute top-3 left-3 bg-black/60 px-2 py-1 rounded text-[10px] text-white font-mono z-10 border border-white/10 backdrop-blur-sm flex items-center gap-2">
+          <span class="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+          RAW • 1080p &#64; 30fps • ISO 200
+        </div>
+        <div class="absolute bottom-3 right-3 text-white/50 text-[10px] font-mono z-10">
+          {{ lastUpdatedTimestamp | date:'yyyy-MM-dd HH:mm:ss.SSS' }}
+        </div>
+        <div *ngIf="isFlashing()" class="absolute inset-0 bg-white z-20 opacity-90 transition-opacity"></div>
+        <img [src]="latestCaptureUrl" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-screen" alt="Raw stream" />
       </div>
-      
-      <!-- Cache-busting IMG -->
-      <img [src]="latestCaptureUrl" class="w-full h-full object-cover" />
-
-      <!-- Synthetic representation of the bounding box image -->
-      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#1e293b" />
-        <g *ngFor="let p of syntheticPoints">
-          <circle [attr.cx]="p.cx" [attr.cy]="p.cy" [attr.r]="p.r" fill="#94a3b8" />
-          <rect [attr.x]="p.x" [attr.y]="p.y" width="8" height="8" fill="none" stroke="#0ea5e9" stroke-width="1" />
-        </g>
-      </svg>
+      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-700 text-xs uppercase handwritten tracking-widest opacity-80">RAW FEED</div>
     </div>
 
-    <!-- Results Grid -->
-    <div class="grid grid-cols-2 gap-3 text-sm">
-      <div class="bg-surfaceHover p-3 rounded border border-border">
-        <div class="text-textMuted text-xs mb-1">Detected Particles</div>
-        <div class="font-bold text-navy">132</div>
-      </div>
-      <div class="bg-surfaceHover p-3 rounded border border-border">
-        <div class="text-textMuted text-xs mb-1">Avg Size</div>
-        <div class="font-bold text-navy">0.8 mm</div>
-      </div>
-    </div>
+    <!-- Pane 2: AI Segmentation Canvas -->
+    <div class="stamp-card p-3 pb-10 bg-white relative">
+      <div class="washi-tape-top absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-8 bg-rose-100/80 z-20 transform rotate-3"></div>
+      <div class="bg-slate-900 relative aspect-video shadow-inner border-2 border-slate-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] overflow-hidden w-full h-full">
+        <div class="absolute top-3 left-3 bg-black/60 px-2 py-1 rounded text-[10px] text-white font-mono z-10 border border-teal-500/30 text-teal-400 backdrop-blur-sm">
+          NIRVAAH YOLO DETECT
+        </div>
+        
+        <div *ngIf="isFlashing()" class="absolute inset-0 bg-white z-20 opacity-90 transition-opacity"></div>
+        
+        <div class="absolute inset-0 z-0 bg-slate-900" [ngClass]="{'bg-black': viewMode() === 'mask'}"></div>
 
-    <!-- Disclaimer -->
-    <div class="mt-auto flex items-start gap-2 bg-moderateBg/50 p-3 rounded border border-moderateBg text-xs text-moderate">
-      <lucide-icon [img]="AlertCircleIcon" class="w-4 h-4 shrink-0 mt-0.5"></lucide-icon>
-      <p>
-        <strong>Screening support only.</strong> This optical classification does not serve as laboratory confirmation of microplastics or specific biological contaminants.
-      </p>
+        <img *ngIf="viewMode() !== 'mask'" [src]="latestCaptureUrl" class="absolute inset-0 w-full h-full object-cover opacity-30 z-0" alt="Annotated stream" />
+        
+        <svg class="absolute inset-0 w-full h-full z-10" xmlns="http://www.w3.org/2000/svg">
+          <g *ngFor="let p of syntheticPoints">
+            <!-- Raw: no drawing on the second pane? Wait, raw is full mode switcher. -->
+            <ng-container *ngIf="viewMode() === 'annotated'">
+              <rect [attr.x]="p.x" [attr.y]="p.y" width="14" height="14" fill="none" [attr.stroke]="p.color" stroke-width="1.5" />
+              <text [attr.x]="p.x" [attr.y]="'calc(' + p.y + ' - 4px)'" [attr.fill]="p.color" font-size="8" font-family="monospace" font-weight="bold">{{ p.id }}</text>
+            </ng-container>
+            <ng-container *ngIf="viewMode() === 'mask'">
+              <circle [attr.cx]="p.cx" [attr.cy]="p.cy" [attr.r]="p.r * 1.5" fill="#ffffff" />
+            </ng-container>
+          </g>
+        </svg>
+      </div>
+      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-700 text-xs uppercase handwritten tracking-widest opacity-80">AI OVERLAY</div>
+    </div>
+  </div>
+
+  <!-- Telemetry Metrics Bar & Action Controls -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+    <!-- Telemetry -->
+    <div class="flex flex-wrap gap-4">
+      <div class="space-y-1">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Detected Particles</div>
+        <div class="text-2xl font-black text-slate-900 tabular-nums">{{ detectedCount() }} <span class="text-xs font-semibold text-slate-500 tracking-normal ml-1">count</span></div>
+      </div>
+      <div class="w-px h-10 bg-slate-200 hidden sm:block"></div>
+      <div class="space-y-1">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Avg Particle Size</div>
+        <div class="text-2xl font-black text-slate-900">0.28 <span class="text-xs font-semibold text-slate-500 tracking-normal ml-1">mm</span></div>
+      </div>
+      <div class="w-px h-10 bg-slate-200 hidden lg:block"></div>
+      <div class="space-y-1 hidden lg:block">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Predominant Morphology</div>
+        <div class="text-sm font-bold text-slate-900 mt-1">Fibrous / Micro-Flake <span class="text-teal-600 font-semibold ml-1">(74%)</span></div>
+      </div>
     </div>
     
-    <button class="w-full py-2 bg-surfaceHover hover:bg-slate-100 border border-border rounded text-sm font-medium text-navy transition-colors">
-      Compare Recent Samples
-    </button>
+    <!-- Controls -->
+    <div class="flex items-center gap-2">
+      <button 
+        (click)="openComparisonModal()"
+        class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition-colors flex items-center gap-1.5">
+        <lucide-icon [img]="SearchIcon" class="w-3.5 h-3.5"></lucide-icon>
+        Compare
+      </button>
+      <button 
+        class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition-colors flex items-center gap-1.5">
+        <lucide-icon [img]="SettingsIcon" class="w-3.5 h-3.5"></lucide-icon>
+        Calibrate
+      </button>
+      <button 
+        (click)="captureFrame()"
+        class="px-4 py-2 bg-teal-600 hover:bg-teal-700 border border-teal-600 rounded-xl text-xs font-bold text-white transition-colors shadow-sm flex items-center gap-1.5">
+        <lucide-icon [img]="CameraIcon" class="w-3.5 h-3.5"></lucide-icon>
+        Capture
+      </button>
+    </div>
+  </div>
+
+  <!-- Compliance Disclaimer Box -->
+  <div class="bg-amber-50/80 border border-amber-200/80 rounded-xl p-3.5 flex items-start gap-3 text-xs text-amber-900 mt-2">
+    <lucide-icon [img]="AlertCircleIcon" class="h-4 w-4 text-amber-600 shrink-0 mt-0.5"></lucide-icon>
+    <div>
+      <span class="font-bold">Screening Support Only:</span>
+      <span class="text-amber-800 ml-1">Optical morphological classification assists early warning detection and does not replace accredited laboratory mass spectrometry.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Interactive "Compare Recent Samples" Drawer / Modal -->
+<div *ngIf="isModalOpen()" class="fixed inset-0 z-[1200] flex items-center justify-center p-4">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-[1150]" (click)="closeComparisonModal()"></div>
+  
+  <!-- Modal Content -->
+  <div class="relative z-[1200] bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-stagger-1">
+    
+    <div class="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
+      <div>
+        <h3 class="text-lg font-black text-slate-900">Compare Recent Samples</h3>
+        <p class="text-xs text-slate-500 font-medium">Historical timeline of optical diagnostic frames</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="px-3 py-1.5 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center gap-1.5 transition-colors">
+          <lucide-icon [img]="DownloadIcon" class="w-3.5 h-3.5"></lucide-icon>
+          Export Data
+        </button>
+        <button (click)="closeComparisonModal()" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+          <lucide-icon [img]="CloseIcon" class="w-5 h-5"></lucide-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="p-6 overflow-y-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div *ngFor="let sample of recentSamples" class="group rounded-xl border border-slate-200 overflow-hidden bg-slate-50 hover:border-teal-300 transition-colors shadow-sm">
+          <div class="bg-slate-900 aspect-video relative flex items-center justify-center overflow-hidden">
+            <!-- Simulated captured image -->
+            <img [src]="latestCaptureUrl" class="w-full h-full object-cover opacity-60 mix-blend-screen" alt="Sample Frame" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+            
+            <div class="absolute bottom-3 left-3">
+              <div class="text-white font-bold text-sm">{{ sample.time }}</div>
+            </div>
+          </div>
+          
+          <div class="p-4 flex items-center justify-between bg-white">
+            <div>
+              <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Particle Count</div>
+              <div class="text-xl font-black text-slate-900 tabular-nums">{{ sample.count }}</div>
+            </div>
+            
+            <div class="text-right">
+              <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Variance</div>
+              <div class="text-sm font-bold flex items-center justify-end gap-1"
+                   [ngClass]="sample.variance.startsWith('+') ? 'text-rose-600' : 'text-emerald-600'">
+                <span *ngIf="sample.variance.startsWith('+')">▲</span>
+                <span *ngIf="sample.variance.startsWith('-')">▼</span>
+                {{ sample.variance }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

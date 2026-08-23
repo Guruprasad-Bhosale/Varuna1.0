@@ -9,30 +9,46 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
   standalone: true,
   imports: [CommonModule, RouterModule, BreadcrumbsComponent],
   template: `
-    <div class="bg-white py-12 md:py-20" *ngIf="post">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="py-12 md:py-20" *ngIf="post">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <app-breadcrumbs [crumbs]="[
           {label: 'Blog', path: '/blog'},
           {label: post.title, path: '/blog/' + post.slug}
         ]"></app-breadcrumbs>
         
-        <div class="mb-8">
-          <div class="flex items-center space-x-2 text-sm text-slate-500 mb-4 font-medium">
-            <span>{{ post.date }}</span>
-            <span>&bull;</span>
-            <span class="text-cyan-600">{{ post.category }}</span>
-          </div>
-          <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">{{ post.title }}</h1>
-        </div>
+        <article class="mt-8 stamp-card bg-white p-8 md:p-12 relative">
+          <div class="washi-tape-top"></div>
+          <div class="binder-margin pl-6 md:pl-10 h-full">
+            <div class="mb-10 border-b-2 border-slate-900 pb-8">
+              <div class="flex items-center space-x-3 text-[11px] font-mono font-black text-slate-500 mb-6 uppercase tracking-widest">
+                <span class="bg-slate-100 px-2 py-1 border border-slate-200">{{ post.date }}</span>
+                <span>//</span>
+                <span class="text-teal-700 bg-teal-50 px-2 py-1 border border-teal-100">{{ post.category }}</span>
+              </div>
+              <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-8 uppercase">{{ post.title }}</h1>
+              
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a] bg-slate-100 flex-shrink-0 flex items-center justify-center font-black text-slate-400">GB</div>
+                <div>
+                  <h4 class="font-black text-slate-900 uppercase">Guruprasad Bhosale</h4>
+                  <p class="text-[10px] font-mono font-bold text-teal-700 tracking-widest uppercase">Lead Architect // Field Unit 01</p>
+                </div>
+              </div>
+            </div>
 
-        <div class="prose prose-lg prose-cyan text-slate-700 max-w-none">
-          <p class="lead">{{ post.excerpt }}</p>
-          <div [innerHTML]="post.content"></div>
-        </div>
-        
-        <div class="mt-16 pt-8 border-t border-slate-200">
-          <a routerLink="/blog" class="text-cyan-600 hover:underline font-medium">&larr; Back to all articles</a>
-        </div>
+            <div class="prose prose-lg prose-slate max-w-none prose-headings:font-black prose-headings:text-slate-900 prose-headings:uppercase prose-headings:tracking-widest">
+              <p class="text-xl font-bold text-slate-700 mb-10 border-l-4 border-slate-900 pl-4 py-1 leading-relaxed">{{ post.excerpt }}</p>
+              <div [innerHTML]="post.content"></div>
+            </div>
+            
+            <div class="mt-16 pt-8 border-t-2 border-slate-900 flex justify-between items-center">
+              <a routerLink="/blog" class="stamp-btn bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-black uppercase transition-colors hover:bg-teal-700 inline-flex items-center">
+                &larr; Back to Logs
+              </a>
+              <span class="rubber-stamp-resolved bg-white !transform-none !text-[9px]">END OF LOG</span>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
     

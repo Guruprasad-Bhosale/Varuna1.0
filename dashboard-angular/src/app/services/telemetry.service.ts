@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable, interval, of } from 'rxjs';
 export interface TelemetryData {
   nodeId: string;
@@ -75,32 +75,38 @@ export class TelemetryService {
 
   private isSimulated = false;
 
+  private ngZone = inject(NgZone);
+
   constructor() {
-    // Realistic 2.5s Sensor Micro-Jitter & Live Heartbeat Loop
-    interval(2500).subscribe(() => {
-      if (this.isSimulated) return; // Keep simulation static until reset
+    // Realistic 3.0s Sensor Micro-Jitter & Live Heartbeat Loop outside NgZone
+    this.ngZone.runOutsideAngular(() => {
+      interval(3000).subscribe(() => {
+        if (this.isSimulated) return; // Keep simulation static until reset
 
-      const current = this.telemetrySubject.value;
-      const jitterPh = +(current.ph + (Math.random() * 0.04 - 0.02)).toFixed(2);
-      const jitterTurbidity = +(Math.max(2.0, current.turbidity + (Math.random() * 0.2 - 0.1))).toFixed(2);
-      const jitterEc = +(current.ec + (Math.random() * 3.0 - 1.5)).toFixed(1);
-      const jitterTemp = +(current.temperature + (Math.random() * 0.1 - 0.05)).toFixed(1);
+        const current = this.telemetrySubject.value;
+        const jitterPh = +(current.ph + (Math.random() * 0.04 - 0.02)).toFixed(2);
+        const jitterTurbidity = +(Math.max(2.0, current.turbidity + (Math.random() * 0.2 - 0.1))).toFixed(2);
+        const jitterEc = +(current.ec + (Math.random() * 3.0 - 1.5)).toFixed(1);
+        const jitterTemp = +(current.temperature + (Math.random() * 0.1 - 0.05)).toFixed(1);
 
-      const updated: TelemetryData = {
-        ...current,
-        timestamp: new Date().toLocaleTimeString(),
-        lastSync: new Date().toLocaleTimeString(),
-        ph: Math.min(8.5, Math.max(6.5, jitterPh)),
-        turbidity: jitterTurbidity,
-        turbidity_ntu: jitterTurbidity,
-        ec: jitterEc,
-        ec_us_cm: jitterEc,
-        temperature: jitterTemp,
-        temp_c: jitterTemp
-      };
+        const updated: TelemetryData = {
+          ...current,
+          timestamp: new Date().toLocaleTimeString(),
+          lastSync: new Date().toLocaleTimeString(),
+          ph: Math.min(8.5, Math.max(6.5, jitterPh)),
+          turbidity: jitterTurbidity,
+          turbidity_ntu: jitterTurbidity,
+          ec: jitterEc,
+          ec_us_cm: jitterEc,
+          temperature: jitterTemp,
+          temp_c: jitterTemp
+        };
 
-      this.telemetrySubject.next(updated);
-      this.telemetrySignal.set(updated);
+        this.telemetrySubject.next(updated);
+        this.ngZone.run(() => {
+          this.telemetrySignal.set(updated);
+        });
+      });
     });
   }
 
@@ -173,12 +179,18 @@ export class TelemetryService {
     }
 
     this.telemetrySubject.next(modified);
-    this.telemetrySignal.set(modified);
+    this.ngZone.run(() => {
+      this.telemetrySignal.set(modified);
+    });
 
-    // Auto-revert back to nominal live stream after 20 seconds
-    setTimeout(() => {
-      this.simulateSpike('reset');
-    }, 20000);
+    // Auto-revert back to nominal live stream after 20 seconds outside NgZone
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.ngZone.run(() => {
+          this.simulateSpike('reset');
+        });
+      }, 20000);
+    });
   }
 
   async getHistory(nodeId = "VARUNA-001", limit = 200) {

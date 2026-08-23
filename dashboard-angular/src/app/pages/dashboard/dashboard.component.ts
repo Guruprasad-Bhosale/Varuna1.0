@@ -13,9 +13,10 @@ import { HistoricalTrendsViewComponent } from './views/historical-trends-view/hi
 import { AlertsViewComponent } from './views/alerts-view/alerts-view.component';
 import { CameraScreeningViewComponent } from './views/camera-screening-view/camera-screening-view.component';
 import { SettingsViewComponent } from './views/settings-view/settings-view.component';
+import { ContactViewComponent } from './views/contact-view/contact-view.component';
 import { ThresholdConfigModalComponent } from '../../components/threshold-config-modal/threshold-config-modal.component';
 
-export type DashboardTab = 'overview' | 'nodes' | 'live' | 'trends' | 'alerts' | 'camera' | 'settings';
+export type DashboardTab = 'overview' | 'nodes' | 'live' | 'trends' | 'alerts' | 'camera' | 'settings' | 'contact';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +26,7 @@ export type DashboardTab = 'overview' | 'nodes' | 'live' | 'trends' | 'alerts' |
     RiverNodesViewComponent, LiveMonitoringViewComponent,
     HistoricalTrendsViewComponent, AlertsViewComponent,
     CameraScreeningViewComponent, SettingsViewComponent,
-    ThresholdConfigModalComponent
+    ThresholdConfigModalComponent, ContactViewComponent
   ],
   template: `
     <div class="flex min-h-screen bg-slate-50 text-slate-800">
@@ -71,6 +72,9 @@ export type DashboardTab = 'overview' | 'nodes' | 'live' | 'trends' | 'alerts' |
               @case ('settings') {
                 <app-settings-view></app-settings-view>
               }
+              @case ('contact') {
+                <app-contact-view></app-contact-view>
+              }
             }
           </div>
         </main>
@@ -111,7 +115,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Read ?tab= from URL on load
     this.route.queryParamMap.subscribe(params => {
       const tabParam = params.get('tab') as DashboardTab;
-      if (tabParam && ['overview', 'nodes', 'live', 'trends', 'alerts', 'camera', 'settings'].includes(tabParam)) {
+      if (tabParam && ['overview', 'nodes', 'live', 'trends', 'alerts', 'camera', 'settings', 'contact'].includes(tabParam)) {
         this.activeTab.set(tabParam);
       }
     });
