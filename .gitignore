@@ -28,3 +28,6 @@ package-lock.json
 *.xlsx
 ML_Model_N/NIRVAAH/data/
 backend/ml/data/
+.env.*
+*.db
+*.pem

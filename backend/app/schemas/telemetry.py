@@ -4,15 +4,15 @@ from typing import Optional
 
 class TelemetryIngestPayload(BaseModel):
     timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
-    node_id: str = Field(...)
-    latitude: float = Field(...)
-    longitude: float = Field(...)
+    node_id: str = Field(..., max_length=50)
+    latitude: float = Field(..., ge=15.0, le=18.0)
+    longitude: float = Field(..., ge=72.0, le=75.0)
     ph: float = Field(..., ge=0.0, le=14.0)
-    turbidity_ntu: float = Field(..., ge=0.0)
-    ec_us_cm: float = Field(..., ge=0.0)
-    temperature_c: float = Field(...)
-    particle_count: int = Field(..., ge=0)
-    avg_particle_size_mm: float = Field(..., ge=0.0)
+    turbidity_ntu: float = Field(..., ge=0.0, le=500.0)
+    ec_us_cm: float = Field(..., ge=0.0, le=50000.0)
+    temperature_c: float = Field(..., ge=-10.0, le=60.0)
+    particle_count: int = Field(..., ge=0, le=1000000)
+    avg_particle_size_mm: float = Field(..., ge=0.0, le=10.0)
 
 class TelemetryResponse(BaseModel):
     id: int

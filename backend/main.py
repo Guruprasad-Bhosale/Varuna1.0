@@ -2,8 +2,13 @@ import logging
 import sys
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+import uuid
+import traceback
+from slowapi.errors import RateLimitExceeded
+from slowapi import _rate_limit_exceeded_handler
 
 # Ensure backend can import relative modules from root
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -12,6 +17,8 @@ from backend.app.api.v1 import telemetry, ml
 from backend.app.db.session import engine, Base
 from sqlalchemy import text
 from ml.inference import WaterSafetyPredictor
+from backend.app.core.rate_limit import limiter
+from backend.app.core.config import settings
 import time
 
 def get_memory_usage_mb() -> float:
@@ -63,12 +70,43 @@ app = FastAPI(
     title="Project VARUNA API",
     description="Backend for environmental IoT water quality platform",
     version="0.2.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    docs_url=None if settings.ENVIRONMENT == "production" else "/docs",
+    redoc_url=None if settings.ENVIRONMENT == "production" else "/redoc"
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    req_id = str(uuid.uuid4())
+    logger.error(f"Unhandled exception (Request ID: {req_id}): {exc}")
+    # Log the full traceback internally, do not leak to client
+    logger.error(traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "request_id": req_id}
+    )
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data: https:; script-src 'self'; style-src 'self' 'unsafe-inline';"
+    return response
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https://.*\.onrender\.com|http://localhost:\d+",
+    allow_origins=[
+        "https://varuna-portal.onrender.com",
+        "https://varuna1-0.onrender.com",
+        "http://localhost:4200"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

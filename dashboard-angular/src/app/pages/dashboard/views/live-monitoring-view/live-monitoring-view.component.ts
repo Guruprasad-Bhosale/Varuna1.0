@@ -273,6 +273,40 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
           </div>
         </div>
 
+        <!-- Spatial-Temporal Ephemeris Ribbon -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-3 flex flex-wrap items-center gap-3 animate-stagger-2 mt-4 text-[11px]">
+          <div class="font-bold text-slate-500 uppercase tracking-wider mr-2">Ephemeris Metadata:</div>
+          
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+            <span class="font-semibold text-slate-600">Latitude:</span>
+            <span class="font-mono font-bold text-teal-700">{{ data.coordinates?.lat ?? 16.2699 }}° N</span>
+            <span class="text-[9px] text-slate-400 font-bold">(#2 • 24.49%)</span>
+          </div>
+
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+            <span class="font-semibold text-slate-600">Longitude:</span>
+            <span class="font-mono font-bold text-teal-700">{{ data.coordinates?.lng ?? 73.7148 }}° E</span>
+            <span class="text-[9px] text-slate-400 font-bold">(#3 • 12.25%)</span>
+          </div>
+
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+            <span class="font-semibold text-slate-600">Season:</span>
+            <span class="font-bold text-amber-700">Post-Monsoon (High Risk)</span>
+            <span class="text-[9px] text-slate-400 font-bold">(#5 • 6.20%)</span>
+          </div>
+
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+            <span class="font-semibold text-slate-600">Day of Year:</span>
+            <span class="font-mono font-bold text-teal-700">DOY {{ getDayOfYear() }}</span>
+            <span class="text-[9px] text-slate-400 font-bold">(#7 • 1.42%)</span>
+          </div>
+
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+            <span class="font-semibold text-slate-600">Epoch:</span>
+            <span class="font-bold text-teal-700">{{ getCurrentEpoch() }}</span>
+            <span class="text-[9px] text-slate-400 font-bold">(#9 & #10 • 1.09%)</span>
+          </div>
+        </div>
 
         <!-- Complete 6-Card Edge Sensor Array -->
         <div class="animate-stagger-3">
@@ -479,25 +513,25 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
 
           </div>
 
-          <!-- SHAP Model Driver Grid Section -->
-          <div class="mt-8 space-y-4">
+          <!-- Bio-Optical Satellite & Oceanographic Stream -->
+          <div class="mt-8 space-y-4 animate-stagger-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
               <div>
                 <h3 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                  <span>NIRVAAH AI & Satellite Feature Drivers</span>
+                  <span>Bio-Optical Satellite & Oceanographic Stream</span>
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
-                    Ranked by SHAP Weight
+                    Top SHAP Drivers
                   </span>
                 </h3>
                 <p class="text-xs text-slate-500">
-                  Top 10 earth observation and contextual features driving the 27-feature XGBoost bloom prediction model
+                  Critical satellite and hydrodynamic parameters driving algal bloom prediction
                 </p>
               </div>
               <span class="text-[11px] font-mono text-slate-400">ISRO EOS-06 / Oceansat-2 Calibrated</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
-              @for (item of shapRegistry; track item.rank) {
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              @for (item of bioOpticalDrivers; track item.rank) {
                 @if (telemetry(); as data) {
                   @let valObj = getShapParamValue(item, data);
                   @let status = getShapStatus(item, valObj.numVal);
@@ -589,6 +623,23 @@ export class LiveMonitoringViewComponent implements OnInit {
   historyData: TelemetryData[] = [];
   
   shapRegistry = TOP_10_SHAP_REGISTRY;
+
+  get bioOpticalDrivers() {
+    return this.shapRegistry.filter(i => ['chl', 'kd490', 'tsm', 'waveHeight'].includes(i.key));
+  }
+
+  getDayOfYear(): number {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now.getTime() - start.getTime();
+    return Math.floor(diff / (1000 * 60 * 60 * 24));
+  }
+
+  getCurrentEpoch(): string {
+    const month = new Date().toLocaleString('default', { month: 'short' });
+    const year = new Date().getFullYear();
+    return `${month} ${year}`;
+  }
 
   constructor(private toast: ToastService) {
     this.telemetryService.telemetry$.pipe(

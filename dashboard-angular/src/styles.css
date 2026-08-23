@@ -111,3 +111,59 @@ body {
   0% { left: -40%; }
   100% { left: 100%; }
 }
+
+/* Satellite Swath Dark Glassmorphic Tooltip (Matches Reference Card) */
+.leaflet-tooltip.custom-swath-leaflet-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.satellite-swath-tooltip {
+  background: #1e222d;
+  border: 2px solid #ffffff;
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #ffffff;
+  min-width: 220px;
+}
+
+.satellite-swath-tooltip .tooltip-header {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.satellite-swath-tooltip .tooltip-coords {
+  font-size: 11px;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.satellite-swath-tooltip .tooltip-risk-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.satellite-swath-tooltip .risk-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.satellite-swath-tooltip .risk-value {
+  font-size: 13px;
+  font-weight: 900;
+}

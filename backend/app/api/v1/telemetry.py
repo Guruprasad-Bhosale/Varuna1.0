@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Query
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Query, Request
 from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import List, Literal
@@ -11,16 +11,21 @@ from backend.app.db.session import get_db
 from ml.inference import WaterSafetyPredictor
 from backend.app.services.alert_dispatcher import AlertDispatcher
 from backend.app.core.config import settings
+from backend.app.core.security import get_admin_user
+from backend.app.core.rate_limit import limiter
 
 router = APIRouter(tags=["Telemetry & AI"])
 predictor = WaterSafetyPredictor()
 alert_manager = AlertDispatcher()
 
 @router.post("/ingest", response_model=TelemetryResponse)
+@limiter.limit("60/minute")
 def ingest_telemetry(
+    request: Request,
     payload: TelemetryIngestPayload, 
     background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: bool = Depends(get_admin_user)
 ):
     if not predictor:
         raise HTTPException(status_code=503, detail="ML inference engine not available")

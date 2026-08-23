@@ -37,6 +37,14 @@ export interface BloomForecastNode {
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
+          <!-- Swath Layer Toggle -->
+          <button 
+            (click)="toggleSwath()"
+            [ngClass]="showSwath() ? 'bg-amber-50 text-amber-700 border-amber-200 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'"
+            class="px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm">
+            Satellite Risk Swath
+          </button>
+
           <!-- Bloom Forecast Layer Toggle -->
           <button 
             (click)="toggleBloomForecast()"
@@ -64,72 +72,116 @@ export interface BloomForecastNode {
         <div class="lg:col-span-3 rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden relative h-[420px] sm:h-[500px] lg:h-[640px]" style="isolation: isolate; position: relative; z-index: 1;">
           <div id="sindhudurg-gis-map" class="h-full w-full" style="touch-action: pan-x pan-y;"></div>
           
-          <!-- Map Legend -->
-          <div class="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-200 text-[11px] text-slate-800 space-y-2 shadow-lg max-w-xs">
-            <div class="font-semibold text-slate-900 flex items-center justify-between">
-              <span>Map Legend</span>
-              <span class="text-[10px] text-teal-600 font-mono">NIRVAAH AI</span>
+          <!-- High-Contrast Floating Map Legend -->
+          <div class="absolute bottom-6 left-6 z-[1000] bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200/90 shadow-xl w-60 space-y-3 pointer-events-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <span class="text-xs font-black text-slate-900 tracking-tight">Map Legend</span>
+              <span class="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-200">
+                NIRVAAH AI
+              </span>
             </div>
-            <div class="flex items-center space-x-2"><span class="h-2 w-5 bg-cyan-400 rounded-sm"></span><span>Gad River</span></div>
-            <div class="flex items-center space-x-2"><span class="h-2 w-5 bg-teal-400 rounded-sm"></span><span>Karli River</span></div>
-            <hr class="border-slate-200 my-1"/>
-            <div class="flex items-center space-x-2"><span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span><span>Safe Monitoring Station</span></div>
-            <div class="flex items-center space-x-2"><span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span><span>Active Hazard Station</span></div>
-            <div class="flex items-center space-x-2">
-              <span class="h-3 w-3 rounded-full bg-gradient-to-r from-amber-400 to-emerald-400 border border-white shadow-sm flex items-center justify-center"></span>
-              <span class="text-amber-700 font-medium">Predicted Bloom (48–72h)</span>
+
+            <!-- River Polyline Traces -->
+            <div class="space-y-1.5 text-[11px] font-semibold text-slate-700">
+              <div class="flex items-center gap-2">
+                <span class="h-1 w-5 rounded-full bg-cyan-500"></span>
+                <span>Gad River Channel</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="h-1 w-5 rounded-full bg-teal-600"></span>
+                <span>Karli River Channel</span>
+              </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-2 space-y-2 text-[11px] font-medium text-slate-600">
+              <!-- Active Station Pins -->
+              <div class="flex items-center gap-2">
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-emerald-200"></span>
+                <span>Safe Monitoring Station</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-rose-200"></span>
+                <span>Active Hazard Station</span>
+              </div>
+              <!-- 48-72h Radar Markers -->
+              <div class="flex items-center gap-2">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+                </span>
+                <span>Predicted Bloom (48–72h)</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Predictive Bloom Sidebar Feed -->
+        <!-- Dual-Mode Intelligence Sidebar -->
         <div class="space-y-4">
-          <div class="flex items-center justify-between">
-            <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Bloom Early Warnings
-            </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200 font-mono">
-              {{ bloomForecasts.length }} Forecasts
-            </span>
+          <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <button (click)="activeTab.set('stations')" [ngClass]="activeTab() === 'stations' ? 'bg-white text-teal-700 shadow-sm font-bold' : 'text-slate-600 hover:bg-slate-200 font-medium'" class="flex-1 py-1.5 text-xs rounded-lg transition-all">River Stations</button>
+            <button (click)="activeTab.set('forecasts')" [ngClass]="activeTab() === 'forecasts' ? 'bg-white text-amber-700 shadow-sm font-bold' : 'text-slate-600 hover:bg-slate-200 font-medium'" class="flex-1 py-1.5 text-xs rounded-lg transition-all">Bloom Warnings</button>
           </div>
 
           <div class="space-y-3 max-h-[580px] overflow-y-auto pr-1">
-            @for (bloom of bloomForecasts; track bloom.id) {
-              <div 
-                (click)="flyToBloom(bloom)"
-                class="p-4 rounded-xl bg-white border border-amber-200 hover:border-amber-400 hover:shadow-md transition-all cursor-pointer space-y-3 group">
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <div class="font-semibold text-sm text-slate-900 transition-colors flex items-center gap-1.5">
-                      {{ bloom.name }}
+            @if (activeTab() === 'stations') {
+              @for (node of riverNodes; track node.id) {
+                <div class="p-4 rounded-xl bg-white border border-slate-200 hover:border-teal-300 hover:shadow-md transition-all space-y-3">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="font-semibold text-sm text-slate-900">{{ node.name }}</div>
+                    <div class="h-2.5 w-2.5 rounded-full shrink-0" [ngClass]="node.status === 'SAFE' ? 'bg-emerald-500' : (node.status === 'ELEVATED' ? 'bg-amber-400' : 'bg-rose-500')"></div>
+                  </div>
+                  
+                  <div class="text-[11px] font-mono text-slate-500">
+                    pH: {{ node.ph.toFixed(2) }} • Temp: {{ node.temp.toFixed(1) }}°C • Cond: {{ node.ec }} µS
+                  </div>
+
+                  <div class="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase"
+                          [ngClass]="node.status === 'SAFE' ? 'bg-emerald-50 text-emerald-700' : (node.status === 'ELEVATED' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700')">
+                      {{ node.status }}
+                    </span>
+                    <button (click)="flyToNode(node)" class="text-teal-600 font-semibold hover:text-teal-700 transition-colors">Inspect on Map &rarr;</button>
+                  </div>
+                </div>
+              }
+            } @else {
+              @for (bloom of bloomForecasts; track bloom.id) {
+                <div 
+                  (click)="flyToBloom(bloom)"
+                  class="p-4 rounded-xl bg-white border border-amber-200 hover:border-amber-400 hover:shadow-md transition-all cursor-pointer space-y-3 group">
+                  <div class="flex items-start justify-between gap-2">
+                    <div>
+                      <div class="font-semibold text-sm text-slate-900 transition-colors flex items-center gap-1.5">
+                        {{ bloom.name }}
+                      </div>
+                      <div class="text-[11px] text-teal-600 font-medium">{{ bloom.river }} • {{ bloom.location }}</div>
                     </div>
-                    <div class="text-[11px] text-teal-600 font-medium">{{ bloom.river }} • {{ bloom.location }}</div>
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200 font-mono shrink-0">
+                      +{{ bloom.forecastWindow }}
+                    </span>
                   </div>
-                  <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200 font-mono shrink-0">
-                    +{{ bloom.forecastWindow }}
-                  </span>
-                </div>
 
-                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 space-y-1.5 text-[11px]">
-                  <div class="flex justify-between items-center text-slate-600">
-                    <span>Bloom Probability:</span>
-                    <span class="font-bold text-amber-600 font-mono">{{ bloom.bloomProbability }}%</span>
+                  <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 space-y-1.5 text-[11px]">
+                    <div class="flex justify-between items-center text-slate-600">
+                      <span>Bloom Probability:</span>
+                      <span class="font-bold text-amber-600 font-mono">{{ bloom.bloomProbability }}%</span>
+                    </div>
+                    <div class="flex justify-between items-center text-slate-600">
+                      <span>Projected Chlorophyll:</span>
+                      <span class="font-bold text-emerald-600 font-mono">{{ bloom.predictedChl }} mg/m³</span>
+                    </div>
                   </div>
-                  <div class="flex justify-between items-center text-slate-600">
-                    <span>Projected Chlorophyll:</span>
-                    <span class="font-bold text-emerald-600 font-mono">{{ bloom.predictedChl }} mg/m³</span>
+
+                  <div class="text-[11px] text-slate-600 leading-tight">
+                    <span class="text-slate-800 font-medium">Triggers:</span> {{ bloom.triggerFactors.join(', ') }}
+                  </div>
+
+                  <div class="flex items-center justify-between text-xs text-amber-700 pt-2 border-t border-slate-100">
+                    <span class="text-[10px] text-slate-500 font-semibold">{{ bloom.riskTier }}</span>
+                    <span class="flex items-center gap-1 font-semibold">Inspect on Map &rarr;</span>
                   </div>
                 </div>
-
-                <div class="text-[11px] text-slate-600 leading-tight">
-                  <span class="text-slate-800 font-medium">Triggers:</span> {{ bloom.triggerFactors.join(', ') }}
-                </div>
-
-                <div class="flex items-center justify-between text-xs text-amber-700 pt-2 border-t border-slate-100">
-                  <span class="text-[10px] text-slate-500 font-semibold">{{ bloom.riskTier }}</span>
-                  <span class="flex items-center gap-1 font-semibold">Inspect on Map &rarr;</span>
-                </div>
-              </div>
+              }
             }
           </div>
         </div>
@@ -143,12 +195,15 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
 
   activeTileLayer = signal<'voyager' | 'satellite' | 'dark'>('voyager');
   showBloomForecast = signal<boolean>(true);
+  showSwath = signal<boolean>(false);
+  activeTab = signal<'stations' | 'forecasts'>('stations');
 
   private map?: L.Map;
   private currentTileLayerGroup = new L.LayerGroup();
   private markersLayerGroup = new L.LayerGroup();
   private bloomForecastLayerGroup = new L.LayerGroup();
   private riverLinesGroup = new L.LayerGroup();
+  private swathLayerGroup = new L.LayerGroup();
 
   // 48h to 72h Predictive Algal Bloom Forecast Points
   readonly bloomForecasts: BloomForecastNode[] = [
@@ -157,8 +212,8 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
       name: 'Sarjekot Estuary Confluence',
       location: 'Malvan Coastal Outfall',
       river: 'Gad River',
-      lat: 16.0820,
-      lng: 73.4680,
+      lat: 16.0822,
+      lng: 73.4685,
       forecastWindow: '48h',
       bloomProbability: 86.4,
       predictedChl: 8.45,
@@ -171,8 +226,8 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
       name: 'Devbag Creek Estuary',
       location: 'Tarkarli Bay Zone',
       river: 'Karli River',
-      lat: 15.9760,
-      lng: 73.4930,
+      lat: 15.9765,
+      lng: 73.4925,
       forecastWindow: '72h',
       bloomProbability: 78.2,
       predictedChl: 6.90,
@@ -183,12 +238,10 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
   ];
 
   readonly riverNodes = [
-    { id: 'NODE-01', name: 'Gad River Headwaters', lat: 16.1750, lng: 73.6100, status: 'SAFE', ph: 7.4, temp: 24.2, ec: 310 },
-    { id: 'NODE-02', name: 'Malvan Estuary', lat: 16.1250, lng: 73.5350, status: 'WARNING', ph: 6.8, temp: 26.5, ec: 850 },
-    { id: 'NODE-03', name: 'Gad Outfall', lat: 16.0750, lng: 73.4750, status: 'SAFE', ph: 7.8, temp: 25.1, ec: 420 },
-    { id: 'NODE-04', name: 'Kudal Upstream', lat: 16.0050, lng: 73.5900, status: 'SAFE', ph: 7.2, temp: 23.9, ec: 280 },
-    { id: 'NODE-05', name: 'Karli Bridge', lat: 15.9850, lng: 73.5300, status: 'HAZARD', ph: 5.8, temp: 28.1, ec: 1120 },
-    { id: 'NODE-06', name: 'Devbag Confluence', lat: 15.9760, lng: 73.4930, status: 'WARNING', ph: 6.9, temp: 27.0, ec: 940 }
+    { id: 'VARUNA-001', name: 'Sarjekot Estuary (Gad River Outfall)', lat: 16.0822, lng: 73.4685, status: 'SAFE', ph: 7.35, temp: 25.1, ec: 420 },
+    { id: 'VARUNA-002', name: 'Gad River Upstream (Kasal Basin)', lat: 16.1850, lng: 73.6120, status: 'SAFE', ph: 7.4, temp: 24.2, ec: 310 },
+    { id: 'VARUNA-003', name: 'Karli River Central (Kudal Basin)', lat: 15.9985, lng: 73.6840, status: 'ELEVATED', ph: 7.8, temp: 26.5, ec: 850 },
+    { id: 'VARUNA-004', name: 'Devbag Creek (Karli River Mouth)', lat: 15.9765, lng: 73.4925, status: 'WARNING', ph: 8.15, temp: 28.1, ec: 1120 }
   ];
 
   ngAfterViewInit(): void {
@@ -209,6 +262,7 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
 
     this.currentTileLayerGroup.addTo(this.map);
     this.riverLinesGroup.addTo(this.map);
+    this.swathLayerGroup.addTo(this.map);
     this.markersLayerGroup.addTo(this.map);
     this.bloomForecastLayerGroup.addTo(this.map);
 
@@ -242,22 +296,118 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
 
   private renderRiverPaths(): void {
     this.riverLinesGroup.clearLayers();
-    // Removed inaccurate dashed lines. Nodes now represent monitoring points.
+    
+    // Gad River Path (Flowing West from Sahyadri foothills to Sarjekot Harbor)
+    const gadRiverChannel: [number, number][] = [
+      [16.2750, 73.7420],
+      [16.2280, 73.6750],
+      [16.1850, 73.6120], // VARUNA-002 Station
+      [16.1380, 73.5450],
+      [16.1020, 73.4980],
+      [16.0822, 73.4685]  // VARUNA-001 Estuary Outfall
+    ];
+    L.polyline(gadRiverChannel, {
+      color: '#06b6d4',
+      weight: 4,
+      opacity: 0.85,
+      dashArray: '6, 8'
+    }).addTo(this.riverLinesGroup);
+
+    // Karli River Path (Flowing Southwest through Kudal to Devbag Spit)
+    const karliRiverChannel: [number, number][] = [
+      [16.0420, 73.7850],
+      [15.9985, 73.6840], // VARUNA-003 Station
+      [15.9890, 73.6150],
+      [15.9810, 73.5420],
+      [15.9765, 73.4925]  // VARUNA-004 Estuary Outfall
+    ];
+    L.polyline(karliRiverChannel, {
+      color: '#0d9488',
+      weight: 4,
+      opacity: 0.85,
+      dashArray: '6, 8'
+    }).addTo(this.riverLinesGroup);
+  }
+
+  private generateSwathData(): { lat: number; lng: number; prob: number }[] {
+    const points = [];
+    for (let lat = 15.80; lat <= 17.50; lat += 0.08) {
+      for (let lng = 72.75; lng <= 73.45; lng += 0.07) {
+        // Add slight organic coordinate jitter to emulate satellite raster cells
+        const jitterLat = lat + (Math.random() * 0.02 - 0.01);
+        const jitterLng = lng + (Math.random() * 0.02 - 0.01);
+        
+        // Calculate realistic probability gradient: higher risk near shallow estuarine mouths
+        const nearEstuary = Math.abs(jitterLat - 16.08) < 0.15 || Math.abs(jitterLat - 15.98) < 0.15;
+        const prob = nearEstuary 
+          ? Math.floor(65 + Math.random() * 25) 
+          : Math.floor(10 + Math.random() * 45);
+
+        points.push({ lat: jitterLat, lng: jitterLng, prob });
+      }
+    }
+    return points;
+  }
+
+  private renderSwathMarkers(): void {
+    this.swathLayerGroup.clearLayers();
+    const swathData = this.generateSwathData();
+    const canvasRenderer = L.canvas({ padding: 0.5 });
+
+    swathData.forEach(pt => {
+      const color = pt.prob >= 80 ? '#ef4444' : pt.prob >= 55 ? '#f97316' : pt.prob >= 25 ? '#eab308' : '#10b981';
+      
+      const tooltipContent = `
+        <div class="satellite-swath-tooltip">
+          <div class="tooltip-header">ISRO EOS-06 / NIRVAAH XGBoost</div>
+          <div class="tooltip-coords">
+            Lat: <b>${pt.lat.toFixed(4)}° N</b> | Lng: <b>${pt.lng.toFixed(4)}° E</b>
+          </div>
+          <div class="tooltip-risk-row">
+            <span class="risk-label">Bloom Risk:</span>
+            <span class="risk-value" style="color: ${color};">${pt.prob}%</span>
+          </div>
+        </div>
+      `;
+
+      L.circleMarker([pt.lat, pt.lng], {
+        renderer: canvasRenderer,
+        radius: 4.5,
+        fillColor: color,
+        color: '#ffffff',
+        weight: 0.8,
+        fillOpacity: 0.9
+      }).bindTooltip(tooltipContent, {
+        className: 'custom-swath-leaflet-tooltip',
+        direction: 'right',
+        offset: [10, 0]
+      }).addTo(this.swathLayerGroup);
+    });
+  }
+
+  toggleSwath(): void {
+    const nextState = !this.showSwath();
+    this.showSwath.set(nextState);
+    if (nextState) {
+      this.renderSwathMarkers();
+    } else {
+      this.swathLayerGroup.clearLayers();
+    }
   }
 
   private renderBloomForecastMarkers(): void {
     this.bloomForecastLayerGroup.clearLayers();
     this.markersLayerGroup.clearLayers();
 
-    // Render 6 monitoring nodes
+    // Render monitoring nodes
     this.riverNodes.forEach(node => {
       let colorClass = 'bg-emerald-500';
       let statusClass = 'background: #f1f5f9; color: #0f172a; border: 1px solid #e2e8f0;';
-      if (node.status === 'WARNING') {
-        colorClass = 'bg-amber-500';
+      if (node.status === 'ELEVATED') {
+        colorClass = 'bg-amber-400';
         statusClass = 'background: #fffbeb; color: #d97706; border: 1px solid #fde68a;';
       }
-      if (node.status === 'HAZARD') {
+      if (node.status === 'WARNING' || node.status === 'HAZARD') {
         colorClass = 'bg-rose-500';
         statusClass = 'background: #fef2f2; color: #e11d48; border: 1px solid #fecdd3;';
       }
@@ -286,7 +436,6 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     });
 
     this.bloomForecasts.forEach(bf => {
-      // Professional Radar DivIcon with Bio-Pulse SVG
       const forecastIcon = L.divIcon({
         className: 'custom-bloom-icon-container',
         html: `
@@ -307,7 +456,6 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
 
       const marker = L.marker([bf.lat, bf.lng], { icon: forecastIcon }).addTo(this.bloomForecastLayerGroup);
 
-      // Light Theme Early Warning Popup
       const popupHtml = `
         <div style="background: #ffffff; color: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; min-width: 250px; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
@@ -366,9 +514,14 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     this.map?.flyTo([bloom.lat, bloom.lng], 14, { duration: 1.2 });
   }
 
+  flyToNode(node: any): void {
+    this.map?.flyTo([node.lat, node.lng], 14, { duration: 1.2 });
+  }
+
   ngOnDestroy(): void {
     this.currentTileLayerGroup.clearLayers();
     this.riverLinesGroup.clearLayers();
+    this.swathLayerGroup.clearLayers();
     this.markersLayerGroup.clearLayers();
     this.bloomForecastLayerGroup.clearLayers();
     this.map?.remove();

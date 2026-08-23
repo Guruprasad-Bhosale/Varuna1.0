@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from typing import Dict, Any, Optional
 import pandas as pd
 from pathlib import Path
 from pydantic import BaseModel
 
 from ml.inference import WaterSafetyPredictor
+from backend.app.core.rate_limit import limiter
 
 router = APIRouter(tags=["ML & Inference"])
 predictor = WaterSafetyPredictor()
@@ -25,7 +26,8 @@ class PredictPayload(BaseModel):
     longitude: Optional[float] = None
 
 @router.post("/predict")
-def predict_risk(payload: PredictPayload):
+@limiter.limit("120/minute")
+def predict_risk(request: Request, payload: PredictPayload):
     feature_dict = payload.model_dump(exclude_none=True)
     try:
         result = predictor.predict(feature_dict)
