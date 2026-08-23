@@ -27,9 +27,12 @@ import { RouterModule } from '@angular/router';
             <a routerLink="/case-studies" routerLinkActive="highlighter-teal underline decoration-slate-900 decoration-2 underline-offset-4" class="text-sm font-extrabold text-slate-900 hover:rotate-[-1deg] transition-transform inline-block uppercase tracking-wider">Deployments</a>
             <a routerLink="/blog" routerLinkActive="highlighter-teal underline decoration-slate-900 decoration-2 underline-offset-4" class="text-sm font-extrabold text-slate-900 hover:rotate-[-1deg] transition-transform inline-block uppercase tracking-wider">Insights</a>
             
-            <a routerLink="/dashboard" class="ml-4 stamp-btn bg-teal-600 hover:bg-teal-500 text-white font-black px-4 py-2 rounded-xl border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0f172a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none inline-flex items-center uppercase tracking-wider text-xs">
-              Live Telemetry
-              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            <a routerLink="/dashboard" 
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-black text-xs uppercase tracking-wider border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0f172a] hover:shadow-[4px_4px_0px_0px_#0f172a] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
+              <span>Live Telemetry</span>
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
             </a>
           </div>
 

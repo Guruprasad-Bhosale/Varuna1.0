@@ -284,7 +284,11 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
 
         <!-- Spatial-Temporal Ephemeris Ribbon -->
         <div class="stamp-card bg-white p-4 pt-6 flex flex-wrap items-center gap-3 animate-stagger-2 mt-6 text-[11px] relative">
-          <div class="absolute -top-3 left-4 highlighter-teal px-2 py-0.5 text-[10px] font-black uppercase text-teal-900 border border-teal-200 transform -rotate-2">ISRO Satellite Data Ledger</div>
+          <div class="absolute -top-3 left-4 inline-block z-10 transform -rotate-2">
+            <span class="px-2.5 py-0.5 rounded-md border-2 border-slate-900 bg-white font-mono text-[10px] font-black text-teal-800 uppercase tracking-widest shadow-[2px_2px_0px_0px_#0f172a]">
+              ISRO SATELLITE DATA LEDGER
+            </span>
+          </div>
           <div class="font-bold text-slate-500 uppercase tracking-wider mr-2">Ephemeris Metadata:</div>
           
           <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
@@ -548,7 +552,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
 
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               @for (item of computedShapCards(); track item.rank) {
-                  <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md hover:border-teal-300 transition-all flex flex-col justify-between group relative">
+                  <div class="bg-white border-2 border-slate-900 rounded-xl p-4 shadow-[3px_3px_0px_0px_#0f172a] space-y-2 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#0f172a] transition-all flex flex-col justify-between group relative">
                     
                     <!-- Top Row: Rank & Status Pill -->
                     <div>
@@ -556,7 +560,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                         <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold font-mono bg-slate-100 text-slate-700 border border-slate-200 group-hover:bg-teal-50 group-hover:text-teal-700 transition-colors">
                           #{{ item.rank }} • {{ item.shapImportance }}%
                         </span>
-                        <span [class]="item.status.badgeClass" class="px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase border">
+                        <span [class]="item.status.badgeClass" class="px-2 py-0.5 border-2 border-slate-900 rounded-md text-[10px] font-bold font-mono uppercase">
                           {{ item.status.label }}
                         </span>
                       </div>
@@ -599,7 +603,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                       </div>
 
                       <!-- Value Display -->
-                      <div class="text-2xl font-black text-slate-900 font-mono tracking-tight my-2">
+                      <div class="text-3xl font-black font-mono text-slate-900 my-2">
                         {{ item.valObj.display }}
                       </div>
                       <div class="text-[10px] text-slate-400 font-medium">

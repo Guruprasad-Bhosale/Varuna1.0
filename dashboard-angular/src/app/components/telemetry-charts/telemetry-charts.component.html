@@ -1,15 +1,15 @@
-<div class="card-panel p-6 flex flex-col h-[400px] bg-white rounded-xl border border-border shadow-sm">
+<div class="bg-white border-2 border-slate-900 rounded-2xl p-6 shadow-[4px_4px_0px_0px_#0f172a] space-y-4 flex flex-col h-full w-full">
   <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
     <div>
-      <h3 class="text-base font-semibold text-navy">Historical Trends</h3>
-      <p class="text-xs text-textMuted">Analyze sensor telemetry across time windows</p>
+      <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Historical Trends</h3>
+      <p class="text-xs text-slate-500 font-bold mt-1">Analyze sensor telemetry across time windows</p>
     </div>
 
     <div class="flex flex-wrap items-center gap-3">
       <select 
         [ngModel]="metric"
         (ngModelChange)="onMetricChange($event)"
-        class="text-sm bg-background border border-border rounded-md px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-teal text-textMain"
+        class="px-3 py-1.5 rounded-lg border-2 border-slate-900 font-bold text-xs bg-slate-50 text-slate-900 shadow-[2px_2px_0px_0px_#0f172a] focus:outline-none"
       >
         <option value="safety_score">Water Safety Score</option>
         <option value="ph">pH Level</option>
@@ -17,12 +17,12 @@
         <option value="ec_us_cm">Electrical Conductivity</option>
       </select>
 
-      <div class="flex bg-background border border-border rounded-md p-0.5">
+      <div class="flex items-center gap-1">
         <button 
           *ngFor="let t of ['24h', '7d', '30d']"
           (click)="onTimeRangeChange(t)"
-          class="text-xs px-3 py-1 rounded transition-colors"
-          [ngClass]="timeRange === t ? 'bg-white shadow-sm text-navy font-medium' : 'text-textMuted hover:text-navy'"
+          class="px-3 py-1 text-xs font-black uppercase tracking-wider rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_#0f172a] active:translate-y-0 active:shadow-[1px_1px_0px_0px_#0f172a] transition-all"
+          [ngClass]="timeRange === t ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'"
         >
           {{ t }}
         </button>

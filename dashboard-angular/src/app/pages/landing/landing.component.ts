@@ -30,8 +30,12 @@ import { WavesShaderComponent } from '../../components/ui/waves-shader/waves-sha
             Project VARUNA replaces delayed manual grab sampling with continuous, real-time IoT telemetry and Edge AI, delivering sub-second water safety insights.
           </p>
           <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a routerLink="/dashboard" class="stamp-btn inline-flex justify-center items-center px-8 py-4 bg-teal-600 text-white hover:bg-teal-500 shadow-[4px_4px_0px_0px_#0f172a] active:translate-x-1 active:translate-y-1 active:shadow-none text-lg font-black uppercase tracking-wider">
-              Explore Live Telemetry &rarr;
+            <a routerLink="/dashboard" 
+               class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-black text-sm uppercase tracking-wider border-2 border-slate-900 shadow-[4px_4px_0px_0px_#0f172a] hover:shadow-[6px_6px_0px_0px_#0f172a] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
+              <span>Explore Live Telemetry</span>
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
             </a>
             <a routerLink="/contact" class="stamp-btn inline-flex justify-center items-center px-8 py-4 bg-white text-slate-900 hover:bg-slate-50 border-2 border-slate-900 shadow-[4px_4px_0px_0px_#0f172a] text-lg font-black uppercase tracking-wider">
               Deploy Monitoring Node
