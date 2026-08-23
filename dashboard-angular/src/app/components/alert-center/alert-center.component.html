@@ -1,65 +1,63 @@
-<div class="card-panel flex flex-col h-full bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-  <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-    <div class="flex items-center gap-2">
-      <h3 class="font-bold text-slate-900">Alert Center</h3>
-      <button (click)="toggleMute($event)" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider hover:text-slate-900 px-1 transition-colors">
-        {{ isMuted ? 'Unmute' : 'Mute' }}
+<div class="card-panel flex flex-col h-full bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+  <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/80">
+    <div class="flex items-center gap-3">
+      <h3 class="font-bold text-slate-900">Incident Feed</h3>
+      <button (click)="toggleMute($event)" class="text-xs text-slate-500 font-semibold hover:text-slate-900 px-2 py-0.5 rounded hover:bg-slate-200 transition-colors">
+        {{ isMuted ? 'Unmute Audio' : 'Mute Audio' }}
       </button>
     </div>
-    <span class="text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 px-2 py-1 rounded-full shadow-sm">
+    <span class="text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1 rounded-full shadow-sm">
       {{ alerts.length || 0 }} Recent Events
     </span>
   </div>
 
-  <div class="flex-1 overflow-y-auto p-2 bg-slate-50/30">
-    <div *ngIf="!alerts || alerts.length === 0" class="h-full flex items-center justify-center text-slate-400 font-medium text-sm">
+  <div class="flex-1 overflow-y-auto p-4 bg-slate-50/50">
+    <div *ngIf="!alerts || alerts.length === 0" class="h-full flex items-center justify-center text-slate-500 font-medium text-sm">
       No active alerts in this time period.
     </div>
 
     <div *ngIf="alerts && alerts.length > 0" class="flex flex-col gap-4">
-      <div *ngFor="let alert of alerts" class="flex gap-4 p-5 bg-white stamp-card relative group cursor-pointer hover:bg-slate-50 transition-colors">
+      <div *ngFor="let alert of alerts" class="stamp-card flex gap-4 p-5 bg-white space-y-0 cursor-pointer">
         
-        <!-- Left Notebook Margin (Serial ID) -->
-        <div class="hidden sm:flex flex-col items-center justify-center border-r-2 border-slate-900 border-dashed pr-4 mr-2">
-          <span class="font-mono text-xs font-black text-slate-400 rotate-180" style="writing-mode: vertical-rl;">{{ alert.id }}</span>
-        </div>
-
-        <div class="mt-0.5 p-2.5 rounded-full shrink-0 h-max border-2 shadow-[2px_2px_0px_0px_#0f172a]" [ngClass]="getAlertStyles(alert.severity).bg + ' ' + getAlertStyles(alert.severity).color + ' ' + getAlertStyles(alert.severity).border">
-          <lucide-icon [img]="getAlertStyles(alert.severity).icon" class="w-5 h-5"></lucide-icon>
+        <div class="mt-0.5 p-2.5 rounded-xl shrink-0 h-max border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]" [ngClass]="getAlertStyles(alert.severity).bg + ' ' + getAlertStyles(alert.severity).color">
+          <lucide-icon [img]="getAlertStyles(alert.severity).icon" class="w-5 h-5 text-slate-900"></lucide-icon>
         </div>
         
         <div class="flex-1 min-w-0">
           <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 gap-1 sm:gap-0">
-            <div class="font-bold text-sm text-slate-900 truncate">
+            <div class="font-black text-sm text-slate-900 truncate uppercase tracking-tight">
               {{ alert.title }}
             </div>
-            <div class="text-[11px] font-semibold text-slate-500 whitespace-nowrap sm:ml-2">
+            <div class="text-xs font-bold text-slate-600 whitespace-nowrap sm:ml-2 font-mono">
               {{ alert.timestamp }}
             </div>
           </div>
           
-          <div class="text-xs text-slate-800 font-medium mb-3 leading-relaxed">
+          <div class="text-xs text-slate-700 font-medium mb-3 leading-relaxed">
             {{ alert.description }}
           </div>
           
-          <div class="text-[10px] font-mono font-bold text-slate-800 mb-4 bg-slate-50 border-2 border-slate-900 px-2 py-1 inline-block shadow-[2px_2px_0px_0px_#0f172a]">
+          <div class="text-xs font-mono font-bold text-slate-900 mb-4 bg-slate-50 border-2 border-slate-900 px-2.5 py-1 rounded-lg inline-block shadow-[1px_1px_0px_0px_#0f172a]">
             {{ alert.parameters }}
           </div>
 
-          <div class="flex justify-between items-center pt-4 border-t-2 border-slate-900 border-dashed mt-1">
-            <div class="flex items-center gap-2">
-              <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Node:</span>
-              <span class="text-xs font-black text-slate-700">{{ alert.station }} <span class="text-slate-500 font-mono">({{ alert.river }})</span></span>
+          <div class="flex justify-between items-center pt-3 border-t border-slate-200 mt-1">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="font-black text-slate-900 uppercase tracking-wider">Node:</span>
+              <span class="font-bold text-slate-800">{{ alert.station }} <span class="text-slate-600 font-mono">({{ alert.river }})</span></span>
             </div>
-            <div class="flex items-center gap-4">
-              <!-- Rubber Stamp -->
-              <span *ngIf="alert.status === 'DISPATCHED'" class="rubber-stamp-dispatched">{{ alert.status }}</span>
-              <span *ngIf="alert.status === 'RESOLVED'" class="rubber-stamp-resolved">{{ alert.status }}</span>
-              <span *ngIf="alert.status === 'ACTIVE'" class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border shadow-sm" [ngClass]="getStatusStyles(alert.status)">
-                {{ alert.status }}
+            <div class="flex items-center gap-3">
+              <span *ngIf="alert.status === 'DISPATCHED'" class="rubber-stamp-dispatched">
+                Dispatched
+              </span>
+              <span *ngIf="alert.status === 'RESOLVED'" class="rubber-stamp-resolved">
+                Resolved
+              </span>
+              <span *ngIf="alert.status === 'ACTIVE'" class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-900 border-2 border-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
+                Active
               </span>
 
-              <button class="stamp-btn px-3 py-1 bg-white hover:bg-slate-100 text-slate-900 text-[11px] font-black border-2 border-slate-900 rounded-lg hidden sm:block">
+              <button class="stamp-btn px-3 py-1 bg-white hover:bg-slate-50 text-slate-900 text-xs font-black rounded-lg transition-all hidden sm:block border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
                 Acknowledge
               </button>
             </div>
@@ -70,3 +68,4 @@
     </div>
   </div>
 </div>
+

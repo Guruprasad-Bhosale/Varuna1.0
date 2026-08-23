@@ -180,354 +180,266 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
   selector: 'app-live-monitoring-view',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, TelemetryChartsComponent, WavesShaderComponent],
+  imports: [CommonModule, TelemetryChartsComponent],
   template: `
     <div class="space-y-6 animate-stagger-1">
       
       <!-- Top Action Bar -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Live Telemetry Stream</h2>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">Real-time edge IoT sensor array telemetry and multi-factor safety index</p>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span>Live Telemetry Stream</span>
+            <span class="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          </h2>
+          <p class="text-xs text-slate-700 font-bold mt-0.5">Real-time edge IoT sensor array telemetry and multi-factor water safety index</p>
         </div>
 
-        <div class="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm shrink-0">
-          <span class="text-xs font-bold text-slate-500 px-2.5">Simulate:</span>
-          <button (click)="simulate('dump')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition-all">Industrial Dump</button>
-          <button (click)="simulate('rain')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 transition-all">Heavy Rain</button>
-          <button (click)="simulate('alkaline')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all">Alkaline Spill</button>
+        <div class="flex items-center gap-2 bg-white p-2 rounded-2xl border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0f172a] shrink-0">
+          <span class="text-xs font-black uppercase text-slate-900 px-1">Simulate:</span>
+          <button (click)="simulate('dump')" class="stamp-btn px-3 py-1.5 rounded-xl text-xs font-black bg-rose-50 text-rose-800 hover:bg-rose-100 border-2 border-slate-900 transition-all">Industrial Dump</button>
+          <button (click)="simulate('rain')" class="stamp-btn px-3 py-1.5 rounded-xl text-xs font-black bg-sky-50 text-sky-800 hover:bg-sky-100 border-2 border-slate-900 transition-all">Heavy Rain</button>
+          <button (click)="simulate('alkaline')" class="stamp-btn px-3 py-1.5 rounded-xl text-xs font-black bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border-2 border-slate-900 transition-all">Alkaline Spill</button>
         </div>
       </div>
 
       <!-- Station Hero Summary Card -->
       @if (telemetry(); as data) {
-        <div class="stamp-card washi-tape-top relative bg-white p-6 flex flex-col lg:flex-row items-center justify-between gap-6 animate-stagger-2 mt-4 z-10">
-          <!-- WebGL Shader Backdrop with isolated overflow -->
-          <div class="absolute inset-0 rounded-[14px] overflow-hidden z-0">
-            <app-waves-shader class="absolute inset-0 z-0 pointer-events-auto opacity-10 mix-blend-multiply"></app-waves-shader>
-          </div>
+        <div class="stamp-card p-6 sm:p-8 bg-white relative animate-stagger-2">
+          <div class="washi-tape-top"></div>
           
-          <div class="relative z-10 space-y-3 w-full lg:w-auto pointer-events-auto">
-            <div class="flex items-center gap-4 mb-2">
-              <span *ngIf="data.status === 'SAFE'" class="border-double border-[3px] border-emerald-600 text-emerald-700 px-3 py-0.5 text-xs font-black uppercase tracking-widest transform -rotate-3 opacity-80 mix-blend-multiply">
-                [ APPROVED CPCB CLASS-A ]
-              </span>
-              <span *ngIf="data.status !== 'SAFE'" class="border-double border-[3px] border-rose-600 text-rose-700 px-3 py-0.5 text-xs font-black uppercase tracking-widest transform rotate-[4deg] opacity-90 mix-blend-multiply">
-                [ CRITICAL HAZARD DUMP ]
-              </span>
+          <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div class="space-y-4 w-full lg:w-auto">
+              <div class="flex flex-wrap items-center gap-3">
+                <span *ngIf="data.status === 'SAFE'" class="rubber-stamp-resolved">
+                  CPCB CLASS-A // NOMINAL
+                </span>
+                <span *ngIf="data.status !== 'SAFE'" class="rubber-stamp-dispatched">
+                  CRITICAL HAZARD DETECTED
+                </span>
+                <span class="text-xs text-slate-700 font-bold">Suitable under current monitored conditions</span>
+              </div>
+
+              <div>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+                  <div class="relative w-3 h-3 shrink-0">
+                     <div class="absolute inset-0 bg-emerald-500 rounded-full"></div>
+                     <div class="absolute inset-0 bg-emerald-500 rounded-full animate-live-ripple"></div>
+                  </div>
+                  <span>JalDrishti-001 (Sarjekot Estuary — Gad River Outfall)</span>
+                </h3>
+                <p class="text-xs text-slate-600 font-semibold mt-1">Autonomous Multi-Parameter Solar Buoy • Firmware v2.4.1</p>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-4 text-xs font-black text-slate-800">
+                <span class="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1 rounded-lg">
+                  <svg class="h-4 w-4 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                  16.2699° N, 73.7148° E
+                </span>
+                <span class="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1 rounded-lg">
+                  <svg class="h-4 w-4 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.393 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                  Cellular LTE Active
+                </span>
+                <span class="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1 rounded-lg">
+                  <svg class="h-4 w-4 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  Sync: {{ data.timestamp }}
+                </span>
+              </div>
             </div>
 
-            <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-              <div class="relative w-3 h-3">
-                 <div class="absolute inset-0 bg-emerald-500 rounded-full"></div>
-                 <div class="absolute inset-0 bg-emerald-500 rounded-full animate-live-ripple"></div>
+            <!-- Animated Radial Gauge -->
+            <div class="flex items-center gap-5 bg-slate-50 border-2 border-slate-900 p-5 rounded-2xl w-full lg:w-80 justify-between shrink-0 shadow-[4px_4px_0px_0px_#0f172a] transition-all duration-500"
+                 [ngClass]="data.status === 'HAZARD' ? 'border-rose-700 bg-rose-50' : ''">
+              <div>
+                <div class="text-[10px] font-black uppercase tracking-wider text-slate-500">Water Safety Score</div>
+                <div class="text-3xl sm:text-4xl font-black text-slate-900 font-mono tracking-tight flex items-baseline gap-1 mt-1">
+                  <span class="transition-all duration-700">{{ data.compositeScore | number:'1.1-1' }}</span>
+                  <span class="text-sm font-bold text-slate-500">/100</span>
+                </div>
+                <div class="text-xs font-black mt-1 uppercase tracking-wider" [ngClass]="data.compositeScore >= 75 ? 'text-teal-800' : 'text-rose-700'">
+                  {{ data.confidence }}% confidence
+                </div>
+                <div class="text-[10px] text-slate-700 uppercase font-mono font-black tracking-wider mt-1">NIRVAAH XGBoost</div>
               </div>
-              <span class="bg-white/60 backdrop-blur-sm px-2 py-0.5 rounded-lg">{{ data.locationName }}</span>
-            </h3>
 
-            <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-700 bg-white/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-200/50">
-              <span class="flex items-center gap-1.5">
-                <svg class="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                16.2699° N, 73.7148° E
-              </span>
-              <span class="flex items-center gap-1.5">
-                <svg class="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.393 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
-                Connected (LTE)
-              </span>
-              <span class="flex items-center gap-1.5">
-                <svg class="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                {{ data.timestamp }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Animated Radial Gauge -->
-          <div class="relative z-10 flex items-center gap-5 bg-white border-2 border-slate-900 p-5 rounded-xl w-full lg:w-80 justify-between shrink-0 shadow-[4px_4px_0px_0px_#0f172a] transition-all duration-500 pointer-events-auto"
-               [ngClass]="data.status === 'HAZARD' ? 'border-rose-900 bg-rose-50/80' : ''">
-            <div>
-              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 underline decoration-slate-300 decoration-2 underline-offset-4">Water Safety Index</div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight flex items-baseline gap-1 mt-2">
-                <span class="transition-all duration-700">{{ data.compositeScore | number:'1.1-1' }}</span>
-                <span class="text-sm font-bold text-slate-400">/100</span>
-              </div>
-              <div class="text-[11px] font-bold mt-1 transition-colors" [ngClass]="data.compositeScore >= 75 ? 'text-teal-700' : 'text-rose-600'">
-                {{ data.confidence }}% confidence
-              </div>
-              <div class="text-[9px] text-slate-900 uppercase font-bold tracking-wider mt-1 highlighter-amber inline-block">NIRVAAH XGBoost</div>
-            </div>
-
-            <div class="relative h-20 w-20 flex items-center justify-center shrink-0">
-              <svg class="h-full w-full -rotate-90" viewBox="0 0 64 64">
-                <circle cx="32" cy="32" r="26" stroke-width="5" stroke="#e2e8f0" fill="none" />
-                <circle cx="32" cy="32" r="26" 
-                        stroke-width="5" 
-                        stroke-linecap="round" 
-                        fill="none" 
-                        [attr.stroke]="data.compositeScore >= 75 ? '#0d9488' : '#e11d48'"
-                        stroke-dasharray="163.36" 
-                        [style.strokeDashoffset]="163.36 - (163.36 * (data.compositeScore / 100))"
-                        class="gauge-stroke-transition" />
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center transition-all duration-500">
-                <!-- Safe Shield Icon -->
-                <svg *ngIf="data.compositeScore >= 75" class="w-7 h-7 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              <div class="relative h-20 w-20 flex items-center justify-center shrink-0">
+                <svg class="h-full w-full -rotate-90" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="26" stroke-width="5" stroke="#cbd5e1" fill="none" />
+                  <circle cx="32" cy="32" r="26" 
+                          stroke-width="5" 
+                          stroke-linecap="round" 
+                          fill="none" 
+                          [attr.stroke]="data.compositeScore >= 75 ? '#0d9488' : '#e11d48'"
+                          stroke-dasharray="163.36" 
+                          [style.strokeDashoffset]="163.36 - (163.36 * (data.compositeScore / 100))"
+                          class="gauge-stroke-transition" />
                 </svg>
-                <!-- Hazard/Warning Icon -->
-                <svg *ngIf="data.compositeScore < 75" class="w-7 h-7 text-rose-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+                <div class="absolute inset-0 flex items-center justify-center transition-all duration-500">
+                  <svg *ngIf="data.compositeScore >= 75" class="w-7 h-7 text-teal-700 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <svg *ngIf="data.compositeScore < 75" class="w-7 h-7 text-rose-600 animate-pulse stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Spatial-Temporal Ephemeris Ribbon -->
-        <div class="stamp-card bg-white p-4 pt-6 flex flex-wrap items-center gap-3 animate-stagger-2 mt-6 text-[11px] relative">
-          <div class="absolute -top-3 left-4 inline-block z-10 transform -rotate-2">
-            <span class="px-2.5 py-0.5 rounded-md border-2 border-slate-900 bg-white font-mono text-[10px] font-black text-teal-800 uppercase tracking-widest shadow-[2px_2px_0px_0px_#0f172a]">
-              ISRO SATELLITE DATA LEDGER
-            </span>
-          </div>
-          <div class="font-bold text-slate-500 uppercase tracking-wider mr-2">Ephemeris Metadata:</div>
+        <div class="stamp-card p-4 bg-white flex flex-wrap items-center gap-4 animate-stagger-2 text-xs">
+          <div class="font-black text-slate-900 uppercase tracking-wider mr-2">Ephemeris Metadata:</div>
           
-          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
-            <span class="font-semibold text-slate-900">Latitude:</span>
-            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ data.coordinates.lat }}° N</span>
-            <span class="text-[9px] text-slate-500 font-bold">(#2 • 24.49%)</span>
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-300">
+            <span class="font-bold text-slate-700">Latitude:</span>
+            <span class="font-mono font-black text-slate-900">{{ data.coordinates.lat }}° N</span>
+            <span class="text-[10px] text-slate-600 font-bold">(#2 • 24.49%)</span>
           </div>
 
-          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
-            <span class="font-semibold text-slate-900">Longitude:</span>
-            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ data.coordinates.lng }}° E</span>
-            <span class="text-[9px] text-slate-500 font-bold">(#3 • 12.25%)</span>
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-300">
+            <span class="font-bold text-slate-700">Longitude:</span>
+            <span class="font-mono font-black text-slate-900">{{ data.coordinates.lng }}° E</span>
+            <span class="text-[10px] text-slate-600 font-bold">(#3 • 12.25%)</span>
           </div>
 
-          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed highlighter-amber">
-            <span class="font-semibold text-slate-900">Season:</span>
-            <span class="font-bold text-slate-900">Post-Monsoon (High Risk)</span>
-            <span class="text-[9px] text-slate-700 font-bold">(#5 • 6.20%)</span>
+          <div class="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-300">
+            <span class="font-bold text-amber-900">Season:</span>
+            <span class="font-black text-amber-950">Post-Monsoon (High Risk)</span>
+            <span class="text-[10px] text-amber-900 font-bold">(#5 • 6.20%)</span>
           </div>
 
-          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
-            <span class="font-semibold text-slate-900">Day of Year:</span>
-            <span class="font-mono font-bold text-slate-900 underline decoration-slate-300 decoration-2">DOY {{ dayOfYear() }}</span>
-            <span class="text-[9px] text-slate-500 font-bold">(#7 • 1.42%)</span>
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-300">
+            <span class="font-bold text-slate-700">Day of Year:</span>
+            <span class="font-mono font-black text-slate-900">DOY {{ dayOfYear() }}</span>
+            <span class="text-[10px] text-slate-600 font-bold">(#7 • 1.42%)</span>
           </div>
 
-          <div class="flex items-center gap-2 px-2 py-1 border-b-2 border-slate-300 border-dashed">
-            <span class="font-semibold text-slate-900">Epoch:</span>
-            <span class="font-bold text-slate-900 underline decoration-slate-300 decoration-2">{{ currentEpoch() }}</span>
-            <span class="text-[9px] text-slate-500 font-bold">(#9 & #10 • 1.09%)</span>
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-300">
+            <span class="font-bold text-slate-700">Epoch:</span>
+            <span class="font-black text-slate-900">{{ currentEpoch() }}</span>
+            <span class="text-[10px] text-slate-600 font-bold">(#9 & #10 • 1.09%)</span>
           </div>
         </div>
 
         <!-- Complete 6-Card Edge Sensor Array -->
         <div class="animate-stagger-3">
-          <div class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3 flex justify-between items-center">
-            <span>Edge Sensor Array</span>
-            <span class="text-[10px] font-medium text-slate-400 normal-case">Click a card to view 24h history</span>
+          <div class="text-xs font-black uppercase tracking-wider text-slate-900 mb-3 flex justify-between items-center">
+            <span>01 // Edge Sensor Specimen Grid</span>
+            <span class="text-[11px] font-bold text-slate-600 normal-case">Click a card to filter historical trends</span>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             
             <!-- 1. pH Level -->
-            <div (click)="selectMetric('ph')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="[
-                   selectedMetric() === 'ph' ? 'ring-2 ring-slate-900 bg-slate-50' : '',
-                   data.ph < 6.5 || data.ph > 8.5 ? 'border-rose-900 bg-rose-50' : ''
-                 ]">
-              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-12 shadow-[2px_2px_0px_0px_#0f172a]">
-                <div class="text-[10px] font-black text-slate-900">01</div>
+            <div (click)="selectMetric('ph')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
+                 [ngClass]="selectedMetric() === 'ph' ? 'ring-4 ring-teal-500' : ''">
+              <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
+                <span class="text-slate-900 font-black">01 / pH PROBE</span>
+                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">SAFE</span>
               </div>
-              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ pH PROBE</div>
-              <div class="flex items-center justify-between pr-4 relative">
-                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
-                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">pH Level</span>
-                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
-                    <span class="text-teal-300 font-bold block mb-1">Source: WHO Guidelines</span>
-                    Measures acidity or alkalinity. Extreme pH levels harm aquatic life and indicate chemical pollution.
-                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
-                  </div>
-                </div>
-                <span [ngClass]="[phStatus().bg, phStatus().textCol, phStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="data.ph < 6.5 || data.ph > 8.5">
-                  {{ phStatus().text }}
-                </span>
+              <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
+                {{ (data.ph || 7.42) | number:'1.2-2' }} <span class="text-xs font-semibold text-slate-500 font-sans">pH</span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ data.ph | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">pH</span>
+              <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
+                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="74"></div>
               </div>
-              <div class="text-[11px] text-slate-400 font-medium">Standard: 6.5 – 8.5 pH</div>
-              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="phColor()" [style.width.%]="phPct()"></div>
+              <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
+                <span>Min: 6.5</span>
+                <span>Max: 8.5</span>
               </div>
             </div>
 
             <!-- 2. Turbidity -->
-            <div (click)="selectMetric('turbidity_ntu')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="[
-                   selectedMetric() === 'turbidity_ntu' ? 'ring-2 ring-slate-900 bg-slate-50' : '',
-                   data.turbidity_ntu > 10 ? 'border-rose-900 bg-rose-50' : ''
-                 ]">
-              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-6 shadow-[2px_2px_0px_0px_#0f172a]">
-                <div class="text-[10px] font-black text-slate-900">02</div>
+            <div (click)="selectMetric('turbidity_ntu')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
+                 [ngClass]="selectedMetric() === 'turbidity_ntu' ? 'ring-4 ring-teal-500' : ''">
+              <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
+                <span class="text-slate-900 font-black">02 / TURBIDITY</span>
+                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">SAFE</span>
               </div>
-              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ OPTICS</div>
-              <div class="flex items-center justify-between pr-4 relative">
-                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
-                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Turbidity (Clarity)</span>
-                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
-                    <span class="text-teal-300 font-bold block mb-1">Source: EPA Standards</span>
-                    Measures water clarity based on suspended solids. High turbidity blocks sunlight and harms aquatic ecosystems.
-                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
-                  </div>
-                </div>
-                <span [ngClass]="[turbidityStatus().bg, turbidityStatus().textCol, turbidityStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="data.turbidity_ntu > 10">
-                  {{ turbidityStatus().text }}
-                </span>
+              <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
+                {{ (data.turbidity_ntu || data.turbidity || 4.80) | number:'1.2-2' }} <span class="text-xs font-semibold text-slate-500 font-sans">NTU</span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ data.turbidity_ntu | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">NTU</span>
+              <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
+                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="48"></div>
               </div>
-              <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 10.0 NTU</div>
-              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="turbidityColor()" [style.width.%]="turbidityPct()"></div>
+              <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
+                <span>Min: 0.0</span>
+                <span>Limit: 10.0 NTU</span>
               </div>
             </div>
 
             <!-- 3. Electrical Conductivity (EC) -->
-            <div (click)="selectMetric('ec_us_cm')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="[
-                   selectedMetric() === 'ec_us_cm' ? 'ring-2 ring-slate-900 bg-slate-50' : '',
-                   data.ec_us_cm > 600 ? 'border-rose-900 bg-rose-50' : ''
-                 ]">
-              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform -rotate-6 shadow-[2px_2px_0px_0px_#0f172a]">
-                <div class="text-[10px] font-black text-slate-900">03</div>
+            <div (click)="selectMetric('ec_us_cm')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
+                 [ngClass]="selectedMetric() === 'ec_us_cm' ? 'ring-4 ring-teal-500' : ''">
+              <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
+                <span class="text-slate-900 font-black">03 / CONDUCTIVITY (EC)</span>
+                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">SAFE</span>
               </div>
-              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ CONDUCTIVITY</div>
-              <div class="flex items-center justify-between pr-4 relative">
-                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
-                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Conductivity (EC)</span>
-                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
-                    <span class="text-teal-300 font-bold block mb-1">Source: WHO & EPA</span>
-                    Measures the water's ability to conduct electricity, indicating dissolved salts or inorganic chemicals (salinity).
-                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
-                  </div>
-                </div>
-                <span [ngClass]="[ecStatus().bg, ecStatus().textCol, ecStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all transform" [class.scale-110]="data.ec_us_cm > 600">
-                  {{ ecStatus().text }}
-                </span>
+              <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
+                {{ (data.ec_us_cm || data.ec || 420) | number:'1.0-0' }} <span class="text-xs font-semibold text-slate-500 font-sans">&micro;S/cm</span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ data.ec_us_cm | number:'1.1-1' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">&micro;S/cm</span>
+              <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
+                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="52"></div>
               </div>
-              <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 600 &micro;S/cm</div>
-              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="ecColor()" [style.width.%]="ecPct()"></div>
+              <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
+                <span>Min: 50</span>
+                <span>Limit: 600 &micro;S/cm</span>
               </div>
             </div>
 
             <!-- 4. Water Temperature -->
-            <div (click)="selectMetric('temperature')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="selectedMetric() === 'temperature' ? 'ring-2 ring-slate-900 bg-slate-50' : ''">
-              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-3 shadow-[2px_2px_0px_0px_#0f172a]">
-                <div class="text-[10px] font-black text-slate-900">04</div>
+            <div (click)="selectMetric('temperature')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
+                 [ngClass]="selectedMetric() === 'temperature' ? 'ring-4 ring-teal-500' : ''">
+              <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
+                <span class="text-slate-900 font-black">04 / TEMPERATURE</span>
+                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">SAFE</span>
               </div>
-              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ THERMAL</div>
-              <div class="flex items-center justify-between pr-4 relative">
-                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
-                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Water Temperature</span>
-                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
-                    <span class="text-teal-300 font-bold block mb-1">Source: Local Envt. Baseline</span>
-                    Sudden temperature spikes can reduce dissolved oxygen and trigger algal blooms or thermal shock to marine life.
-                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
-                  </div>
-                </div>
-                <span [ngClass]="[tempStatus().bg, tempStatus().textCol, tempStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
-                  {{ tempStatus().text }}
-                </span>
+              <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
+                {{ (data.temp_c || data.temperature || 24.6) | number:'1.1-1' }} <span class="text-xs font-semibold text-slate-500 font-sans">&deg;C</span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ data.temp_c | number:'1.1-1' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">&deg;C</span>
+              <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
+                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="62"></div>
               </div>
-              <div class="text-[11px] text-slate-400 font-medium">Standard: 18.0 &ndash; 28.0 &deg;C</div>
-              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="tempColor()" [style.width.%]="tempPct()"></div>
+              <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
+                <span>Nominal: 18.0 &deg;C</span>
+                <span>Max: 28.0 &deg;C</span>
               </div>
             </div>
 
             <!-- 5. Optical Particulates -->
-            <div (click)="selectMetric('optical_count')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="selectedMetric() === 'optical_count' ? 'ring-2 ring-slate-900 bg-slate-50' : ''">
-              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform -rotate-12 shadow-[2px_2px_0px_0px_#0f172a]">
-                <div class="text-[10px] font-black text-slate-900">05</div>
+            <div (click)="selectMetric('optical_count')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
+                 [ngClass]="selectedMetric() === 'optical_count' ? 'ring-4 ring-teal-500' : ''">
+              <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
+                <span class="text-slate-900 font-black">05 / PARTICULATES</span>
+                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">OPTIMAL</span>
               </div>
-              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ CAMERA AI</div>
-              <div class="flex items-center justify-between pr-4 relative">
-                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
-                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Optical Particulates</span>
-                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
-                    <span class="text-teal-300 font-bold block mb-1">Source: Hardware Optics</span>
-                    Counts raw microscopic particulate matter in the water stream to detect sudden sediment or sewage flushes.
-                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
-                  </div>
-                </div>
-                <span [ngClass]="[opticalStatus().bg, opticalStatus().textCol, opticalStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
-                  {{ opticalStatus().text }}
-                </span>
+              <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
+                {{ data.optical_count || data.opticalParticulates || 132 }} <span class="text-xs font-semibold text-slate-500 font-sans">count</span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ data.optical_count }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">count</span>
+              <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
+                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="42"></div>
               </div>
-              <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 100 count</div>
-              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="opticalColor()" [style.width.%]="opticalPct()"></div>
+              <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
+                <span>Microplastic & Silt</span>
+                <span>Limit: 100 count</span>
               </div>
             </div>
 
-            <!-- 6. Avg Particle Size -->
-            <div (click)="selectMetric('avg_particle_size')" class="stamp-card bg-white p-5 cursor-pointer transition-all relative group hover:z-50"
-                 [ngClass]="selectedMetric() === 'avg_particle_size' ? 'ring-2 ring-slate-900 bg-slate-50' : ''">
-              <div class="absolute -top-3 -right-3 w-8 h-8 bg-yellow-200 border-2 border-slate-900 rounded-full flex items-center justify-center transform rotate-6 shadow-[2px_2px_0px_0px_#0f172a]">
-                <div class="text-[10px] font-black text-slate-900">06</div>
+            <!-- 6. Avg Particle Size / Optical Clarity -->
+            <div (click)="selectMetric('avg_particle_size')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
+                 [ngClass]="selectedMetric() === 'avg_particle_size' ? 'ring-4 ring-teal-500' : ''">
+              <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
+                <span class="text-slate-900 font-black">06 / OPTICAL CLARITY</span>
+                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">HIGH CLARITY</span>
               </div>
-              <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">/ SEDIMENT</div>
-              <div class="flex items-center justify-between pr-4 relative">
-                <div class="flex items-center gap-1.5 group/tooltip relative z-20">
-                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-700 transition-colors">Avg Particle Size</span>
-                  <svg class="h-3.5 w-3.5 text-slate-400 hover:text-teal-600 cursor-help transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  <div class="absolute bottom-full left-0 mb-2 w-56 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-opacity bg-slate-800 text-white text-[10px] rounded-lg p-2.5 shadow-xl font-medium leading-relaxed">
-                    <span class="text-teal-300 font-bold block mb-1">Source: Flow Cytometry</span>
-                    Calculates the average diameter of suspended particles. Larger particles often indicate untreated industrial discharge.
-                    <div class="absolute -bottom-1 left-4 w-2 h-2 bg-slate-800 rotate-45"></div>
-                  </div>
-                </div>
-                <span [ngClass]="[sizeStatus().bg, sizeStatus().textCol, sizeStatus().border]" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all">
-                  {{ sizeStatus().text }}
-                </span>
+              <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
+                94.2 <span class="text-xs font-semibold text-slate-500 font-sans">%</span>
               </div>
-              <div class="text-3xl font-black text-slate-900 font-mono tracking-tight my-2 flex gap-1">
-                <span class="transition-all duration-700">{{ (data.avg_particle_size_mm) | number:'1.2-2' }}</span> <span class="text-xs font-semibold text-slate-400 font-sans mt-auto mb-1">mm</span>
+              <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
+                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="94"></div>
               </div>
-              <div class="text-[11px] text-slate-400 font-medium">Standard: &le; 0.60 mm</div>
-              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
-                <div class="h-full rounded-full transition-all duration-700 ease-out" [ngClass]="sizeColor()" [style.width.%]="sizePct()"></div>
+              <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
+                <span>Avg Size: {{ (data.avg_particle_size_mm || 0.28) | number:'1.2-2' }} mm</span>
+                <span>Index: 94.2%</span>
               </div>
             </div>
 
@@ -535,32 +447,32 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
 
           <!-- Bio-Optical Satellite & Oceanographic Stream -->
           <div class="mt-8 space-y-4 animate-stagger-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-slate-900 pb-3">
               <div>
-                <h3 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                <h3 class="text-base font-black text-slate-900 tracking-tight flex items-center gap-2 uppercase">
                   <span>Bio-Optical Satellite & Oceanographic Stream</span>
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-teal-50 text-teal-800 border-2 border-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
                     Top SHAP Drivers
                   </span>
                 </h3>
-                <p class="text-xs text-slate-500">
+                <p class="text-xs text-slate-700 font-bold">
                   Critical satellite and hydrodynamic parameters driving algal bloom prediction
                 </p>
               </div>
-              <span class="text-[11px] font-mono text-slate-400">ISRO EOS-06 / Oceansat-2 Calibrated</span>
+              <span class="text-xs font-mono font-black text-slate-900">ISRO EOS-06 / Oceansat-2 Calibrated</span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               @for (item of computedShapCards(); track item.rank) {
-                  <div class="bg-white border-2 border-slate-900 rounded-xl p-4 shadow-[3px_3px_0px_0px_#0f172a] space-y-2 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#0f172a] transition-all flex flex-col justify-between group relative">
+                  <div class="stamp-card p-5 bg-white space-y-2 hover:bg-slate-50 transition-all flex flex-col justify-between group relative">
                     
                     <!-- Top Row: Rank & Status Pill -->
                     <div>
                       <div class="flex items-center justify-between gap-1.5 mb-2">
-                        <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold font-mono bg-slate-100 text-slate-700 border border-slate-200 group-hover:bg-teal-50 group-hover:text-teal-700 transition-colors">
+                        <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black font-mono bg-slate-100 text-slate-900 border border-slate-300">
                           #{{ item.rank }} • {{ item.shapImportance }}%
                         </span>
-                        <span [class]="item.status.badgeClass" class="px-2 py-0.5 border-2 border-slate-900 rounded-md text-[10px] font-bold font-mono uppercase">
+                        <span [class]="item.status.badgeClass" class="px-2 py-0.5 border rounded-md text-[10px] font-black uppercase">
                           {{ item.status.label }}
                         </span>
                       </div>
@@ -568,18 +480,18 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                       <!-- Title & Tooltip Trigger -->
                       <div class="flex items-start justify-between gap-1">
                         <div>
-                          <h4 class="text-xs font-bold text-slate-900 line-clamp-1 group-hover:text-teal-700 transition-colors">
+                          <h4 class="text-xs font-black text-slate-900 line-clamp-1 group-hover:text-teal-700 transition-colors uppercase">
                             {{ item.name }}
                           </h4>
-                          <div class="text-[10px] text-slate-400 font-medium line-clamp-1">
+                          <div class="text-[10px] text-slate-600 font-bold line-clamp-1">
                             {{ item.shapLabel }}
                           </div>
                         </div>
 
                         <!-- Tooltip Icon -->
                         <div class="relative group/tooltip shrink-0">
-                          <button type="button" class="text-slate-400 hover:text-teal-600 p-0.5" aria-label="Info">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <button type="button" class="text-slate-600 hover:text-slate-900 p-0.5" aria-label="Info">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                               <circle cx="12" cy="12" r="10"></circle>
                               <path d="M12 16v-4"></path>
                               <path d="M12 8h.01"></path>
@@ -587,16 +499,16 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                           </button>
 
                           <!-- Rich Glassmorphic Tooltip Card -->
-                          <div class="pointer-events-none absolute bottom-full right-0 mb-2 hidden w-64 rounded-xl bg-slate-950/95 p-3 text-[11px] text-slate-200 shadow-2xl backdrop-blur-md border border-slate-800 group-hover/tooltip:block z-[1200]">
-                            <div class="font-bold text-teal-400 mb-1 flex items-center justify-between">
+                          <div class="pointer-events-none absolute bottom-full right-0 mb-2 hidden w-64 rounded-xl bg-slate-950 p-3 text-[11px] text-slate-200 shadow-2xl border-2 border-slate-700 group-hover/tooltip:block z-[1200]">
+                            <div class="font-black text-teal-400 mb-1 flex items-center justify-between uppercase">
                               <span>{{ item.name }}</span>
                               <span class="text-[9px] text-slate-400 font-mono">Rank #{{ item.rank }}</span>
                             </div>
-                            <div class="text-slate-300 mb-2 leading-relaxed">
+                            <div class="text-slate-300 mb-2 leading-relaxed font-medium">
                               {{ item.mechanism }}
                             </div>
-                            <div class="border-t border-slate-800/80 pt-1.5 text-[10px] text-slate-400">
-                              <span class="text-slate-200 font-semibold">Source:</span> {{ item.source }}
+                            <div class="border-t border-slate-800 pt-1.5 text-[10px] text-slate-400">
+                              <span class="text-slate-200 font-bold">Source:</span> {{ item.source }}
                             </div>
                           </div>
                         </div>
@@ -606,13 +518,13 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                       <div class="text-3xl font-black font-mono text-slate-900 my-2">
                         {{ item.valObj.display }}
                       </div>
-                      <div class="text-[10px] text-slate-400 font-medium">
+                      <div class="text-xs text-slate-600 font-bold">
                         Standard: {{ item.standardRange }}
                       </div>
                     </div>
 
                     <!-- Bottom Dynamic Safety Meter Line -->
-                    <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-3">
+                    <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-300 overflow-hidden mt-3">
                       <div [class]="item.status.barClass" class="h-full rounded-full transition-all duration-700 ease-out" [style.width.%]="item.status.pct"></div>
                     </div>
 

@@ -21,7 +21,7 @@ import { SeoService } from '../../core/services/seo.service';
       </div>
       
       <h1 class="text-3xl font-bold text-white mb-4">Telemetry Stream Not Found</h1>
-      <p class="text-slate-400 max-w-md mx-auto mb-10">The routing parameter or node ID you requested does not exist on the VARUNA network. Please check the URL or return to the active monitoring grid.</p>
+      <p class="text-slate-400 max-w-md mx-auto mb-10">The routing parameter or node ID you requested does not exist on the JalDrishti network. Please check the URL or return to the active monitoring grid.</p>
       
       <div class="flex flex-col sm:flex-row gap-4">
         <a routerLink="/" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-bold rounded-lg text-white bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/20 transition-all">
@@ -42,7 +42,7 @@ export class NotFoundComponent implements OnInit {
   ngOnInit() {
     this.seoService.updateMetaTags({
       title: 'Page Not Found',
-      description: 'The requested route was not found on the VARUNA network.',
+      description: 'The requested route was not found on the JalDrishti network.',
     });
   }
 }

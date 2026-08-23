@@ -9,44 +9,41 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
   standalone: true,
   imports: [CommonModule, RouterModule, BreadcrumbsComponent],
   template: `
-    <div class="py-12 md:py-20" *ngIf="post">
+    <div class="py-12 md:py-20 bg-slate-50 min-h-screen" *ngIf="post">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <app-breadcrumbs [crumbs]="[
           {label: 'Blog', path: '/blog'},
           {label: post.title, path: '/blog/' + post.slug}
         ]"></app-breadcrumbs>
         
-        <article class="mt-8 stamp-card bg-white p-8 md:p-12 relative">
-          <div class="washi-tape-top"></div>
-          <div class="binder-margin pl-6 md:pl-10 h-full">
-            <div class="mb-10 border-b-2 border-slate-900 pb-8">
-              <div class="flex items-center space-x-3 text-[11px] font-mono font-black text-slate-500 mb-6 uppercase tracking-widest">
-                <span class="bg-slate-100 px-2 py-1 border border-slate-200">{{ post.date }}</span>
-                <span>//</span>
-                <span class="text-teal-700 bg-teal-50 px-2 py-1 border border-teal-100">{{ post.category }}</span>
-              </div>
-              <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-8 uppercase">{{ post.title }}</h1>
-              
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a] bg-slate-100 flex-shrink-0 flex items-center justify-center font-black text-slate-400">GB</div>
-                <div>
-                  <h4 class="font-black text-slate-900 uppercase">Guruprasad Bhosale</h4>
-                  <p class="text-[10px] font-mono font-bold text-teal-700 tracking-widest uppercase">Lead Architect // Field Unit 01</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="prose prose-lg prose-slate max-w-none prose-headings:font-black prose-headings:text-slate-900 prose-headings:uppercase prose-headings:tracking-widest">
-              <p class="text-xl font-bold text-slate-700 mb-10 border-l-4 border-slate-900 pl-4 py-1 leading-relaxed">{{ post.excerpt }}</p>
-              <div [innerHTML]="post.content"></div>
+        <article class="mt-8 bg-white rounded-2xl border border-slate-200 p-8 md:p-12 shadow-sm">
+          <div class="mb-8 border-b border-slate-100 pb-8">
+            <div class="flex items-center space-x-3 text-xs font-semibold text-slate-500 mb-4">
+              <span class="bg-slate-100 px-2.5 py-1 rounded-md text-slate-700">{{ post.date }}</span>
+              <span>&bull;</span>
+              <span class="text-teal-700 bg-teal-50 px-2.5 py-1 rounded-md">{{ post.category }}</span>
             </div>
             
-            <div class="mt-16 pt-8 border-t-2 border-slate-900 flex justify-between items-center">
-              <a routerLink="/blog" class="stamp-btn bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-black uppercase transition-colors hover:bg-teal-700 inline-flex items-center">
-                &larr; Back to Logs
-              </a>
-              <span class="rubber-stamp-resolved bg-white !transform-none !text-[9px]">END OF LOG</span>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">{{ post.title }}</h1>
+            
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-sm">GB</div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">Guruprasad Bhosale</h4>
+                <p class="text-xs text-teal-700 font-semibold">Lead Architect • Field Unit 01</p>
+              </div>
             </div>
+          </div>
+
+          <div class="prose prose-slate max-w-none text-slate-700">
+            <p class="text-xl font-medium text-slate-800 mb-8 border-l-4 border-teal-600 pl-4 py-1 leading-relaxed">{{ post.excerpt }}</p>
+            <div [innerHTML]="post.content" class="space-y-4 text-base leading-relaxed"></div>
+          </div>
+          
+          <div class="mt-12 pt-6 border-t border-slate-100 flex justify-between items-center">
+            <a routerLink="/blog" class="inline-flex items-center gap-1 text-sm font-bold text-teal-600 hover:text-teal-700">
+              &larr; Back to Technical Blog
+            </a>
           </div>
         </article>
       </div>
@@ -54,7 +51,7 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
     
     <div class="bg-white py-20 text-center" *ngIf="!post">
       <h2 class="text-2xl font-bold text-slate-900">Article not found</h2>
-      <a routerLink="/blog" class="text-cyan-600 hover:underline mt-4 inline-block">Return to Blog</a>
+      <a routerLink="/blog" class="text-teal-600 hover:underline mt-4 inline-block font-semibold">Return to Blog</a>
     </div>
   `
 })
@@ -72,7 +69,7 @@ export class BlogDetailComponent implements OnInit {
       content: `
         <p>In standard environmental compliance, technicians travel to river locations, fill sample bottles, and transport them to labs. Results take 2-3 days.</p>
         <p>By the time a high concentration of dissolved solids or an acidic pH drop is identified, the water mass has flowed miles downstream, affecting agriculture and drinking water intakes.</p>
-        <h3>The VARUNA Advantage</h3>
+        <h3>The JalDrishti Advantage</h3>
         <p>Our autonomous nodes provide a reading every 20 minutes. This high-frequency time-series data allows us to identify spikes instantly, alerting authorities before the plume spreads.</p>
       `
     },
@@ -118,14 +115,14 @@ export class BlogDetailComponent implements OnInit {
     'understanding-cpcb-wqi-standards': {
       slug: 'understanding-cpcb-wqi-standards',
       title: 'Understanding CPCB Standards: How to Compute Composite Water Quality Indices (WQI).',
-      excerpt: 'Demystifying the math behind the Water Quality Index (WQI). How VARUNA maps raw telemetry values against India\'s CPCB normative standards.',
+      excerpt: 'Demystifying the math behind the Water Quality Index (WQI). How JalDrishti maps raw telemetry values against India\'s CPCB normative standards.',
       date: 'Jul 01, 2026',
       category: 'Data Engineering',
       content: `
         <p>The Water Quality Index (WQI) is a single number that expresses the overall quality of water based on several parameters. The Central Pollution Control Board (CPCB) defines specific weights for different parameters based on their health impact.</p>
         <h3>Computing the Sub-Index</h3>
         <p>We normalize each sensor reading against the ideal standard. For pH, deviations from 7.0 are exponentially penalized. The final WQI is a weighted arithmetic mean of all active sensors.</p>
-        <p>VARUNA dynamically computes this on the edge, presenting operators with an easy-to-understand 0-100 scale.</p>
+        <p>JalDrishti dynamically computes this on the edge, presenting operators with an easy-to-understand 0-100 scale.</p>
       `
     }
   };
@@ -144,7 +141,7 @@ export class BlogDetailComponent implements OnInit {
         this.seoService.updateMetaTags({
           title: this.post.title,
           description: this.post.excerpt,
-          canonicalUrl: `https://varuna-iot.org/blog/${this.post.slug}`
+          canonicalUrl: `https://jaldrishti.org/blog/${this.post.slug}`
         });
       }
     });

@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 import httpx
 
-logger = logging.getLogger("VARUNA-ALERTS")
+logger = logging.getLogger("JalDrishiti-ALERTS")
 
 class AlertDispatcher:
     def __init__(self):
@@ -36,7 +36,7 @@ class AlertDispatcher:
         """Dispatches rich Markdown alert to Telegram channels."""
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         text = (
-            f"🚨 *VARUNA WATER SAFETY ALERT*\n\n"
+            f"🚨 *JalDrishiti WATER SAFETY ALERT*\n\n"
             f"*Node:* `{record['node_id']}`\n"
             f"*Status:* `{record['predicted_safety_level'].upper()}`\n"
             f"*Safety Score:* `{record['safety_score']}/100`\n"
@@ -96,7 +96,7 @@ class AlertDispatcher:
     def format_whatsapp_message(self, record: Dict[str, Any]) -> str:
         status_emoji = "🔴" if record.get("predicted_safety_level") == "Dangerous" else "🟠"
         return (
-            f"{status_emoji} *PROJECT VARUNA — WATER SAFETY ALERT*\n\n"
+            f"{status_emoji} *PROJECT JalDrishiti — WATER SAFETY ALERT*\n\n"
             f"*Node:* {record.get('node_id')}\n"
             f"*Condition:* {record.get('predicted_safety_level', 'Unknown').upper()}\n"
             f"*Safety Score:* {record.get('safety_score')} / 100\n"

@@ -34,27 +34,25 @@
   <!-- Dual Optical Viewport -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
     <!-- Pane 1: Raw Ingest Sample -->
-    <div class="stamp-card p-3 pb-10 bg-white relative">
-      <div class="washi-tape-top absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-amber-100/80 z-20 transform -rotate-2"></div>
-      <div class="bg-slate-900 relative aspect-video shadow-inner border-2 border-slate-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] overflow-hidden w-full h-full">
-        <div class="absolute top-3 left-3 bg-black/60 px-2 py-1 rounded text-[10px] text-white font-mono z-10 border border-white/10 backdrop-blur-sm flex items-center gap-2">
+    <div class="bg-white rounded-xl border border-slate-200 p-3 pb-8 relative shadow-sm">
+      <div class="bg-slate-900 rounded-lg relative aspect-video shadow-inner overflow-hidden w-full h-full">
+        <div class="absolute top-3 left-3 bg-black/70 px-2 py-1 rounded text-[10px] text-white font-mono z-10 border border-white/10 backdrop-blur-sm flex items-center gap-2">
           <span class="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse"></span>
           RAW • 1080p &#64; 30fps • ISO 200
         </div>
-        <div class="absolute bottom-3 right-3 text-white/50 text-[10px] font-mono z-10">
+        <div class="absolute bottom-3 right-3 text-white/60 text-[10px] font-mono z-10">
           {{ lastUpdatedTimestamp | date:'yyyy-MM-dd HH:mm:ss.SSS' }}
         </div>
         <div *ngIf="isFlashing()" class="absolute inset-0 bg-white z-20 opacity-90 transition-opacity"></div>
         <img [src]="latestCaptureUrl" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-screen" alt="Raw stream" />
       </div>
-      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-700 text-xs uppercase handwritten tracking-widest opacity-80">RAW FEED</div>
+      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-700 text-xs uppercase tracking-wider">RAW FEED</div>
     </div>
 
     <!-- Pane 2: AI Segmentation Canvas -->
-    <div class="stamp-card p-3 pb-10 bg-white relative">
-      <div class="washi-tape-top absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-8 bg-rose-100/80 z-20 transform rotate-3"></div>
-      <div class="bg-slate-900 relative aspect-video shadow-inner border-2 border-slate-900 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] overflow-hidden w-full h-full">
-        <div class="absolute top-3 left-3 bg-black/60 px-2 py-1 rounded text-[10px] text-white font-mono z-10 border border-teal-500/30 text-teal-400 backdrop-blur-sm">
+    <div class="bg-white rounded-xl border border-slate-200 p-3 pb-8 relative shadow-sm">
+      <div class="bg-slate-900 rounded-lg relative aspect-video shadow-inner overflow-hidden w-full h-full">
+        <div class="absolute top-3 left-3 bg-black/70 px-2 py-1 rounded text-[10px] text-teal-400 font-mono z-10 border border-teal-500/30 backdrop-blur-sm">
           NIRVAAH YOLO DETECT
         </div>
         
@@ -66,7 +64,6 @@
         
         <svg class="absolute inset-0 w-full h-full z-10" xmlns="http://www.w3.org/2000/svg">
           <g *ngFor="let p of syntheticPoints">
-            <!-- Raw: no drawing on the second pane? Wait, raw is full mode switcher. -->
             <ng-container *ngIf="viewMode() === 'annotated'">
               <rect [attr.x]="p.x" [attr.y]="p.y" width="14" height="14" fill="none" [attr.stroke]="p.color" stroke-width="1.5" />
               <text [attr.x]="p.x" [attr.y]="'calc(' + p.y + ' - 4px)'" [attr.fill]="p.color" font-size="8" font-family="monospace" font-weight="bold">{{ p.id }}</text>
@@ -77,7 +74,7 @@
           </g>
         </svg>
       </div>
-      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-700 text-xs uppercase handwritten tracking-widest opacity-80">AI OVERLAY</div>
+      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-700 text-xs uppercase tracking-wider">AI OVERLAY</div>
     </div>
   </div>
 

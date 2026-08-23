@@ -39,7 +39,7 @@ export interface TelemetryData {
 })
 export class TelemetryService {
   private baseState: TelemetryData = {
-    nodeId: 'VARUNA-001',
+    nodeId: 'JalDrishti-001',
     locationName: 'Sindhudurg District — Gad & Karli Rivers',
     coordinates: { lat: 16.2699, lng: 73.7148 },
     timestamp: new Date().toLocaleTimeString(),
@@ -193,7 +193,7 @@ export class TelemetryService {
     });
   }
 
-  async getHistory(nodeId = "VARUNA-001", limit = 200) {
+  async getHistory(nodeId = "JalDrishti-001", limit = 200) {
     const mockData: TelemetryData[] = [];
     let currentTime = new Date();
     currentTime.setHours(currentTime.getHours() - 24);

@@ -67,7 +67,7 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down gracefully.")
 
 app = FastAPI(
-    title="Project VARUNA API",
+    title="Project JalDrishiti API",
     description="Backend for environmental IoT water quality platform",
     version="0.2.0",
     lifespan=lifespan,
@@ -118,7 +118,7 @@ app.include_router(ml.router, prefix="/api/v1/ml", tags=["ml"])
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "message": "VARUNA API running"}
+    return {"status": "ok", "message": "JalDrishiti API running"}
 
 @app.get("/api/v1/health")
 def health_check():

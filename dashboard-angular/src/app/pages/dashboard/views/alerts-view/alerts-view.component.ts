@@ -25,30 +25,30 @@ export interface IncidentAlert {
     <div class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             Incident & Alert Center
           </h2>
-          <p class="text-xs text-slate-500 mt-1">Real-time anomaly detection logs and automated dispatch status</p>
+          <p class="text-xs text-slate-600 mt-1 font-medium">Real-time anomaly detection logs and automated dispatch status</p>
         </div>
 
-        <div class="inline-flex items-center gap-2 p-1 bg-slate-100 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
+        <div class="inline-flex items-center gap-1.5 p-1 bg-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
           <button 
             (click)="setFilter('ALL')" 
-            [class]="activeFilter === 'ALL' ? 'bg-slate-900 text-white' : 'bg-transparent text-slate-700'"
-            class="px-3 py-1 text-xs font-black rounded-lg transition-all">
+            [class]="activeFilter === 'ALL' ? 'bg-slate-900 text-white' : 'bg-transparent text-slate-900 hover:bg-slate-100'"
+            class="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-lg transition-all">
             All Incidents
           </button>
           <button 
             (click)="setFilter('CRITICAL')" 
-            [class]="activeFilter === 'CRITICAL' ? 'bg-rose-600 text-white' : 'bg-transparent text-rose-700'"
-            class="px-3 py-1 text-xs font-black rounded-lg transition-all flex items-center gap-1.5">
+            [class]="activeFilter === 'CRITICAL' ? 'bg-rose-600 text-white' : 'bg-transparent text-rose-800 hover:bg-rose-50'"
+            class="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-lg transition-all flex items-center gap-1.5">
             Critical <span class="h-2 w-2 rounded-full bg-rose-400"></span>
           </button>
           <button 
             (click)="setFilter('WARNING')" 
-            [class]="activeFilter === 'WARNING' ? 'bg-amber-500 text-white' : 'bg-transparent text-amber-700'"
-            class="px-3 py-1 text-xs font-black rounded-lg transition-all flex items-center gap-1.5">
-            Warning <span class="h-2 w-2 rounded-full bg-amber-300"></span>
+            [class]="activeFilter === 'WARNING' ? 'bg-amber-500 text-slate-900' : 'bg-transparent text-amber-900 hover:bg-amber-50'"
+            class="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-lg transition-all flex items-center gap-1.5">
+            Warning <span class="h-2 w-2 rounded-full bg-amber-400"></span>
           </button>
         </div>
       </div>
@@ -67,7 +67,7 @@ export class AlertsViewComponent implements OnInit {
       id: 'ALT-2026-088',
       timestamp: 'Today, 06:15 PM',
       timeAgo: '35m ago',
-      station: 'VARUNA-001',
+      station: 'JalDrishti-001',
       river: 'Gad River Outfall',
       severity: 'CRITICAL',
       title: 'Severe Acidic Industrial Effluent Detected',
@@ -79,7 +79,7 @@ export class AlertsViewComponent implements OnInit {
       id: 'ALT-2026-087',
       timestamp: 'Today, 02:40 PM',
       timeAgo: '4h ago',
-      station: 'VARUNA-002',
+      station: 'JalDrishti-002',
       river: 'Karli River Bridge',
       severity: 'WARNING',
       title: 'Turbidity Washout from Upstream Agricultural Inflow',
@@ -91,7 +91,7 @@ export class AlertsViewComponent implements OnInit {
       id: 'ALT-2026-086',
       timestamp: 'Yesterday, 11:20 AM',
       timeAgo: '1d ago',
-      station: 'VARUNA-001',
+      station: 'JalDrishti-001',
       river: 'Gad River Outfall',
       severity: 'WARNING',
       title: 'Thermal Stratification Early Bloom Flag',

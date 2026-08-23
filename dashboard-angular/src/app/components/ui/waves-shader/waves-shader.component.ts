@@ -183,7 +183,7 @@ export class WavesShaderComponent implements AfterViewInit, OnDestroy {
     this.cursorLocation = gl.getUniformLocation(this.program!, 'u_cursor');
     this.colorsLocation = gl.getUniformLocation(this.program!, 'u_colors');
 
-    // Varuna Marine Palette
+    // JalDrishti Marine Palette
     const colors = new Float32Array([
       0.011, 0.110, 0.149, // Deep Marine Slate
       0.051, 0.580, 0.533, // Teal 600

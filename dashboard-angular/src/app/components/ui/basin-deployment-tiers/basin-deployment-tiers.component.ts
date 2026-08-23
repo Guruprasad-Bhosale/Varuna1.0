@@ -24,9 +24,9 @@ export interface BasinTier {
     <div class="py-12 px-4 bg-slate-50 w-full overflow-hidden">
       <div class="max-w-7xl mx-auto">
         <div class="text-center max-w-3xl mx-auto mb-16">
-          <h2 class="text-4xl font-black text-slate-900 tracking-tight font-sans">Basin Deployment Tiers</h2>
-          <p class="mt-4 text-slate-600 font-medium">
-            Scale your edge intelligence from community streams to state-wide river basins with Project VARUNA. 
+          <h2 class="text-4xl font-black text-slate-900 tracking-tight">Basin Deployment Tiers</h2>
+          <p class="mt-4 text-slate-700 font-bold text-sm">
+            Scale your edge intelligence from community streams to state-wide river basins with Project JalDrishti. 
             Select a hardware and telemetry package below.
           </p>
         </div>
@@ -40,62 +40,58 @@ export interface BasinTier {
                    'z-10': !tier.popular
                  }">
               
-              <div class="w-full bg-white border-2 border-slate-900 rounded-xl flex flex-col transition-all duration-300 shadow-[4px_4px_0px_0px_#0f172a] hover:shadow-[8px_8px_0px_0px_#0f172a] transform"
-                   [ngClass]="{
-                     'rotate-[-1deg] hover:rotate-0': i === 0,
-                     'rotate-[1deg] hover:rotate-0': i === 2,
-                     'scale-[1.02] border-4 border-amber-400': tier.popular
-                   }">
+              <div class="w-full bg-white border-2 border-slate-900 rounded-2xl flex flex-col transition-all duration-300 shadow-[4px_4px_0px_0px_#0f172a] relative"
+                   [ngClass]="tier.popular ? 'ring-2 ring-amber-400' : ''">
                 
-                <div *ngIf="tier.badgeText" class="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-950 px-4 py-1 rounded-full font-bold text-xs uppercase tracking-wider border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
+                <div *ngIf="tier.badgeText" class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-400 text-slate-900 border-2 border-slate-900 px-4 py-1 rounded-full font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#0f172a]">
                   {{ tier.badgeText }}
                 </div>
 
                 <div class="p-8 border-b-2 border-slate-900 flex-1">
                   <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-lg border-2 border-slate-900 flex items-center justify-center bg-slate-50 shadow-[2px_2px_0px_0px_#0f172a]"
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-slate-50 border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]"
                          [innerHTML]="tier.iconSvg"></div>
                     <div>
                       <h3 class="text-xl font-black text-slate-900 tracking-tight">{{ tier.name }}</h3>
-                      <p class="text-sm text-slate-500 font-semibold">{{ tier.tagline }}</p>
+                      <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">{{ tier.tagline }}</p>
                     </div>
                   </div>
 
                   <div class="my-6">
                     <div class="flex items-baseline gap-1">
-                      <span class="text-4xl font-black text-slate-900">\${{ tier.monthlyCost }}</span>
-                      <span class="text-slate-500 font-bold">/{{ tier.billingPeriod }}</span>
+                      <span class="text-4xl font-black font-mono text-slate-900">₹{{ tier.monthlyCost }}</span>
+                      <span class="text-slate-600 font-bold">/{{ tier.billingPeriod }}</span>
                     </div>
                   </div>
 
                   <button (click)="selectTier(tier.name)"
-                          class="w-full py-3 px-6 rounded-lg font-bold text-white border-2 border-slate-900 shadow-[4px_4px_0px_0px_#0f172a] hover:shadow-[2px_2px_0px_0px_#0f172a] hover:translate-y-[2px] transition-all uppercase tracking-wider text-sm"
+                          class="stamp-btn w-full py-3.5 px-6 rounded-xl font-black text-white uppercase tracking-wider transition-all text-sm border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0f172a]"
                           [ngClass]="{
                             'bg-teal-600 hover:bg-teal-700': tier.accentColor === 'teal',
-                            'bg-amber-500 hover:bg-amber-600': tier.accentColor === 'amber',
+                            'bg-amber-500 hover:bg-amber-600 text-slate-900': tier.accentColor === 'amber',
                             'bg-purple-600 hover:bg-purple-700': tier.accentColor === 'purple'
                           }">
                     {{ tier.actionLabel }}
                   </button>
                 </div>
 
-                <div class="p-8 bg-slate-50 rounded-b-xl flex-1 flex flex-col gap-6">
+                <div class="p-8 bg-slate-50/80 rounded-b-2xl flex-1 flex flex-col gap-6">
                   <div>
-                    <h4 class="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">Hardware Included</h4>
+                    <h4 class="text-xs font-black text-slate-900 uppercase tracking-wider mb-4">Hardware Included</h4>
                     <ul class="space-y-3">
-                      <li *ngFor="let spec of tier.hardwareSpecs" class="flex items-start gap-2">
-                        <svg class="w-5 h-5 text-slate-700 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        <span class="text-sm text-slate-700 font-medium">{{ spec }}</span>
+                      <li *ngFor="let spec of tier.hardwareSpecs" class="flex items-start gap-2.5">
+                        <svg class="w-5 h-5 text-teal-700 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span class="text-sm text-slate-900 font-bold">{{ spec }}</span>
                       </li>
                     </ul>
                   </div>
 
                   <div>
-                    <h4 class="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">Platform Features</h4>
+                    <h4 class="text-xs font-black text-slate-900 uppercase tracking-wider mb-4">Platform Features</h4>
                     <ul class="space-y-3">
-                      <li *ngFor="let feature of tier.features" class="flex items-start gap-2">
-                        <svg class="w-5 h-5 text-slate-700 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>
-                        <span class="text-sm text-slate-700 font-medium">{{ feature }}</span>
+                      <li *ngFor="let feature of tier.features" class="flex items-start gap-2.5">
+                        <svg class="w-5 h-5 text-teal-700 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>
+                        <span class="text-sm text-slate-900 font-bold">{{ feature }}</span>
                       </li>
                     </ul>
                   </div>
@@ -121,7 +117,7 @@ export class BasinDeploymentTiersComponent {
     {
       name: 'Community Sentinel',
       tagline: 'Basic water quality edge node.',
-      monthlyCost: 29,
+      monthlyCost: 2400,
       billingPeriod: 'mo',
       accentColor: 'teal',
       iconSvg: '<svg class="w-6 h-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>',
@@ -140,7 +136,7 @@ export class BasinDeploymentTiersComponent {
     {
       name: 'Municipal River Basin',
       tagline: 'Full telemetry & AI bloom forecasting.',
-      monthlyCost: 149,
+      monthlyCost: 12000,
       billingPeriod: 'mo',
       popular: true,
       badgeText: 'Most Deployed',
@@ -162,7 +158,7 @@ export class BasinDeploymentTiersComponent {
     {
       name: 'State Env. Grid',
       tagline: 'Satellite-calibrated enterprise swarm.',
-      monthlyCost: 499,
+      monthlyCost: 41000,
       billingPeriod: 'mo',
       accentColor: 'purple',
       iconSvg: '<svg class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" /></svg>',

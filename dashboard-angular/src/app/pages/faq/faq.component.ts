@@ -50,7 +50,7 @@ export class FaqComponent implements OnInit {
 
   faqs = [
     {
-      question: "How long can a VARUNA node operate off-grid?",
+      question: "How long can a JalDrishti node operate off-grid?",
       answer: "The hardware node is equipped with a 12V 7Ah SLA battery paired with a 20W monocrystalline solar panel. With a standard 20-minute sampling cycle, the system can operate autonomously indefinitely, with up to 5 days of reserve power during heavy monsoon cloud cover."
     },
     {
@@ -67,7 +67,7 @@ export class FaqComponent implements OnInit {
     },
     {
       question: "Can we integrate this data into our existing Municipal GIS systems?",
-      answer: "Yes. VARUNA provides secure, authenticated REST APIs to extract live JSON payloads. We also support direct webhook forwarding to push real-time geospatial telemetry directly into Esri ArcGIS or custom Leaflet deployments used by city command centers."
+      answer: "Yes. JalDrishti provides secure, authenticated REST APIs to extract live JSON payloads. We also support direct webhook forwarding to push real-time geospatial telemetry directly into Esri ArcGIS or custom Leaflet deployments used by city command centers."
     }
   ];
 
@@ -90,8 +90,8 @@ export class FaqComponent implements OnInit {
 
     this.seoService.updateMetaTags({
       title: 'Frequently Asked Questions',
-      description: 'Technical FAQs regarding Project VARUNA node deployment, off-grid power autonomy, sensor maintenance, and API integrations.',
-      canonicalUrl: 'https://varuna-iot.org/faq',
+      description: 'Technical FAQs regarding Project JalDrishti node deployment, off-grid power autonomy, sensor maintenance, and API integrations.',
+      canonicalUrl: 'https://jaldrishti.org/faq',
       schemaJson
     });
   }

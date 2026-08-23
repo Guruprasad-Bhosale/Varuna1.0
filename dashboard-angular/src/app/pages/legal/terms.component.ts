@@ -17,19 +17,19 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
 
         <div class="prose prose-cyan text-slate-600 max-w-none">
           <h3>1. Acceptance of Terms</h3>
-          <p>By accessing the Project VARUNA dashboard, deploying our IoT hardware nodes, or utilizing our APIs, you agree to be bound by these Terms of Service.</p>
+          <p>By accessing the Project JalDrishti dashboard, deploying our IoT hardware nodes, or utilizing our APIs, you agree to be bound by these Terms of Service.</p>
 
           <h3>2. Platform Usage & API Rate Limits</h3>
-          <p>VARUNA provides open access to environmental telemetry for authorized municipal and research partners. You agree to respect our API rate limits (100 requests per minute per IP for public endpoints). Attempting to scrape or overwhelm the REST/MQTT brokers will result in immediate API key revocation.</p>
+          <p>JalDrishti provides open access to environmental telemetry for authorized municipal and research partners. You agree to respect our API rate limits (100 requests per minute per IP for public endpoints). Attempting to scrape or overwhelm the REST/MQTT brokers will result in immediate API key revocation.</p>
 
           <h3>3. Hardware Liability & Environmental Hazards</h3>
-          <p>While VARUNA nodes are built for resilient off-grid operation (IP67), river environments are volatile. We are not liable for hardware loss due to extreme flooding events, severe biofouling neglect, or vandalism. Regular maintenance of the optical and electrochemical sensors is the responsibility of the deployment partner unless a managed SLA is explicitly signed.</p>
+          <p>While JalDrishti nodes are built for resilient off-grid operation (IP67), river environments are volatile. We are not liable for hardware loss due to extreme flooding events, severe biofouling neglect, or vandalism. Regular maintenance of the optical and electrochemical sensors is the responsibility of the deployment partner unless a managed SLA is explicitly signed.</p>
 
           <h3>4. Alert Latency & Service Guarantees</h3>
-          <p>We strive for &lt; 3-second alert dispatch latency. However, reliance on third-party cellular networks (4G/LTE) and external API gateways (WhatsApp Cloud API) means 100% uptime cannot be legally guaranteed. VARUNA is a supplemental intelligence system and should not replace emergency manual protocols.</p>
+          <p>We strive for &lt; 3-second alert dispatch latency. However, reliance on third-party cellular networks (4G/LTE) and external API gateways (WhatsApp Cloud API) means 100% uptime cannot be legally guaranteed. JalDrishti is a supplemental intelligence system and should not replace emergency manual protocols.</p>
 
           <h3>5. Intellectual Property</h3>
-          <p>The Edge AI Random Forest models, OpenCV morphological screening pipelines, and the Angular dashboard architecture remain the intellectual property of Project VARUNA. You may not reverse-engineer the ESP32 state machines or edge Python scripts without explicit open-source licensing agreements.</p>
+          <p>The Edge AI Random Forest models, OpenCV morphological screening pipelines, and the Angular dashboard architecture remain the intellectual property of Project JalDrishti. You may not reverse-engineer the ESP32 state machines or edge Python scripts without explicit open-source licensing agreements.</p>
         </div>
       </div>
     </div>
@@ -41,8 +41,8 @@ export class TermsComponent implements OnInit {
   ngOnInit() {
     this.seoService.updateMetaTags({
       title: 'Terms of Service',
-      description: 'Terms of Service and SLA agreements for deploying Project VARUNA hardware nodes and APIs.',
-      canonicalUrl: 'https://varuna-iot.org/terms'
+      description: 'Terms of Service and SLA agreements for deploying Project JalDrishti hardware nodes and APIs.',
+      canonicalUrl: 'https://jaldrishti.org/terms'
     });
   }
 }

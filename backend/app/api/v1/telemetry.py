@@ -90,7 +90,7 @@ def ingest_telemetry(
     return obs
 
 @router.get("/latest", response_model=TelemetryResponse)
-def get_latest_telemetry(node_id: str = "VARUNA-001", db: Session = Depends(get_db)):
+def get_latest_telemetry(node_id: str = "JalDrishiti-001", db: Session = Depends(get_db)):
     record = (
         db.query(TelemetryRecord)
         .filter(TelemetryRecord.node_id == node_id)
@@ -103,7 +103,7 @@ def get_latest_telemetry(node_id: str = "VARUNA-001", db: Session = Depends(get_
 
 @router.get("/history")
 def get_telemetry_history(
-    node_id: str = "VARUNA-001",
+    node_id: str = "JalDrishiti-001",
     limit: int = Query(200, le=2000),
     source: Literal["live", "parquet", "hybrid"] = "hybrid",
     db: Session = Depends(get_db)

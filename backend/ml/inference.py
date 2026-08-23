@@ -8,7 +8,7 @@ from datetime import datetime
 
 from ml.risk_engine import calculate_nirvaah_risk
 
-logger = logging.getLogger("VARUNA-INFERENCE")
+logger = logging.getLogger("JalDrishiti-INFERENCE")
 
 BASE_DIR = Path(__file__).resolve().parent
 ARTIFACTS_DIR = BASE_DIR / "artifacts"

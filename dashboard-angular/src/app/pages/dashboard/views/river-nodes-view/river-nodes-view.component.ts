@@ -31,25 +31,25 @@ export interface BloomForecastNode {
             <lucide-icon [img]="MapIcon" class="h-6 w-6 text-teal-600"></lucide-icon>
             Sindhudurg Basin Network & Bloom Forecast
           </h2>
-          <p class="text-xs text-slate-500 mt-1 font-medium">
+          <p class="text-xs text-slate-600 mt-1 font-medium">
             Real-time telemetry and 48–72h AI predictive algal bloom early warning zones
           </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-4">
+        <div class="flex flex-wrap items-center gap-3">
           <!-- Swath Layer Toggle -->
           <button 
             (click)="toggleSwath()"
-            [ngClass]="showSwath() ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'"
-            class="stamp-btn px-4 py-2 border-2 border-slate-900 text-xs font-black uppercase tracking-wider rounded-lg transition-all flex items-center gap-2">
+            [ngClass]="showSwath() ? 'bg-slate-900 text-white' : 'bg-white text-slate-800 hover:bg-slate-50'"
+            class="px-4 py-2 border border-slate-300 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-2">
             Satellite Risk Swath
           </button>
 
           <!-- Bloom Forecast Layer Toggle -->
           <button 
             (click)="toggleBloomForecast()"
-            [ngClass]="showBloomForecast() ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'"
-            class="stamp-btn px-4 py-2 border-2 border-slate-900 text-xs font-black uppercase tracking-wider rounded-lg transition-all flex items-center gap-2">
+            [ngClass]="showBloomForecast() ? 'bg-slate-900 text-white' : 'bg-white text-slate-800 hover:bg-slate-50'"
+            class="px-4 py-2 border border-slate-300 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-2">
             <span class="relative flex h-2 w-2">
               @if (showBloomForecast()) {
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -60,42 +60,40 @@ export interface BloomForecastNode {
           </button>
 
           <!-- Tile Selector -->
-          <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a] text-xs">
-            <button (click)="setTileLayer('voyager')" [ngClass]="activeTileLayer() === 'voyager' ? 'bg-slate-900 text-white shadow-none' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="px-3 py-1 rounded-lg font-black uppercase tracking-wider transition-all">Voyager</button>
-            <button (click)="setTileLayer('satellite')" [ngClass]="activeTileLayer() === 'satellite' ? 'bg-slate-900 text-white shadow-none' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="px-3 py-1 rounded-lg font-black uppercase tracking-wider transition-all">Satellite</button>
-            <button (click)="setTileLayer('dark')" [ngClass]="activeTileLayer() === 'dark' ? 'bg-slate-900 text-white shadow-none' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="px-3 py-1 rounded-lg font-black uppercase tracking-wider transition-all">Dark</button>
+          <div class="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-sm text-xs">
+            <button (click)="setTileLayer('voyager')" [ngClass]="activeTileLayer() === 'voyager' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-100'" class="px-3 py-1 rounded-lg font-bold transition-all">Voyager</button>
+            <button (click)="setTileLayer('satellite')" [ngClass]="activeTileLayer() === 'satellite' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-100'" class="px-3 py-1 rounded-lg font-bold transition-all">Satellite</button>
+            <button (click)="setTileLayer('dark')" [ngClass]="activeTileLayer() === 'dark' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-100'" class="px-3 py-1 rounded-lg font-bold transition-all">Dark</button>
           </div>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div class="lg:col-span-3 stamp-card washi-tape-top relative h-[420px] sm:h-[500px] lg:h-[640px]" style="isolation: isolate; position: relative; z-index: 1;">
-          <div class="absolute inset-0 rounded-[14px] overflow-hidden z-0">
-            <div id="sindhudurg-gis-map" class="h-full w-full" style="touch-action: pan-x pan-y; transform: translate3d(0,0,0); will-change: transform;"></div>
-          </div>
+        <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative h-[420px] sm:h-[500px] lg:h-[640px]">
+          <div id="sindhudurg-gis-map" class="h-full w-full"></div>
           
           <!-- High-Contrast Floating Map Legend -->
-          <div class="absolute bottom-6 left-6 z-[1000] stamp-card bg-white/95 backdrop-blur-md p-4 w-60 space-y-3 pointer-events-auto">
-            <div class="flex items-center justify-between border-b-2 border-slate-200 border-dashed pb-2">
-              <span class="text-xs font-black text-slate-900 tracking-tight uppercase">Map Legend</span>
-              <span class="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-200">
+          <div class="absolute bottom-6 left-6 z-[1000] bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-4 w-64 shadow-lg space-y-3 pointer-events-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <span class="text-xs font-bold text-slate-900 tracking-tight uppercase">Map Legend</span>
+              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
                 NIRVAAH AI
               </span>
             </div>
 
             <!-- River Polyline Traces -->
-            <div class="space-y-1.5 text-[11px] font-semibold text-slate-700">
+            <div class="space-y-1.5 text-xs font-semibold text-slate-700">
               <div class="flex items-center gap-2">
-                <span class="h-1 w-5 rounded-full bg-cyan-500"></span>
+                <span class="h-1.5 w-5 rounded-full bg-cyan-500"></span>
                 <span>Gad River Channel</span>
               </div>
               <div class="flex items-center gap-2">
-                <span class="h-1 w-5 rounded-full bg-teal-600"></span>
+                <span class="h-1.5 w-5 rounded-full bg-teal-600"></span>
                 <span>Karli River Channel</span>
               </div>
             </div>
 
-            <div class="border-t border-slate-100 pt-2 space-y-2 text-[11px] font-medium text-slate-600">
+            <div class="border-t border-slate-100 pt-2 space-y-2 text-xs font-medium text-slate-700">
               <!-- Active Station Pins -->
               <div class="flex items-center gap-2">
                 <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-emerald-200"></span>
@@ -119,33 +117,30 @@ export interface BloomForecastNode {
 
         <!-- Dual-Mode Intelligence Sidebar -->
         <div class="space-y-4">
-          <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
-            <button (click)="activeTab.set('stations')" [ngClass]="activeTab() === 'stations' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="flex-1 py-1.5 text-xs font-black uppercase tracking-wider rounded-lg transition-all">River Stations</button>
-            <button (click)="activeTab.set('forecasts')" [ngClass]="activeTab() === 'forecasts' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-200'" class="flex-1 py-1.5 text-xs font-black uppercase tracking-wider rounded-lg transition-all">Bloom Warnings</button>
+          <div class="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+            <button (click)="activeTab.set('stations')" [ngClass]="activeTab() === 'stations' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-100'" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">River Stations</button>
+            <button (click)="activeTab.set('forecasts')" [ngClass]="activeTab() === 'forecasts' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-transparent hover:bg-slate-100'" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">Bloom Warnings</button>
           </div>
 
-          <div class="space-y-4 max-h-[580px] overflow-y-auto pr-2 pb-4">
+          <div class="space-y-3 max-h-[580px] overflow-y-auto pr-1 pb-4">
             @if (activeTab() === 'stations') {
               @for (node of riverNodes; track node.id; let i = $index) {
-                <div class="stamp-card p-4 bg-white relative space-y-3">
-                  <div class="absolute top-0 bottom-0 left-8 w-[2px] bg-rose-200/50"></div>
-                  <div class="absolute -left-1 top-4 text-[10px] font-black text-slate-400 rotate-[-90deg] w-4 text-center">{{ (i + 1).toString().padStart(2, '0') }}</div>
-                  
-                  <div class="flex items-start justify-between gap-2 pl-6 relative z-10">
+                <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:border-teal-400 hover:shadow-md transition-all space-y-3">
+                  <div class="flex items-start justify-between gap-2">
                     <div class="font-bold text-sm text-slate-900 tracking-tight">{{ node.name }}</div>
-                    <div class="h-2.5 w-2.5 rounded-full shrink-0 border border-slate-900 shadow-[1px_1px_0px_0px_#0f172a]" [ngClass]="node.status === 'SAFE' ? 'bg-emerald-500' : (node.status === 'ELEVATED' ? 'bg-amber-400' : 'bg-rose-500')"></div>
+                    <div class="h-2.5 w-2.5 rounded-full shrink-0 mt-1" [ngClass]="node.status === 'SAFE' ? 'bg-emerald-500' : (node.status === 'ELEVATED' ? 'bg-amber-400' : 'bg-rose-500')"></div>
                   </div>
                   
-                  <div class="text-[11px] font-mono font-bold text-slate-700 pl-6 relative z-10 border-b-2 border-slate-100 border-dashed pb-2">
+                  <div class="text-xs font-mono font-medium text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
                     pH: {{ node.ph.toFixed(2) }} • Temp: {{ node.temp.toFixed(1) }}°C • Cond: {{ node.ec }} µS
                   </div>
 
-                  <div class="flex items-center justify-between text-xs pt-2 pl-6 relative z-10">
-                    <span class="px-2 py-0.5 border border-slate-900 text-[10px] font-black uppercase shadow-[1px_1px_0px_0px_#0f172a]"
-                          [ngClass]="node.status === 'SAFE' ? 'bg-emerald-100 text-emerald-900' : (node.status === 'ELEVATED' ? 'bg-amber-100 text-amber-900' : 'bg-rose-100 text-rose-900')">
+                  <div class="flex items-center justify-between text-xs pt-1">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                          [ngClass]="node.status === 'SAFE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : (node.status === 'ELEVATED' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200')">
                       {{ node.status }}
                     </span>
-                    <button (click)="flyToNode(node)" class="stamp-btn bg-slate-900 text-white px-3 py-1 rounded text-[10px] uppercase font-bold hover:bg-teal-700">Inspect &rarr;</button>
+                    <button (click)="flyToNode(node)" class="bg-slate-900 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Inspect &rarr;</button>
                   </div>
                 </div>
               }
@@ -153,23 +148,21 @@ export interface BloomForecastNode {
               @for (bloom of bloomForecasts; track bloom.id; let i = $index) {
                 <div 
                   (click)="flyToBloom(bloom)"
-                  class="stamp-card p-4 bg-amber-50/50 cursor-pointer relative space-y-3 group border-amber-900/50">
-                  <div class="absolute top-0 bottom-0 left-8 w-[2px] bg-rose-200/50"></div>
-                  <div class="absolute -left-1 top-4 text-[10px] font-black text-amber-600/50 rotate-[-90deg] w-4 text-center">{{ (i + 1).toString().padStart(2, '0') }}</div>
+                  class="bg-amber-50/60 rounded-xl border border-amber-200 p-4 shadow-sm hover:border-amber-400 hover:shadow-md transition-all space-y-3 cursor-pointer group">
                   
-                  <div class="flex items-start justify-between gap-2 pl-6 relative z-10">
+                  <div class="flex items-start justify-between gap-2">
                     <div>
-                      <div class="font-semibold text-sm text-slate-900 transition-colors flex items-center gap-1.5">
+                      <div class="font-bold text-sm text-slate-900 transition-colors">
                         {{ bloom.name }}
                       </div>
-                      <div class="text-[11px] text-teal-600 font-medium">{{ bloom.river }} • {{ bloom.location }}</div>
+                      <div class="text-xs text-teal-700 font-semibold mt-0.5">{{ bloom.river }} • {{ bloom.location }}</div>
                     </div>
-                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200 font-mono shrink-0">
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300 font-mono shrink-0">
                       +{{ bloom.forecastWindow }}
                     </span>
                   </div>
 
-                  <div class="pl-6 relative z-10 bg-white border-2 border-slate-900 shadow-[2px_2px_0px_0px_#0f172a] p-2.5 rounded text-[11px] font-mono font-bold space-y-1.5 mt-3">
+                  <div class="bg-white border border-amber-200/80 p-2.5 rounded-lg text-xs font-mono font-bold space-y-1.5">
                     <div class="flex justify-between items-center text-slate-700">
                       <span>Probability:</span>
                       <span class="text-rose-600">{{ bloom.bloomProbability }}%</span>
@@ -180,13 +173,13 @@ export interface BloomForecastNode {
                     </div>
                   </div>
 
-                  <div class="pl-6 relative z-10 text-[11px] text-slate-700 leading-tight border-b-2 border-slate-200 border-dashed pb-2">
-                    <span class="font-black">Triggers:</span> {{ bloom.triggerFactors.join(', ') }}
+                  <div class="text-xs text-slate-700 font-medium leading-relaxed">
+                    <span class="font-bold text-slate-900">Triggers:</span> {{ bloom.triggerFactors.join(', ') }}
                   </div>
 
-                  <div class="flex items-center justify-between text-xs pt-2 pl-6 relative z-10">
-                    <span class="text-[10px] text-slate-900 font-black uppercase highlighter-amber">{{ bloom.riskTier }}</span>
-                    <button class="stamp-btn bg-slate-900 text-white px-3 py-1 rounded text-[10px] uppercase font-bold group-hover:bg-amber-600">Inspect &rarr;</button>
+                  <div class="flex items-center justify-between text-xs pt-1">
+                    <span class="text-xs text-amber-900 font-bold uppercase bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200">{{ bloom.riskTier }}</span>
+                    <button class="bg-slate-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold group-hover:bg-amber-600 transition-colors">Inspect &rarr;</button>
                   </div>
                 </div>
               }
@@ -248,17 +241,16 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
   ];
 
   readonly riverNodes = [
-    { id: 'VARUNA-001', name: 'Sarjekot Estuary (Gad River Outfall)', lat: 16.0822, lng: 73.4685, status: 'SAFE', ph: 7.35, temp: 25.1, ec: 420 },
-    { id: 'VARUNA-002', name: 'Gad River Upstream (Kasal Basin)', lat: 16.1850, lng: 73.6120, status: 'SAFE', ph: 7.4, temp: 24.2, ec: 310 },
-    { id: 'VARUNA-003', name: 'Karli River Central (Kudal Basin)', lat: 15.9985, lng: 73.6840, status: 'ELEVATED', ph: 7.8, temp: 26.5, ec: 850 },
-    { id: 'VARUNA-004', name: 'Devbag Creek (Karli River Mouth)', lat: 15.9765, lng: 73.4925, status: 'WARNING', ph: 8.15, temp: 28.1, ec: 1120 }
+    { id: 'JALDRISHTI-001', name: 'JALDRISHTI-001 (Sarjekot Outfall)', lat: 16.0822, lng: 73.4685, status: 'SAFE', ph: 7.35, temp: 25.1, ec: 420 },
+    { id: 'JALDRISHTI-002', name: 'JALDRISHTI-002 (Kasal Basin)', lat: 16.1850, lng: 73.6120, status: 'SAFE', ph: 7.4, temp: 24.2, ec: 310 },
+    { id: 'JALDRISHTI-003', name: 'JALDRISHTI-003 (Kudal Bridge)', lat: 15.9985, lng: 73.6840, status: 'ELEVATED', ph: 7.8, temp: 26.5, ec: 850 },
+    { id: 'JALDRISHTI-004', name: 'JALDRISHTI-004 (Devbag Creek)', lat: 15.9765, lng: 73.4925, status: 'WARNING', ph: 8.15, temp: 28.1, ec: 1120 }
   ];
 
   ngAfterViewInit(): void {
     this.ngZone.runOutsideAngular(() => {
       this.initMap();
       
-      // Fix for Leaflet tile invalidation inside neo-brutalist containers
       setTimeout(() => {
         if (this.map) {
           this.map.invalidateSize();
@@ -318,10 +310,10 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     const gadRiverChannel: [number, number][] = [
       [16.2750, 73.7420],
       [16.2280, 73.6750],
-      [16.1850, 73.6120], // VARUNA-002 Station
+      [16.1850, 73.6120], // JALDRISHTI-002 Station
       [16.1380, 73.5450],
       [16.1020, 73.4980],
-      [16.0822, 73.4685]  // VARUNA-001 Estuary Outfall
+      [16.0822, 73.4685]  // JALDRISHTI-001 Estuary Outfall
     ];
     L.polyline(gadRiverChannel, {
       color: '#06b6d4',
@@ -333,10 +325,10 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     // Karli River Path (Flowing Southwest through Kudal to Devbag Spit)
     const karliRiverChannel: [number, number][] = [
       [16.0420, 73.7850],
-      [15.9985, 73.6840], // VARUNA-003 Station
+      [15.9985, 73.6840], // JALDRISHTI-003 Station
       [15.9890, 73.6150],
       [15.9810, 73.5420],
-      [15.9765, 73.4925]  // VARUNA-004 Estuary Outfall
+      [15.9765, 73.4925]  // JALDRISHTI-004 Estuary Outfall
     ];
     L.polyline(karliRiverChannel, {
       color: '#0d9488',

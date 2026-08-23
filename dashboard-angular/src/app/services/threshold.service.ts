@@ -23,7 +23,7 @@ export const DEFAULT_CPCB_THRESHOLDS: ThresholdConfig = {
   providedIn: 'root'
 })
 export class ThresholdService {
-  private readonly STORAGE_KEY = 'varuna_custom_thresholds_v1';
+  private readonly STORAGE_KEY = 'jaldrishti_custom_thresholds_v1';
   
   private thresholdsSubject = new BehaviorSubject<ThresholdConfig>(this.loadThresholds());
   public thresholds$ = this.thresholdsSubject.asObservable();

@@ -8,7 +8,7 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent),
-        title: 'Project VARUNA | Automated River Water Quality Intelligence'
+        title: 'Project JalDrishti | Automated River Water Quality Intelligence'
       },
       {
         path: 'about',
@@ -55,7 +55,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
-    title: 'Live Telemetry Cockpit | Project VARUNA'
+    title: 'Live Telemetry Cockpit | Project JalDrishti'
   },
   {
     path: '**',

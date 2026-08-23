@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, X, RotateCcw, Save, Sliders } from 'lucide-angular';
@@ -37,12 +37,14 @@ export class ThresholdConfigModalComponent implements OnInit, OnDestroy {
   constructor(
     private thresholdService: ThresholdService,
     private fb: FormBuilder,
-    private toast: ToastService
+    private toast: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.modalSub = this.thresholdService.isModalOpen$.subscribe(open => {
       this.isOpen = open;
+      this.cdr.markForCheck();
     });
 
     this.sub = this.thresholdService.thresholds$.subscribe(t => {
@@ -51,6 +53,7 @@ export class ThresholdConfigModalComponent implements OnInit, OnDestroy {
       } else {
         this.thresholdForm.patchValue(t, { emitEvent: false });
       }
+      this.cdr.markForCheck();
     });
   }
 

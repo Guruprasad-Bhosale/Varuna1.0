@@ -6,6 +6,7 @@
 body {
   margin: 0;
   background-color: #f8fafc;
+  position: relative;
   color: #0f172a;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -15,22 +16,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Fixed Non-Scrolling Engineering Graph Paper */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: -1;
   background-image: 
     radial-gradient(#cbd5e1 1.2px, transparent 1.2px),
     linear-gradient(to right, #f1f5f9 1px, transparent 1px),
     linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
   background-size: 24px 24px, 120px 120px, 120px 120px;
-  contain: strict;
-  will-change: transform;
   pointer-events: none;
-  z-index: -1;
+  contain: strict;
 }
 
-/* Tactile Hand-Stamped Hard Shadow Utilities */
+/* Tactile Card */
 .stamp-card {
   background-color: #ffffff;
   border: 2px solid #0f172a;
@@ -40,15 +41,15 @@ body::before {
   contain: layout style;
 }
 .stamp-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0px 0px #0f172a;
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0px 0px #0f172a;
 }
 
-/* Tactile Rubber Stamp Action Buttons */
+/* Tactile Action Button */
 .stamp-btn {
   border: 2px solid #0f172a;
   box-shadow: 3px 3px 0px 0px #0f172a;
-  font-weight: 800;
+  font-weight: 900;
   transition: all 0.15s ease-out;
 }
 .stamp-btn:hover {
@@ -56,97 +57,62 @@ body::before {
   box-shadow: 5px 5px 0px 0px #0f172a;
 }
 .stamp-btn:active {
-  transform: translate(3px, 3px);
+  transform: translate(2px, 2px);
   box-shadow: 0px 0px 0px 0px #0f172a;
 }
 
-/* Authentic Double-Line Rubber Stamp Utilities */
+/* Washi Tape Pin */
+.washi-tape-top {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 90px;
+  height: 24px;
+  background-color: rgba(254, 240, 138, 0.85);
+  border: 1px dashed rgba(202, 138, 4, 0.5);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.highlighter-teal {
+  background-color: #ccfbf1;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.highlighter-amber {
+  background-color: #fef3c7;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
 .rubber-stamp-dispatched {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: 2px solid #e11d48;
-  outline: 1px solid #e11d48;
-  outline-offset: 2px;
-  background-color: rgba(255, 241, 242, 0.9);
-  color: #be123c;
-  padding: 2px 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 10px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  transform: rotate(-2.5deg);
-  border-radius: 4px;
+  color: #e11d48;
+  border: 2px solid #e11d48;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transform: rotate(-4deg);
+  display: inline-block;
+  letter-spacing: 0.05em;
+  font-size: 10px;
 }
 
 .rubber-stamp-resolved {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: 2px solid #059669;
-  outline: 1px solid #059669;
-  outline-offset: 2px;
-  background-color: rgba(236, 253, 245, 0.9);
-  color: #047857;
-  padding: 2px 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 10px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  transform: rotate(2deg);
-  border-radius: 4px;
-}
-
-/* Washi Tape Corner Pins */
-.washi-tape-top {
-  position: relative;
-}
-.washi-tape-top::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-1.5deg);
-  width: 70px;
-  height: 18px;
-  background-color: rgba(254, 240, 138, 0.85); /* Pale Masking Tape */
-  border-left: 2px dashed rgba(202, 138, 4, 0.4);
-  border-right: 2px dashed rgba(202, 138, 4, 0.4);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  z-index: 10;
-}
-
-/* Custom Highlighter Marker Classes */
-.highlighter-teal {
-  background: linear-gradient(104deg, rgba(20,184,166,0) 0.9%, rgba(20,184,166,0.22) 2.4%, rgba(20,184,166,0.25) 94%, rgba(20,184,166,0) 98.8%);
-  border-radius: 4px;
-  padding: 0 4px;
-}
-.highlighter-amber {
-  background: linear-gradient(104deg, rgba(245,158,11,0) 0.9%, rgba(245,158,11,0.25) 2.4%, rgba(245,158,11,0.28) 94%, rgba(245,158,11,0) 98.8%);
-  border-radius: 4px;
-  padding: 0 4px;
-}
-
-/* Notebook Ring-Binder Margin */
-.binder-margin {
-  position: relative;
-  padding-left: 2rem;
-  border-left: 3px dashed #cbd5e1;
-}
-.binder-margin::before {
-  content: "";
-  position: absolute;
-  left: -8px;
-  top: 1.5rem;
-  width: 14px;
-  height: 14px;
-  border-radius: 9999px;
-  background-color: #f1f5f9;
-  border: 2px solid #0f172a;
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+  color: #059669;
+  border: 2px solid #059669;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transform: rotate(3deg);
+  display: inline-block;
+  letter-spacing: 0.05em;
+  font-size: 10px;
 }
 
 /* Professional Algae Bloom Radar Marker */
