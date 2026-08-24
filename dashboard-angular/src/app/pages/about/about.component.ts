@@ -36,13 +36,13 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
               <div>
                 <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
                   <span class="h-2.5 w-2.5 bg-teal-600 rounded-full"></span> 
-                  The Solution: Project JalDrishti
+                  The Solution: Project SagarDrishti
                 </h3>
                 <p class="font-medium leading-relaxed mb-4">
-                  Project JalDrishti decentralizes the laboratory. By deploying robust, off-grid IoT nodes directly into the river basin, we perform continuous multi-parameter sampling (pH, Turbidity, EC, Temperature) directly at the source.
+                  Project SagarDrishti decentralizes the laboratory. By deploying robust, off-grid IoT nodes directly into the river basin, we perform continuous multi-parameter sampling (pH, Turbidity, EC, Temperature) directly at the source.
                 </p>
                 <p class="font-medium leading-relaxed">
-                  Coupled with Edge AI inference running on local Raspberry Pi gateways, JalDrishti classifies raw telemetry into actionable Water Safety Scores in under <strong class="font-mono font-bold text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded">500 ms</strong>, automatically triggering emergency alerts via WhatsApp.
+                  Coupled with Edge AI inference running on local Raspberry Pi gateways, SagarDrishti classifies raw telemetry into actionable Water Safety Scores in under <strong class="font-mono font-bold text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded">500 ms</strong>, automatically triggering emergency alerts via WhatsApp.
                 </p>
               </div>
             </div>
@@ -92,8 +92,8 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
     this.seoService.updateMetaTags({
       title: 'Our Mission & Architecture',
-      description: 'Learn about the mission behind Project JalDrishti and how we are replacing manual grab sampling with IoT environmental intelligence.',
-      canonicalUrl: 'https://jaldrishti.org/about'
+      description: 'Learn about the mission behind Project SagarDrishti and how we are replacing manual grab sampling with IoT environmental intelligence.',
+      canonicalUrl: 'https://sagardrishti.org/about'
     });
   }
 }

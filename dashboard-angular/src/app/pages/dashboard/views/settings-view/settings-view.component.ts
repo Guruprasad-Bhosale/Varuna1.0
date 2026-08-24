@@ -48,7 +48,7 @@ import { ToastService } from '../../../../services/toast.service';
              </div>
              
              <div class="pt-4 border-t border-slate-200 space-y-4">
-                <input type="text" placeholder="Station Name" value="JalDrishti-001 (Sarjekot Outfall)" class="w-full bg-slate-50 border-2 border-slate-900 rounded-xl text-slate-900 px-4 py-2.5 font-bold font-mono outline-none focus:ring-2 focus:ring-teal-500 transition-colors shadow-[2px_2px_0px_0px_#0f172a]" />
+                <input type="text" placeholder="Station Name" value="SagarDrishti-001 (Sarjekot Outfall)" class="w-full bg-slate-50 border-2 border-slate-900 rounded-xl text-slate-900 px-4 py-2.5 font-bold font-mono outline-none focus:ring-2 focus:ring-teal-500 transition-colors shadow-[2px_2px_0px_0px_#0f172a]" />
                 <div class="flex gap-4">
                   <input type="text" placeholder="Lat" value="16.2699" class="w-1/2 bg-slate-50 border-2 border-slate-900 rounded-xl text-slate-900 px-4 py-2.5 font-bold font-mono outline-none focus:ring-2 focus:ring-teal-500 transition-colors shadow-[2px_2px_0px_0px_#0f172a]" />
                   <input type="text" placeholder="Lng" value="73.7148" class="w-1/2 bg-slate-50 border-2 border-slate-900 rounded-xl text-slate-900 px-4 py-2.5 font-bold font-mono outline-none focus:ring-2 focus:ring-teal-500 transition-colors shadow-[2px_2px_0px_0px_#0f172a]" />

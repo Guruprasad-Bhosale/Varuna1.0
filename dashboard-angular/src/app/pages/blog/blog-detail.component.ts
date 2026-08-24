@@ -69,7 +69,7 @@ export class BlogDetailComponent implements OnInit {
       content: `
         <p>In standard environmental compliance, technicians travel to river locations, fill sample bottles, and transport them to labs. Results take 2-3 days.</p>
         <p>By the time a high concentration of dissolved solids or an acidic pH drop is identified, the water mass has flowed miles downstream, affecting agriculture and drinking water intakes.</p>
-        <h3>The JalDrishti Advantage</h3>
+        <h3>The SagarDrishti Advantage</h3>
         <p>Our autonomous nodes provide a reading every 20 minutes. This high-frequency time-series data allows us to identify spikes instantly, alerting authorities before the plume spreads.</p>
       `
     },
@@ -115,14 +115,14 @@ export class BlogDetailComponent implements OnInit {
     'understanding-cpcb-wqi-standards': {
       slug: 'understanding-cpcb-wqi-standards',
       title: 'Understanding CPCB Standards: How to Compute Composite Water Quality Indices (WQI).',
-      excerpt: 'Demystifying the math behind the Water Quality Index (WQI). How JalDrishti maps raw telemetry values against India\'s CPCB normative standards.',
+      excerpt: 'Demystifying the math behind the Water Quality Index (WQI). How SagarDrishti maps raw telemetry values against India\'s CPCB normative standards.',
       date: 'Jul 01, 2026',
       category: 'Data Engineering',
       content: `
         <p>The Water Quality Index (WQI) is a single number that expresses the overall quality of water based on several parameters. The Central Pollution Control Board (CPCB) defines specific weights for different parameters based on their health impact.</p>
         <h3>Computing the Sub-Index</h3>
         <p>We normalize each sensor reading against the ideal standard. For pH, deviations from 7.0 are exponentially penalized. The final WQI is a weighted arithmetic mean of all active sensors.</p>
-        <p>JalDrishti dynamically computes this on the edge, presenting operators with an easy-to-understand 0-100 scale.</p>
+        <p>SagarDrishti dynamically computes this on the edge, presenting operators with an easy-to-understand 0-100 scale.</p>
       `
     }
   };
@@ -141,7 +141,7 @@ export class BlogDetailComponent implements OnInit {
         this.seoService.updateMetaTags({
           title: this.post.title,
           description: this.post.excerpt,
-          canonicalUrl: `https://jaldrishti.org/blog/${this.post.slug}`
+          canonicalUrl: `https://sagardrishti.org/blog/${this.post.slug}`
         });
       }
     });

@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
               <div class="w-7 h-7 rounded-lg bg-teal-600 border border-slate-700 flex items-center justify-center mr-3 shadow-sm">
                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
               </div>
-              <span class="font-black text-lg tracking-tight text-white uppercase">Project JalDrishti — River Intelligence Platform</span>
+              <span class="font-black text-lg tracking-tight text-white uppercase">Project SagarDrishti — River Intelligence Platform</span>
             </div>
             <p class="text-sm max-w-sm mb-6 text-slate-300 leading-relaxed font-medium">
               Real-time IoT edge telemetry, optical particulate flow analysis, and predictive bio-optical bloom forecasting across the Sindhudurg Basin.
@@ -53,7 +53,7 @@ import { RouterModule } from '@angular/router';
           </div>
         </div>
         <div class="mt-12 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-xs">
-          <p class="text-slate-400 font-medium">&copy; 2026 Project JalDrishti Environmental Intelligence. All rights reserved.</p>
+          <p class="text-slate-400 font-medium">&copy; 2026 Project SagarDrishti Environmental Intelligence. All rights reserved.</p>
           <div class="flex space-x-6 mt-4 md:mt-0">
             <a routerLink="/privacy" class="text-slate-400 hover:text-white transition-colors">Privacy Policy</a>
             <a routerLink="/terms" class="text-slate-400 hover:text-white transition-colors">Terms of Service</a>

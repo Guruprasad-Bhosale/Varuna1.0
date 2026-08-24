@@ -36,7 +36,7 @@ import { WavesShaderComponent } from '../../components/ui/waves-shader/waves-sha
               <span class="text-teal-700 inline-block">Fully Automated.</span>
             </h1>
             <p class="max-w-2xl mx-auto text-base sm:text-lg font-bold text-slate-700 leading-relaxed">
-              Project JalDrishti replaces delayed manual grab sampling with continuous IoT edge telemetry, optical particulate flow screening, and NIRVAAH AI bloom forecasting.
+              Project SagarDrishti replaces delayed manual grab sampling with continuous IoT edge telemetry, optical particulate flow screening, and NIRVAAH AI bloom forecasting.
             </p>
           </div>
 
@@ -145,12 +145,12 @@ export class LandingComponent implements OnInit {
   ngOnInit() {
     this.seoService.updateMetaTags({
       title: 'Automated River Water Quality Intelligence',
-      description: 'Project JalDrishti replaces delayed manual grab sampling with continuous, real-time IoT telemetry and Edge AI.',
-      canonicalUrl: 'https://jaldrishti.org/',
+      description: 'Project SagarDrishti replaces delayed manual grab sampling with continuous, real-time IoT telemetry and Edge AI.',
+      canonicalUrl: 'https://sagardrishti.org/',
       schemaJson: {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "Project JalDrishti",
+        "name": "Project SagarDrishti",
         "applicationCategory": "EnvironmentalMonitoringApplication",
         "operatingSystem": "Web, Edge Linux"
       }

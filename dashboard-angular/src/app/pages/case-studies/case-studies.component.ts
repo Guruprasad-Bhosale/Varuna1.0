@@ -50,7 +50,7 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
 
           <div class="space-y-3 text-slate-700 text-base leading-relaxed border-t border-slate-100 pt-6">
             <h3 class="text-lg font-bold text-slate-900">The Intervention</h3>
-            <p>Deployment of a JalDrishti Edge Node equipped with optical turbidity sensing, pH, and a localized Pi Camera v3 screener. The system successfully identified a recurrent anomaly in turbidity and pH levels between 2:00 AM and 4:00 AM, allowing municipal engineers to trace the source to an upstream manufacturing outfall.</p>
+            <p>Deployment of a SagarDrishti Edge Node equipped with optical turbidity sensing, pH, and a localized Pi Camera v3 screener. The system successfully identified a recurrent anomaly in turbidity and pH levels between 2:00 AM and 4:00 AM, allowing municipal engineers to trace the source to an upstream manufacturing outfall.</p>
           </div>
         </div>
           
@@ -114,8 +114,8 @@ export class CaseStudiesComponent implements OnInit {
   ngOnInit() {
     this.seoService.updateMetaTags({
       title: 'Deployments & Case Studies',
-      description: 'Review real-world deployments of Project JalDrishti, including the Panchaganga River Pilot and urban inflow monitoring.',
-      canonicalUrl: 'https://jaldrishti.org/case-studies'
+      description: 'Review real-world deployments of Project SagarDrishti, including the Panchaganga River Pilot and urban inflow monitoring.',
+      canonicalUrl: 'https://sagardrishti.org/case-studies'
     });
   }
 

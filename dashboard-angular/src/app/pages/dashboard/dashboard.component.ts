@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy, NgZone, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -105,6 +106,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private telemetryService = inject(TelemetryService);
   private ngZone = inject(NgZone);
+  private destroyRef = inject(DestroyRef);
 
   activeTab = signal<DashboardTab>('overview');
   isNavigating = signal<boolean>(false);
@@ -115,10 +117,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Read ?tab= from URL on load
-    this.route.queryParamMap.subscribe(params => {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const tabParam = params.get('tab') as DashboardTab;
       if (tabParam && ['overview', 'nodes', 'live', 'trends', 'alerts', 'camera', 'settings', 'contact'].includes(tabParam)) {
         this.activeTab.set(tabParam);
+      }
+
+      const nodeId = params.get('node');
+      if (nodeId) {
+        this.telemetryService.switchNode(nodeId);
       }
     });
 

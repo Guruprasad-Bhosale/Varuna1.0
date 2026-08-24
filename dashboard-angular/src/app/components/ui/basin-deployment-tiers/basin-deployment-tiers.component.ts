@@ -26,7 +26,7 @@ export interface BasinTier {
         <div class="text-center max-w-3xl mx-auto mb-16">
           <h2 class="text-4xl font-black text-slate-900 tracking-tight">Basin Deployment Tiers</h2>
           <p class="mt-4 text-slate-700 font-bold text-sm">
-            Scale your edge intelligence from community streams to state-wide river basins with Project JalDrishti. 
+            Scale your edge intelligence from community streams to state-wide river basins with Project SagarDrishti. 
             Select a hardware and telemetry package below.
           </p>
         </div>

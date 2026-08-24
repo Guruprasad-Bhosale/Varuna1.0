@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
         <h4 class="text-white font-semibold text-sm">Telemetry Consent</h4>
       </div>
       <p class="text-slate-400 text-xs leading-relaxed mb-4">
-        We use cookies and anonymous analytics to improve the JalDrishti platform dashboard. By continuing to use the portal, you agree to our 
+        We use cookies and anonymous analytics to improve the SagarDrishti platform dashboard. By continuing to use the portal, you agree to our 
         <a href="/privacy" class="text-cyan-400 hover:underline">Privacy Policy</a>.
       </p>
       <div class="flex space-x-3">
@@ -24,7 +24,7 @@ import { CommonModule } from '@angular/common';
 })
 export class CookieConsentComponent implements OnInit {
   showBanner = signal(false);
-  private readonly CONSENT_KEY = 'jaldrishti_cookie_consent';
+  private readonly CONSENT_KEY = 'sagardrishti_cookie_consent';
   private ngZone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
 

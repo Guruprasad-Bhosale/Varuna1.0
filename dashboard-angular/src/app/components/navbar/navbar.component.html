@@ -1,4 +1,4 @@
-<header class="h-16 bg-white/95 backdrop-blur-md border-b-2 border-slate-900 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 min-w-0 overflow-x-hidden text-slate-900">
+<header class="h-16 bg-white/95 backdrop-blur-md border-b-2 border-slate-900 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 min-w-0 text-slate-900">
   <!-- Left side: Page Title & Date -->
   <div class="flex items-center gap-2 sm:gap-4 shrink-0">
     <button 
@@ -13,7 +13,7 @@
           <svg class="w-4 h-4 text-white stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
         </div>
         <div>
-          <h2 class="text-sm sm:text-base font-black text-slate-900 truncate tracking-tight leading-none uppercase">JalDrishti</h2>
+          <h2 class="text-sm sm:text-base font-black text-slate-900 truncate tracking-tight leading-none uppercase">SagarDrishti</h2>
           <div class="text-[10px] font-bold text-slate-600 tracking-wide mt-0.5">Sindhudurg Basin Network</div>
         </div>
       </div>
@@ -31,13 +31,8 @@
   <!-- Right side: Search, Notifications, Profile -->
   <div class="flex items-center gap-2 sm:gap-4 shrink-0">
     <!-- Search -->
-    <div class="hidden md:flex relative">
-      <lucide-icon [img]="SearchIcon" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></lucide-icon>
-      <input 
-        type="text" 
-        placeholder="Search stations, rivers..." 
-        class="pl-9 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 w-64 transition-all text-slate-900 font-medium"
-      />
+    <div class="flex relative">
+      <app-global-search></app-global-search>
     </div>
 
     <!-- Threshold Settings Button inlined -->

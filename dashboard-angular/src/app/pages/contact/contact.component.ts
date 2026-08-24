@@ -29,7 +29,7 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
                 </div>
                 <div class="ml-4">
                   <h3 class="text-lg font-bold text-slate-900">Email Us</h3>
-                  <p class="text-slate-600 mt-1">contact&#64;jaldrishti.org</p>
+                  <p class="text-slate-600 mt-1">contact&#64;sagardrishti.org</p>
                 </div>
               </div>
               
@@ -54,7 +54,7 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
                 </div>
                 <div class="ml-4">
                   <h3 class="text-lg font-bold text-slate-900">Lab Facilities</h3>
-                  <p class="text-slate-600 mt-1">JalDrishti Hardware Assembly & Testing Lab<br/>Kolhapur, Maharashtra, India</p>
+                  <p class="text-slate-600 mt-1">SagarDrishti Hardware Assembly & Testing Lab<br/>Kolhapur, Maharashtra, India</p>
                 </div>
               </div>
             </div>
@@ -138,8 +138,8 @@ export class ContactComponent implements OnInit {
   ngOnInit() {
     this.seoService.updateMetaTags({
       title: 'Contact Us | Deploy a Node',
-      description: 'Contact the Project JalDrishti engineering team to discuss deployments, municipal integrations, and API access.',
-      canonicalUrl: 'https://jaldrishti.org/contact'
+      description: 'Contact the Project SagarDrishti engineering team to discuss deployments, municipal integrations, and API access.',
+      canonicalUrl: 'https://sagardrishti.org/contact'
     });
   }
 

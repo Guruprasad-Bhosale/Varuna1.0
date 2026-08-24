@@ -241,10 +241,10 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
   ];
 
   readonly riverNodes = [
-    { id: 'JALDRISHTI-001', name: 'JALDRISHTI-001 (Sarjekot Outfall)', lat: 16.0822, lng: 73.4685, status: 'SAFE', ph: 7.35, temp: 25.1, ec: 420 },
-    { id: 'JALDRISHTI-002', name: 'JALDRISHTI-002 (Kasal Basin)', lat: 16.1850, lng: 73.6120, status: 'SAFE', ph: 7.4, temp: 24.2, ec: 310 },
-    { id: 'JALDRISHTI-003', name: 'JALDRISHTI-003 (Kudal Bridge)', lat: 15.9985, lng: 73.6840, status: 'ELEVATED', ph: 7.8, temp: 26.5, ec: 850 },
-    { id: 'JALDRISHTI-004', name: 'JALDRISHTI-004 (Devbag Creek)', lat: 15.9765, lng: 73.4925, status: 'WARNING', ph: 8.15, temp: 28.1, ec: 1120 }
+    { id: 'SAGARDRISHTI-001', name: 'SAGARDRISHTI-001 (Sarjekot Outfall)', lat: 16.0822, lng: 73.4685, status: 'SAFE', ph: 7.35, temp: 25.1, ec: 420 },
+    { id: 'SAGARDRISHTI-002', name: 'SAGARDRISHTI-002 (Kasal Basin)', lat: 16.1850, lng: 73.6120, status: 'SAFE', ph: 7.4, temp: 24.2, ec: 310 },
+    { id: 'SAGARDRISHTI-003', name: 'SAGARDRISHTI-003 (Kudal Bridge)', lat: 15.9985, lng: 73.6840, status: 'ELEVATED', ph: 7.8, temp: 26.5, ec: 850 },
+    { id: 'SAGARDRISHTI-004', name: 'SAGARDRISHTI-004 (Devbag Creek)', lat: 15.9765, lng: 73.4925, status: 'WARNING', ph: 8.15, temp: 28.1, ec: 1120 }
   ];
 
   ngAfterViewInit(): void {
@@ -310,10 +310,10 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     const gadRiverChannel: [number, number][] = [
       [16.2750, 73.7420],
       [16.2280, 73.6750],
-      [16.1850, 73.6120], // JALDRISHTI-002 Station
+      [16.1850, 73.6120], // SAGARDRISHTI-002 Station
       [16.1380, 73.5450],
       [16.1020, 73.4980],
-      [16.0822, 73.4685]  // JALDRISHTI-001 Estuary Outfall
+      [16.0822, 73.4685]  // SAGARDRISHTI-001 Estuary Outfall
     ];
     L.polyline(gadRiverChannel, {
       color: '#06b6d4',
@@ -325,10 +325,10 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     // Karli River Path (Flowing Southwest through Kudal to Devbag Spit)
     const karliRiverChannel: [number, number][] = [
       [16.0420, 73.7850],
-      [15.9985, 73.6840], // JALDRISHTI-003 Station
+      [15.9985, 73.6840], // SAGARDRISHTI-003 Station
       [15.9890, 73.6150],
       [15.9810, 73.5420],
-      [15.9765, 73.4925]  // JALDRISHTI-004 Estuary Outfall
+      [15.9765, 73.4925]  // SAGARDRISHTI-004 Estuary Outfall
     ];
     L.polyline(karliRiverChannel, {
       color: '#0d9488',

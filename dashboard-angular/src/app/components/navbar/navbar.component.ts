@@ -1,12 +1,16 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, NgZone, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { LucideAngularModule, Search, Bell, Menu, Sliders } from 'lucide-angular';
 import { ThresholdService } from '../../services/threshold.service';
+import { TelemetryService } from '../../services/telemetry.service';
+
+import { GlobalSearchComponent } from './global-search.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, GlobalSearchComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

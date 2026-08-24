@@ -37,7 +37,7 @@ import { BasinDeploymentTiersComponent } from '../../../../components/ui/basin-d
               </div>
               <div>
                 <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email Us</div>
-                <div class="text-sm font-bold font-mono text-slate-900">contact&#64;jaldrishti.org</div>
+                <div class="text-sm font-bold font-mono text-slate-900">contact&#64;sagardrishti.org</div>
               </div>
             </div>
             

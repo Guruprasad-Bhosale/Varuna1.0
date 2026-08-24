@@ -59,7 +59,7 @@ export class FeatureDetailComponent implements OnInit {
       subtitle: 'ESP32-driven peristaltic pump state machines for autonomous sampling.',
       content: `
         <h3 class="text-xl font-bold text-slate-900 mb-3">Architectural Overview</h3>
-        <p class="font-medium text-slate-700 mb-6">The JalDrishti hardware node is a decentralized edge device designed for off-grid operation. It orchestrates a hydraulic sampling chamber using an ESP32 microcontroller, pulling river water through a filtration shroud using a precisely calibrated peristaltic pump.</p>
+        <p class="font-medium text-slate-700 mb-6">The SagarDrishti hardware node is a decentralized edge device designed for off-grid operation. It orchestrates a hydraulic sampling chamber using an ESP32 microcontroller, pulling river water through a filtration shroud using a precisely calibrated peristaltic pump.</p>
         
         <div class="my-6 p-6 bg-slate-900 text-teal-400 font-mono text-sm rounded-xl border border-slate-800 shadow-md">
           <div class="text-xs text-slate-400 font-bold tracking-wider uppercase mb-4">Hardware Blueprint • SCH-04A</div>
@@ -77,7 +77,7 @@ export class FeatureDetailComponent implements OnInit {
       subtitle: 'Sub-second Water Safety inference using Random Forests.',
       content: `
         <h3 class="text-xl font-bold text-slate-900 mb-3">From Raw Data to Intelligence</h3>
-        <p class="font-medium text-slate-700 mb-6">Sending raw sensor voltages to the cloud introduces latency and bandwidth costs. JalDrishti processes data directly on the edge using a Raspberry Pi 4 Model B.</p>
+        <p class="font-medium text-slate-700 mb-6">Sending raw sensor voltages to the cloud introduces latency and bandwidth costs. SagarDrishti processes data directly on the edge using a Raspberry Pi 4 Model B.</p>
         
         <div class="my-6 p-6 bg-amber-50/80 rounded-xl border border-amber-200">
           <h4 class="font-bold text-amber-900 uppercase tracking-wider text-xs border-b border-amber-200 pb-2 mb-4">SHAP Feature Importance Annotations</h4>
@@ -155,7 +155,7 @@ export class FeatureDetailComponent implements OnInit {
         this.seoService.updateMetaTags({
           title: this.feature.title,
           description: this.feature.subtitle,
-          canonicalUrl: `https://jaldrishti.org/features/${this.feature.id}`
+          canonicalUrl: `https://sagardrishti.org/features/${this.feature.id}`
         });
       }
     });

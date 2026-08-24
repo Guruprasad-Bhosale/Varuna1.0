@@ -110,7 +110,7 @@ export class NodeMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
     const popupContent = `
       <div class="p-1 font-sans">
-        <div class="font-semibold text-slate-900 mb-1">${this.latestData?.node_id || 'JalDrishti-001'}</div>
+        <div class="font-semibold text-slate-900 mb-1">${this.latestData?.node_id || 'SagarDrishti-001'}</div>
         <div class="text-xs text-slate-700 mb-1">Status: <strong>${status}</strong></div>
         <div class="text-xs text-slate-500">Composite Score: ${this.latestData?.compositeScore || this.latestData?.safety_score || 0}/100</div>
         ${reasonsHtml}

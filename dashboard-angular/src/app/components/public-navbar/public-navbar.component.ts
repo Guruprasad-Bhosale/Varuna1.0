@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
               <svg class="w-4 h-4 text-white stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             </div>
             <div class="flex flex-col">
-              <span class="font-black text-lg sm:text-xl tracking-tight text-slate-900">JalDrishti</span>
+              <span class="font-black text-lg sm:text-xl tracking-tight text-slate-900">SagarDrishti</span>
               <span class="font-mono text-[9px] font-black text-slate-500 tracking-wider hidden sm:inline uppercase">SINDHUDURG BASIN LOGBOOK</span>
             </div>
           </div>

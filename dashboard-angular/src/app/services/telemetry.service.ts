@@ -38,36 +38,76 @@ export interface TelemetryData {
   providedIn: 'root'
 })
 export class TelemetryService {
-  private baseState: TelemetryData = {
-    nodeId: 'JalDrishti-001',
-    locationName: 'Sindhudurg District — Gad & Karli Rivers',
-    coordinates: { lat: 16.2699, lng: 73.7148 },
-    timestamp: new Date().toLocaleTimeString(),
-    lastSync: new Date().toLocaleTimeString(),
-    ph: 7.35,
-    turbidity: 4.80,
-    turbidity_ntu: 4.80,
-    ec: 420.0,
-    ec_us_cm: 420.0,
-    temperature: 25.4,
-    temp_c: 25.4,
-    opticalParticulates: 18,
-    optical_count: 18,
-    avgParticleSize: 0.28,
-    avg_particle_size_mm: 0.28,
-    compositeScore: 94.8,
-    confidence: 94.8,
-    confidence_pct: 94.8,
-    status: 'SAFE',
-    bloomProbability: 12.4,
-    reasons: ['Optimal Dissolved Oxygen', 'Nominal Thermal Profile'],
-    recommendations: ['Conditions nominal. Routine automated sampling active.'],
-    chl: 2.10,
-    kd490: 0.14,
-    tsm: 4.80,
-    waveHeight: 1.20,
-    satellitePassTime: 'EOS-06 OCM: Nominal Overpass'
-  };
+  public availableNodes = [
+    {
+      nodeId: 'SagarDrishti-001',
+      locationName: 'Sarjekot Estuary — Gad River Outfall',
+      coordinates: { lat: 16.2699, lng: 73.7148 },
+      baseParams: {
+        ph: 7.35, turbidity: 4.80, ec: 420.0, temperature: 25.4, 
+        opticalParticulates: 18, avgParticleSize: 0.28, 
+        chl: 2.10, kd490: 0.14, tsm: 4.80, waveHeight: 1.20,
+        score: 94.8, status: 'SAFE', bloomProb: 12.4
+      }
+    },
+    {
+      nodeId: 'SagarDrishti-002',
+      locationName: 'Karli River Mouth — Coastal Shelf',
+      coordinates: { lat: 16.0333, lng: 73.4500 },
+      baseParams: {
+        ph: 8.12, turbidity: 12.4, ec: 850.0, temperature: 28.1, 
+        opticalParticulates: 45, avgParticleSize: 0.12, 
+        chl: 4.50, kd490: 0.35, tsm: 14.2, waveHeight: 2.10,
+        score: 72.4, status: 'MODERATE', bloomProb: 48.5
+      }
+    },
+    {
+      nodeId: 'SagarDrishti-003',
+      locationName: 'Devbag Deep Water Upwelling Zone',
+      coordinates: { lat: 15.9801, lng: 73.4321 },
+      baseParams: {
+        ph: 6.95, turbidity: 2.1, ec: 210.0, temperature: 22.4, 
+        opticalParticulates: 8, avgParticleSize: 0.45, 
+        chl: 0.80, kd490: 0.08, tsm: 1.2, waveHeight: 0.80,
+        score: 98.2, status: 'SAFE', bloomProb: 2.1
+      }
+    }
+  ];
+
+  private buildStateForNode(node: any): TelemetryData {
+    return {
+      nodeId: node.nodeId,
+      locationName: node.locationName,
+      coordinates: node.coordinates,
+      timestamp: new Date().toLocaleTimeString(),
+      lastSync: new Date().toLocaleTimeString(),
+      ph: node.baseParams.ph,
+      turbidity: node.baseParams.turbidity,
+      turbidity_ntu: node.baseParams.turbidity,
+      ec: node.baseParams.ec,
+      ec_us_cm: node.baseParams.ec,
+      temperature: node.baseParams.temperature,
+      temp_c: node.baseParams.temperature,
+      opticalParticulates: node.baseParams.opticalParticulates,
+      optical_count: node.baseParams.opticalParticulates,
+      avgParticleSize: node.baseParams.avgParticleSize,
+      avg_particle_size_mm: node.baseParams.avgParticleSize,
+      compositeScore: node.baseParams.score,
+      confidence: 94.8,
+      confidence_pct: 94.8,
+      status: node.baseParams.status,
+      bloomProbability: node.baseParams.bloomProb,
+      reasons: node.baseParams.status === 'SAFE' ? ['Optimal Dissolved Oxygen', 'Nominal Thermal Profile'] : ['Elevated Turbidity', 'Warm Surface Temp'],
+      recommendations: node.baseParams.status === 'SAFE' ? ['Conditions nominal.'] : ['Monitor for algal blooms.'],
+      chl: node.baseParams.chl,
+      kd490: node.baseParams.kd490,
+      tsm: node.baseParams.tsm,
+      waveHeight: node.baseParams.waveHeight,
+      satellitePassTime: 'EOS-06 OCM: Nominal Overpass'
+    };
+  }
+
+  private baseState: TelemetryData = this.buildStateForNode(this.availableNodes[0]);
 
   private telemetrySubject = new BehaviorSubject<TelemetryData>(this.baseState);
   public telemetry$: Observable<TelemetryData> = this.telemetrySubject.asObservable();
@@ -76,6 +116,17 @@ export class TelemetryService {
   private isSimulated = false;
 
   private ngZone = inject(NgZone);
+
+  public switchNode(nodeId: string): void {
+    const node = this.availableNodes.find(n => n.nodeId === nodeId);
+    if (!node) return;
+    this.isSimulated = false;
+    this.baseState = this.buildStateForNode(node);
+    this.telemetrySubject.next(this.baseState);
+    this.ngZone.run(() => {
+      this.telemetrySignal.set(this.baseState);
+    });
+  }
 
   constructor() {
     // Realistic 3.0s Sensor Micro-Jitter & Live Heartbeat Loop outside NgZone
@@ -193,7 +244,7 @@ export class TelemetryService {
     });
   }
 
-  async getHistory(nodeId = "JalDrishti-001", limit = 200) {
+  async getHistory(nodeId = "SagarDrishti-001", limit = 200) {
     const mockData: TelemetryData[] = [];
     let currentTime = new Date();
     currentTime.setHours(currentTime.getHours() - 24);

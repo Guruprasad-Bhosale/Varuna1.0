@@ -219,15 +219,19 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                 <span class="text-xs text-slate-700 font-bold">Suitable under current monitored conditions</span>
               </div>
 
-              <div>
-                <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+              <div class="w-full lg:w-[450px]">
+                <div class="flex items-center gap-3 mb-2 relative">
                   <div class="relative w-3 h-3 shrink-0">
-                     <div class="absolute inset-0 bg-emerald-500 rounded-full"></div>
-                     <div class="absolute inset-0 bg-emerald-500 rounded-full animate-live-ripple"></div>
+                     <div class="absolute inset-0 rounded-full" [ngClass]="data.status === 'HAZARD' ? 'bg-rose-500' : (data.status === 'MODERATE' ? 'bg-amber-500' : 'bg-emerald-500')"></div>
+                     <div class="absolute inset-0 rounded-full animate-live-ripple" [ngClass]="data.status === 'HAZARD' ? 'bg-rose-500' : (data.status === 'MODERATE' ? 'bg-amber-500' : 'bg-emerald-500')"></div>
                   </div>
-                  <span>JalDrishti-001 (Sarjekot Estuary — Gad River Outfall)</span>
-                </h3>
-                <p class="text-xs text-slate-600 font-semibold mt-1">Autonomous Multi-Parameter Solar Buoy • Firmware v2.4.1</p>
+                  <div class="relative inline-block w-full">
+                    <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                      {{ data.nodeId }} ({{ data.locationName }})
+                    </h3>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 font-semibold mt-2">Autonomous Multi-Parameter Solar Buoy • Firmware v2.4.1</p>
               </div>
 
               <div class="flex flex-wrap items-center gap-4 text-xs font-black text-slate-800">
@@ -333,14 +337,44 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             <div (click)="selectMetric('ph')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
                  [ngClass]="selectedMetric() === 'ph' ? 'ring-4 ring-teal-500' : ''">
               <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
-                <span class="text-slate-900 font-black">01 / pH PROBE</span>
-                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">SAFE</span>
+                <div class="flex items-center gap-1.5 group/tooltip relative">
+                  <span class="text-slate-900 font-black">01 / pH PROBE</span>
+                  <button type="button" class="text-slate-400 hover:text-slate-700 p-0.5" aria-label="Info">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 16v-4"></path>
+                      <path d="M12 8h.01"></path>
+                    </svg>
+                  </button>
+                  <!-- Rich Glassmorphic Tooltip Card -->
+                  <div class="pointer-events-none absolute bottom-full left-0 mb-2 hidden w-72 rounded-xl bg-slate-950 p-4 text-[11px] text-slate-200 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-2 border-slate-700 group-hover/tooltip:block z-[1200] font-sans">
+                    <div class="font-black text-teal-400 mb-2 flex items-center justify-between uppercase border-b border-slate-800 pb-2">
+                      <span class="tracking-widest">pH Level</span>
+                    </div>
+                    <div class="text-slate-300 mb-3 leading-relaxed font-medium normal-case">
+                      Measures the acidic or basic nature of the water. Sudden drops can indicate industrial acidic discharge, while spikes may suggest alkaline spills or excessive algal photosynthesis.
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-2.5 mb-2 border border-slate-800">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-slate-400 text-[10px] uppercase">Guideline Standard</span>
+                        <span class="font-mono text-emerald-400 font-black text-xs">6.5 - 8.5</span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 leading-tight normal-case">
+                        According to the <span class="text-white font-bold">WHO Guidelines for Drinking-water Quality</span>, pH levels must be maintained in this range to ensure palatability and reduce corrosivity.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded border font-extrabold text-[10px]"
+                      [ngClass]="phStatus().border + ' ' + phStatus().bg + ' ' + phStatus().textCol">
+                  {{ phStatus().text }}
+                </span>
               </div>
               <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
                 {{ (data.ph || 7.42) | number:'1.2-2' }} <span class="text-xs font-semibold text-slate-500 font-sans">pH</span>
               </div>
               <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
-                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="74"></div>
+                <div [class]="phColor() + ' h-full rounded-full transition-all duration-700'" [style.width.%]="phPct()"></div>
               </div>
               <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
                 <span>Min: 6.5</span>
@@ -352,14 +386,44 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             <div (click)="selectMetric('turbidity_ntu')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
                  [ngClass]="selectedMetric() === 'turbidity_ntu' ? 'ring-4 ring-teal-500' : ''">
               <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
-                <span class="text-slate-900 font-black">02 / TURBIDITY</span>
-                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">SAFE</span>
+                <div class="flex items-center gap-1.5 group/tooltip relative">
+                  <span class="text-slate-900 font-black">02 / TURBIDITY</span>
+                  <button type="button" class="text-slate-400 hover:text-slate-700 p-0.5" aria-label="Info">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 16v-4"></path>
+                      <path d="M12 8h.01"></path>
+                    </svg>
+                  </button>
+                  <!-- Rich Glassmorphic Tooltip Card -->
+                  <div class="pointer-events-none absolute bottom-full left-0 mb-2 hidden w-72 rounded-xl bg-slate-950 p-4 text-[11px] text-slate-200 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-2 border-slate-700 group-hover/tooltip:block z-[1200] font-sans">
+                    <div class="font-black text-teal-400 mb-2 flex items-center justify-between uppercase border-b border-slate-800 pb-2">
+                      <span class="tracking-widest">Turbidity (NTU)</span>
+                    </div>
+                    <div class="text-slate-300 mb-3 leading-relaxed font-medium normal-case">
+                      Quantifies the loss of water transparency due to suspended particulates. High values block sunlight, disrupting aquatic plant life and indicating potential agricultural runoff or soil erosion.
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-2.5 mb-2 border border-slate-800">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-slate-400 text-[10px] uppercase">Guideline Standard</span>
+                        <span class="font-mono text-emerald-400 font-black text-xs">Max 10.0</span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 leading-tight normal-case">
+                        According to <span class="text-white font-bold">BIS IS 10500:2012</span>, turbidity should not exceed this threshold to ensure microbiological safety.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded border font-extrabold text-[10px]"
+                      [ngClass]="turbidityStatus().border + ' ' + turbidityStatus().bg + ' ' + turbidityStatus().textCol">
+                  {{ turbidityStatus().text }}
+                </span>
               </div>
               <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
                 {{ (data.turbidity_ntu || data.turbidity || 4.80) | number:'1.2-2' }} <span class="text-xs font-semibold text-slate-500 font-sans">NTU</span>
               </div>
               <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
-                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="48"></div>
+                <div [class]="turbidityColor() + ' h-full rounded-full transition-all duration-700'" [style.width.%]="turbidityPct()"></div>
               </div>
               <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
                 <span>Min: 0.0</span>
@@ -371,14 +435,44 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             <div (click)="selectMetric('ec_us_cm')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
                  [ngClass]="selectedMetric() === 'ec_us_cm' ? 'ring-4 ring-teal-500' : ''">
               <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
-                <span class="text-slate-900 font-black">03 / CONDUCTIVITY (EC)</span>
-                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">SAFE</span>
+                <div class="flex items-center gap-1.5 group/tooltip relative">
+                  <span class="text-slate-900 font-black">03 / CONDUCTIVITY (EC)</span>
+                  <button type="button" class="text-slate-400 hover:text-slate-700 p-0.5" aria-label="Info">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 16v-4"></path>
+                      <path d="M12 8h.01"></path>
+                    </svg>
+                  </button>
+                  <!-- Rich Glassmorphic Tooltip Card -->
+                  <div class="pointer-events-none absolute bottom-full right-0 md:left-0 xl:right-0 mb-2 hidden w-72 rounded-xl bg-slate-950 p-4 text-[11px] text-slate-200 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-2 border-slate-700 group-hover/tooltip:block z-[1200] font-sans">
+                    <div class="font-black text-teal-400 mb-2 flex items-center justify-between uppercase border-b border-slate-800 pb-2">
+                      <span class="tracking-widest">Electrical Conductivity</span>
+                    </div>
+                    <div class="text-slate-300 mb-3 leading-relaxed font-medium normal-case">
+                      Measures the water's ability to conduct electrical current, which scales directly with dissolved salts, minerals, and heavy metals. Sudden spikes are strong indicators of untreated sewage or chemical dumping.
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-2.5 mb-2 border border-slate-800">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-slate-400 text-[10px] uppercase">Guideline Standard</span>
+                        <span class="font-mono text-emerald-400 font-black text-xs">Max 600 µS</span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 leading-tight normal-case">
+                        Based on <span class="text-white font-bold">WHO Drinking-water Palatability Limits</span>, prolonged exposure above this indicates severe contamination.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded border font-extrabold text-[10px]"
+                      [ngClass]="ecStatus().border + ' ' + ecStatus().bg + ' ' + ecStatus().textCol">
+                  {{ ecStatus().text }}
+                </span>
               </div>
               <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
                 {{ (data.ec_us_cm || data.ec || 420) | number:'1.0-0' }} <span class="text-xs font-semibold text-slate-500 font-sans">&micro;S/cm</span>
               </div>
               <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
-                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="52"></div>
+                <div [class]="ecColor() + ' h-full rounded-full transition-all duration-700'" [style.width.%]="ecPct()"></div>
               </div>
               <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
                 <span>Min: 50</span>
@@ -390,14 +484,44 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             <div (click)="selectMetric('temperature')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
                  [ngClass]="selectedMetric() === 'temperature' ? 'ring-4 ring-teal-500' : ''">
               <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
-                <span class="text-slate-900 font-black">04 / TEMPERATURE</span>
-                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">SAFE</span>
+                <div class="flex items-center gap-1.5 group/tooltip relative">
+                  <span class="text-slate-900 font-black">04 / TEMPERATURE</span>
+                  <button type="button" class="text-slate-400 hover:text-slate-700 p-0.5" aria-label="Info">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 16v-4"></path>
+                      <path d="M12 8h.01"></path>
+                    </svg>
+                  </button>
+                  <!-- Rich Glassmorphic Tooltip Card -->
+                  <div class="pointer-events-none absolute bottom-full left-0 mb-2 hidden w-72 rounded-xl bg-slate-950 p-4 text-[11px] text-slate-200 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-2 border-slate-700 group-hover/tooltip:block z-[1200] font-sans">
+                    <div class="font-black text-teal-400 mb-2 flex items-center justify-between uppercase border-b border-slate-800 pb-2">
+                      <span class="tracking-widest">Water Temperature</span>
+                    </div>
+                    <div class="text-slate-300 mb-3 leading-relaxed font-medium normal-case">
+                      Controls the rate of metabolic and reproductive activities in aquatic life. Elevated temperatures reduce dissolved oxygen capacity and can trigger harmful algal blooms.
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-2.5 mb-2 border border-slate-800">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-slate-400 text-[10px] uppercase">Guideline Standard</span>
+                        <span class="font-mono text-emerald-400 font-black text-xs">18°C - 28°C</span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 leading-tight normal-case">
+                        Adheres to <span class="text-white font-bold">CPCB Class-A River Standards</span> for maintaining healthy aquatic ecosystems and limiting algal bloom outbreaks.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded border font-extrabold text-[10px]"
+                      [ngClass]="tempStatus().border + ' ' + tempStatus().bg + ' ' + tempStatus().textCol">
+                  {{ tempStatus().text }}
+                </span>
               </div>
               <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
                 {{ (data.temp_c || data.temperature || 24.6) | number:'1.1-1' }} <span class="text-xs font-semibold text-slate-500 font-sans">&deg;C</span>
               </div>
               <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
-                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="62"></div>
+                <div [class]="tempColor() + ' h-full rounded-full transition-all duration-700'" [style.width.%]="tempPct()"></div>
               </div>
               <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
                 <span>Nominal: 18.0 &deg;C</span>
@@ -409,14 +533,44 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             <div (click)="selectMetric('optical_count')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
                  [ngClass]="selectedMetric() === 'optical_count' ? 'ring-4 ring-teal-500' : ''">
               <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
-                <span class="text-slate-900 font-black">05 / PARTICULATES</span>
-                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">OPTIMAL</span>
+                <div class="flex items-center gap-1.5 group/tooltip relative">
+                  <span class="text-slate-900 font-black">05 / PARTICULATES</span>
+                  <button type="button" class="text-slate-400 hover:text-slate-700 p-0.5" aria-label="Info">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 16v-4"></path>
+                      <path d="M12 8h.01"></path>
+                    </svg>
+                  </button>
+                  <!-- Rich Glassmorphic Tooltip Card -->
+                  <div class="pointer-events-none absolute bottom-full left-0 mb-2 hidden w-72 rounded-xl bg-slate-950 p-4 text-[11px] text-slate-200 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-2 border-slate-700 group-hover/tooltip:block z-[1200] font-sans">
+                    <div class="font-black text-teal-400 mb-2 flex items-center justify-between uppercase border-b border-slate-800 pb-2">
+                      <span class="tracking-widest">Suspended Particulates</span>
+                    </div>
+                    <div class="text-slate-300 mb-3 leading-relaxed font-medium normal-case">
+                      AI-powered computer vision count of distinct particles per sample volume. Specifically trained to identify microplastics, silt clusters, and visible contaminants in real-time.
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-2.5 mb-2 border border-slate-800">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-slate-400 text-[10px] uppercase">Guideline Standard</span>
+                        <span class="font-mono text-emerald-400 font-black text-xs">Monitor</span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 leading-tight normal-case">
+                        References <span class="text-white font-bold">WHO Microplastics in Drinking-water (2019)</span> reporting protocols for evaluating contamination risk in raw surface water.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded border font-extrabold text-[10px]"
+                      [ngClass]="opticalStatus().border + ' ' + opticalStatus().bg + ' ' + opticalStatus().textCol">
+                  {{ opticalStatus().text }}
+                </span>
               </div>
               <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
                 {{ data.optical_count || data.opticalParticulates || 132 }} <span class="text-xs font-semibold text-slate-500 font-sans">count</span>
               </div>
               <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
-                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="42"></div>
+                <div [class]="opticalColor() + ' h-full rounded-full transition-all duration-700'" [style.width.%]="opticalPct()"></div>
               </div>
               <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
                 <span>Microplastic & Silt</span>
@@ -428,14 +582,44 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
             <div (click)="selectMetric('avg_particle_size')" class="stamp-card p-5 bg-white cursor-pointer relative group space-y-2"
                  [ngClass]="selectedMetric() === 'avg_particle_size' ? 'ring-4 ring-teal-500' : ''">
               <div class="flex items-center justify-between text-[11px] font-mono font-bold text-slate-500 uppercase">
-                <span class="text-slate-900 font-black">06 / OPTICAL CLARITY</span>
-                <span class="px-2 py-0.5 rounded border border-emerald-700 bg-emerald-50 text-emerald-800 font-extrabold text-[10px]">HIGH CLARITY</span>
+                <div class="flex items-center gap-1.5 group/tooltip relative">
+                  <span class="text-slate-900 font-black">06 / OPTICAL CLARITY</span>
+                  <button type="button" class="text-slate-400 hover:text-slate-700 p-0.5" aria-label="Info">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 16v-4"></path>
+                      <path d="M12 8h.01"></path>
+                    </svg>
+                  </button>
+                  <!-- Rich Glassmorphic Tooltip Card -->
+                  <div class="pointer-events-none absolute bottom-full right-0 mb-2 hidden w-72 rounded-xl bg-slate-950 p-4 text-[11px] text-slate-200 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-2 border-slate-700 group-hover/tooltip:block z-[1200] font-sans">
+                    <div class="font-black text-teal-400 mb-2 flex items-center justify-between uppercase border-b border-slate-800 pb-2">
+                      <span class="tracking-widest">Optical Clarity Index</span>
+                    </div>
+                    <div class="text-slate-300 mb-3 leading-relaxed font-medium normal-case">
+                      A composite visual clarity score derived from average particle size and distribution. A higher index indicates visually pristine water, while lower scores reflect murky, contaminated flows.
+                    </div>
+                    <div class="bg-slate-900 rounded-lg p-2.5 mb-2 border border-slate-800">
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-slate-400 text-[10px] uppercase">Guideline Standard</span>
+                        <span class="font-mono text-emerald-400 font-black text-xs">&gt; 90.0%</span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 leading-tight normal-case">
+                        Aligned with <span class="text-white font-bold">WHO Visual Palatability Index</span> to ensure water sources remain clear of macroscopic physical contaminants.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded border font-extrabold text-[10px]"
+                      [ngClass]="sizeStatus().border + ' ' + sizeStatus().bg + ' ' + sizeStatus().textCol">
+                  {{ sizeStatus().text }}
+                </span>
               </div>
               <div class="text-3xl sm:text-4xl font-black font-mono text-slate-900 my-1">
                 94.2 <span class="text-xs font-semibold text-slate-500 font-sans">%</span>
               </div>
               <div class="w-full bg-slate-100 h-2 rounded-full border border-slate-200 overflow-hidden">
-                <div class="bg-teal-500 h-full rounded-full transition-all duration-700" [style.width.%]="94"></div>
+                <div [class]="sizeColor() + ' h-full rounded-full transition-all duration-700'" [style.width.%]="sizePct()"></div>
               </div>
               <div class="text-[10px] font-mono font-bold text-slate-600 flex justify-between">
                 <span>Avg Size: {{ (data.avg_particle_size_mm || 0.28) | number:'1.2-2' }} mm</span>
@@ -499,16 +683,27 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                           </button>
 
                           <!-- Rich Glassmorphic Tooltip Card -->
-                          <div class="pointer-events-none absolute bottom-full right-0 mb-2 hidden w-64 rounded-xl bg-slate-950 p-3 text-[11px] text-slate-200 shadow-2xl border-2 border-slate-700 group-hover/tooltip:block z-[1200]">
-                            <div class="font-black text-teal-400 mb-1 flex items-center justify-between uppercase">
-                              <span>{{ item.name }}</span>
-                              <span class="text-[9px] text-slate-400 font-mono">Rank #{{ item.rank }}</span>
+                          <div class="pointer-events-none absolute bottom-full right-0 mb-2 hidden w-72 rounded-xl bg-slate-950 p-4 text-[11px] text-slate-200 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-2 border-slate-700 group-hover/tooltip:block z-[1200]">
+                            <div class="font-black text-teal-400 mb-2 flex items-center justify-between uppercase border-b border-slate-800 pb-2">
+                              <span class="tracking-widest">{{ item.name }}</span>
                             </div>
-                            <div class="text-slate-300 mb-2 leading-relaxed font-medium">
+                            <div class="text-slate-300 mb-3 leading-relaxed font-medium">
                               {{ item.mechanism }}
                             </div>
-                            <div class="border-t border-slate-800 pt-1.5 text-[10px] text-slate-400">
-                              <span class="text-slate-200 font-bold">Source:</span> {{ item.source }}
+                            
+                            <!-- The new SHAP Info Section -->
+                            <div class="bg-slate-900 rounded-lg p-2.5 mb-2 border border-slate-800">
+                              <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-400 text-[10px] uppercase">SHAP Importance</span>
+                                <span class="font-mono text-teal-400 font-black text-xs">{{ item.shapImportance }}%</span>
+                              </div>
+                              <p class="text-[10px] text-slate-400 leading-tight">
+                                Ranked <span class="text-white font-bold">#{{ item.rank }}</span> out of 27 ML_Model_N features because it contributes {{ item.shapImportance }}% to the overall predictive variance.
+                              </p>
+                            </div>
+                            
+                            <div class="text-[10px] text-slate-500">
+                              <span class="text-slate-400 font-bold">Source:</span> {{ item.source }}
                             </div>
                           </div>
                         </div>
@@ -531,6 +726,16 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
                   </div>
               }
             </div>
+
+            <!-- View All Features Toggle -->
+            <div class="flex justify-center mt-6">
+              <button (click)="showAllShap.set(!showAllShap())" class="stamp-btn px-5 py-2.5 rounded-xl text-xs font-black bg-slate-50 text-slate-800 border-2 border-slate-900 transition-all hover:bg-slate-100 flex items-center gap-2 shadow-[2px_2px_0px_0px_#0f172a] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#0f172a]">
+                <span>{{ showAllShap() ? 'Hide Additional Features' : 'View Other Features' }}</span>
+                <svg class="h-4 w-4 transition-transform duration-300" [class.rotate-180]="showAllShap()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- Historical Data Chart Embedded -->
@@ -543,7 +748,9 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
   `
 })
 export class LiveMonitoringViewComponent implements OnInit {
-  private telemetryService = inject(TelemetryService);
+  telemetryService = inject(TelemetryService);
+  toastService = inject(ToastService);
+
   telemetry = this.telemetryService.telemetrySignal;
   
   selectedMetric = signal('safety_score');
@@ -581,15 +788,25 @@ export class LiveMonitoringViewComponent implements OnInit {
   sizeStatus = computed(() => this.getStatusFromColor(this.sizeColor()));
 
   // Computed signal for SHAP drivers
+  showAllShap = signal(false);
+
   computedShapCards = computed(() => {
     const data = this.telemetry();
-    return this.shapRegistry
-      .filter(i => ['chl', 'kd490', 'tsm', 'waveHeight'].includes(i.key))
+    const showAll = this.showAllShap();
+    
+    let items = [...this.shapRegistry];
+    items.sort((a, b) => a.rank - b.rank);
+    if (!showAll) {
+      items = items.slice(0, 4);
+    }
+
+    return items
       .map(item => {
         const valObj = this.getShapParamValue(item, data);
         const status = this.getShapStatus(item, valObj.numVal);
         return { ...item, valObj, status };
-      });
+      })
+      .sort((a, b) => a.rank - b.rank);
   });
 
 

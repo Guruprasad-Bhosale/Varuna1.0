@@ -14,7 +14,7 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
         <app-breadcrumbs [crumbs]="[{label: 'Technical Blog', path: '/blog'}]"></app-breadcrumbs>
         
         <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">Technical Insights</h1>
-        <p class="text-xl font-medium text-slate-700 mb-12">Deep dives into the architecture, ML models, and hardware engineering powering Project JalDrishti.</p>
+        <p class="text-xl font-medium text-slate-700 mb-12">Deep dives into the architecture, ML models, and hardware engineering powering Project SagarDrishti.</p>
 
         <div class="space-y-8">
           <article *ngFor="let post of posts" class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm hover:border-slate-300 hover:shadow-md transition-all">
@@ -77,7 +77,7 @@ export class BlogListComponent implements OnInit {
     {
       slug: 'understanding-cpcb-wqi-standards',
       title: 'Understanding CPCB Standards: How to Compute Composite Water Quality Indices (WQI).',
-      excerpt: 'Demystifying the math behind the Water Quality Index (WQI). How JalDrishti maps raw telemetry values against India\'s CPCB normative standards.',
+      excerpt: 'Demystifying the math behind the Water Quality Index (WQI). How SagarDrishti maps raw telemetry values against India\'s CPCB normative standards.',
       date: 'Jul 01, 2026',
       category: 'Data Engineering'
     }
@@ -88,8 +88,8 @@ export class BlogListComponent implements OnInit {
   ngOnInit() {
     this.seoService.updateMetaTags({
       title: 'Technical Blog | Engineering Insights',
-      description: 'Deep dives into the IoT hardware, Edge AI models, and environmental science powering Project JalDrishti.',
-      canonicalUrl: 'https://jaldrishti.org/blog'
+      description: 'Deep dives into the IoT hardware, Edge AI models, and environmental science powering Project SagarDrishti.',
+      canonicalUrl: 'https://sagardrishti.org/blog'
     });
   }
 }

@@ -36,7 +36,7 @@ interface NavItem {
             </svg>
           </div>
           <div>
-            <span class="font-black text-slate-900 text-lg tracking-tight">JalDrishti</span>
+            <span class="font-black text-slate-900 text-lg tracking-tight">SagarDrishti</span>
             <div class="text-[10px] font-bold text-teal-600 tracking-wider uppercase">IoT River Monitor</div>
           </div>
         </div>

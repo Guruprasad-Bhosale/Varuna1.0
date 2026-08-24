@@ -120,7 +120,7 @@ export class HistoricalTrendsViewComponent implements OnInit, OnDestroy {
     this.exportTelemetryData(this.historyData, format);
   }
 
-  private exportTelemetryData(data: TelemetryData[], format: 'csv' | 'json', filename = 'jaldrishti_telemetry_export'): void {
+  private exportTelemetryData(data: TelemetryData[], format: 'csv' | 'json', filename = 'sagardrishti_telemetry_export'): void {
     if (!data || data.length === 0) return;
 
     if (format === 'json') {

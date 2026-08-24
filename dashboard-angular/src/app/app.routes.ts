@@ -8,7 +8,7 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent),
-        title: 'Project JalDrishti | Automated River Water Quality Intelligence'
+        title: 'Project SagarDrishti | Automated River Water Quality Intelligence'
       },
       {
         path: 'about',
@@ -55,7 +55,12 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
-    title: 'Live Telemetry Cockpit | Project JalDrishti'
+    title: 'Live Telemetry Cockpit | Project SagarDrishti'
+  },
+  {
+    path: 'nodes',
+    loadComponent: () => import('./pages/node-list/node-list.component').then(m => m.NodeListComponent),
+    title: 'Hardware Registry | Project SagarDrishti'
   },
   {
     path: '**',

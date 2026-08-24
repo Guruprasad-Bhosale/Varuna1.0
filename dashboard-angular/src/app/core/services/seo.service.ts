@@ -19,7 +19,7 @@ export class SeoService {
 
   updateMetaTags(config: SeoConfig): void {
     // 1. Set Title
-    const fullTitle = `${config.title} | Project JalDrishti Environmental Intelligence`;
+    const fullTitle = `${config.title} | Project SagarDrishti Environmental Intelligence`;
     this.titleService.setTitle(fullTitle);
 
     // 2. Standard Meta Tags
@@ -31,7 +31,7 @@ export class SeoService {
     // 3. OpenGraph / Twitter Cards
     this.metaService.updateTag({ property: 'og:title', content: fullTitle });
     this.metaService.updateTag({ property: 'og:description', content: config.description });
-    this.metaService.updateTag({ property: 'og:image', content: config.ogImage || '/assets/images/jaldrishti-og-banner.webp' });
+    this.metaService.updateTag({ property: 'og:image', content: config.ogImage || '/assets/images/sagardrishti-og-banner.webp' });
     this.metaService.updateTag({ property: 'og:type', content: 'website' });
     this.metaService.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
 
