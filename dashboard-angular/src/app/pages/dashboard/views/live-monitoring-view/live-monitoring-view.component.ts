@@ -5,6 +5,8 @@ import { ToastService } from '../../../../services/toast.service';
 import { TelemetryChartsComponent } from '../../../../components/telemetry-charts/telemetry-charts.component';
 import { WavesShaderComponent } from '../../../../components/ui/waves-shader/waves-shader.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BloomPredictionCardComponent } from '../../../../components/bloom-prediction-card/bloom-prediction-card.component';
+import { BloomPredictionData } from '../../../../components/bloom-prediction-card/bloom-prediction.types';
 
 export interface ShapParameterCard {
   rank: number;
@@ -180,7 +182,7 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
   selector: 'app-live-monitoring-view',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, TelemetryChartsComponent],
+  imports: [CommonModule, TelemetryChartsComponent, BloomPredictionCardComponent],
   template: `
     <div class="space-y-6 animate-stagger-1">
       
@@ -202,94 +204,11 @@ export const TOP_10_SHAP_REGISTRY: ShapParameterCard[] = [
         </div>
       </div>
 
-      <!-- Station Hero Summary Card -->
+      <!-- Dynamic Predicted Bloom Risk Hero Card -->
+      <app-bloom-prediction-card [data]="activeBloomData()"></app-bloom-prediction-card>
+
+      <!-- Spatial-Temporal Ephemeris & Sensor Array (if telemetry available) -->
       @if (telemetry(); as data) {
-        <div class="stamp-card p-6 sm:p-8 bg-white relative animate-stagger-2">
-          <div class="washi-tape-top"></div>
-          
-          <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div class="space-y-4 w-full lg:w-auto">
-              <div class="flex flex-wrap items-center gap-3">
-                <span *ngIf="data.status === 'SAFE'" class="rubber-stamp-resolved">
-                  CPCB CLASS-A // NOMINAL
-                </span>
-                <span *ngIf="data.status !== 'SAFE'" class="rubber-stamp-dispatched">
-                  CRITICAL HAZARD DETECTED
-                </span>
-                <span class="text-xs text-slate-700 font-bold">Suitable under current monitored conditions</span>
-              </div>
-
-              <div class="w-full lg:w-[450px]">
-                <div class="flex items-center gap-3 mb-2 relative">
-                  <div class="relative w-3 h-3 shrink-0">
-                     <div class="absolute inset-0 rounded-full" [ngClass]="data.status === 'HAZARD' ? 'bg-rose-500' : (data.status === 'MODERATE' ? 'bg-amber-500' : 'bg-emerald-500')"></div>
-                     <div class="absolute inset-0 rounded-full animate-live-ripple" [ngClass]="data.status === 'HAZARD' ? 'bg-rose-500' : (data.status === 'MODERATE' ? 'bg-amber-500' : 'bg-emerald-500')"></div>
-                  </div>
-                  <div class="relative inline-block w-full">
-                    <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                      {{ data.nodeId }} ({{ data.locationName }})
-                    </h3>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-600 font-semibold mt-2">Autonomous Multi-Parameter Solar Buoy • Firmware v2.4.1</p>
-              </div>
-
-              <div class="flex flex-wrap items-center gap-4 text-xs font-black text-slate-800">
-                <span class="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1 rounded-lg">
-                  <svg class="h-4 w-4 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                  16.2699° N, 73.7148° E
-                </span>
-                <span class="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1 rounded-lg">
-                  <svg class="h-4 w-4 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.393 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
-                  Cellular LTE Active
-                </span>
-                <span class="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1 rounded-lg">
-                  <svg class="h-4 w-4 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                  Sync: {{ data.timestamp }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Animated Radial Gauge -->
-            <div class="flex items-center gap-5 bg-slate-50 border-2 border-slate-900 p-5 rounded-2xl w-full lg:w-80 justify-between shrink-0 shadow-[4px_4px_0px_0px_#0f172a] transition-all duration-500"
-                 [ngClass]="data.status === 'HAZARD' ? 'border-rose-700 bg-rose-50' : ''">
-              <div>
-                <div class="text-[10px] font-black uppercase tracking-wider text-slate-500">Water Safety Score</div>
-                <div class="text-3xl sm:text-4xl font-black text-slate-900 font-mono tracking-tight flex items-baseline gap-1 mt-1">
-                  <span class="transition-all duration-700">{{ data.compositeScore | number:'1.1-1' }}</span>
-                  <span class="text-sm font-bold text-slate-500">/100</span>
-                </div>
-                <div class="text-xs font-black mt-1 uppercase tracking-wider" [ngClass]="data.compositeScore >= 75 ? 'text-teal-800' : 'text-rose-700'">
-                  {{ data.confidence }}% confidence
-                </div>
-                <div class="text-[10px] text-slate-700 uppercase font-mono font-black tracking-wider mt-1">NIRVAAH XGBoost</div>
-              </div>
-
-              <div class="relative h-20 w-20 flex items-center justify-center shrink-0">
-                <svg class="h-full w-full -rotate-90" viewBox="0 0 64 64">
-                  <circle cx="32" cy="32" r="26" stroke-width="5" stroke="#cbd5e1" fill="none" />
-                  <circle cx="32" cy="32" r="26" 
-                          stroke-width="5" 
-                          stroke-linecap="round" 
-                          fill="none" 
-                          [attr.stroke]="data.compositeScore >= 75 ? '#0d9488' : '#e11d48'"
-                          stroke-dasharray="163.36" 
-                          [style.strokeDashoffset]="163.36 - (163.36 * (data.compositeScore / 100))"
-                          class="gauge-stroke-transition" />
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center transition-all duration-500">
-                  <svg *ngIf="data.compositeScore >= 75" class="w-7 h-7 text-teal-700 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <svg *ngIf="data.compositeScore < 75" class="w-7 h-7 text-rose-600 animate-pulse stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Spatial-Temporal Ephemeris Ribbon -->
         <div class="stamp-card p-4 bg-white flex flex-wrap items-center gap-4 animate-stagger-2 text-xs">
           <div class="font-black text-slate-900 uppercase tracking-wider mr-2">Ephemeris Metadata:</div>
@@ -752,6 +671,30 @@ export class LiveMonitoringViewComponent implements OnInit {
   toastService = inject(ToastService);
 
   telemetry = this.telemetryService.telemetrySignal;
+
+  activeBloomData = computed<BloomPredictionData>(() => {
+    const t = this.telemetry();
+    const locationParts = (t.locationName || 'Sarjekot Estuary — Gad River Outfall').split('—').map(s => s.trim());
+    const stationName = locationParts[0] || 'Sarjekot Estuary';
+    const riverBasin = locationParts[1] || 'Gad River Outfall';
+
+    let riskScore = Math.round(t.bloomProbability ?? (100 - (t.compositeScore ?? 90)));
+    if (isNaN(riskScore) || riskScore == null) riskScore = 86;
+
+    return {
+      nodeId: t.nodeId ?? 'SagarDrishti-001',
+      stationName: stationName,
+      riverBasin: riverBasin,
+      latitude: t.coordinates?.lat ?? 16.2699,
+      longitude: t.coordinates?.lng ?? 73.7148,
+      syncTime: t.timestamp ?? t.lastSync ?? '17:04:09',
+      connectionType: 'Cellular LTE Active',
+      firmwareVersion: 'v2.4.1',
+      riskScore: riskScore,
+      confidence: t.confidence ?? t.confidence_pct ?? 94.8,
+      modelEngine: 'NIRVAAH XGBoost'
+    };
+  });
   
   selectedMetric = signal('safety_score');
   historyData = signal<TelemetryData[]>([]);

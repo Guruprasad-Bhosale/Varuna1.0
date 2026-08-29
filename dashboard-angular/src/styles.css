@@ -38,7 +38,6 @@ body::before {
   border-radius: 16px;
   box-shadow: 4px 4px 0px 0px #0f172a;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  contain: layout style;
 }
 .stamp-card:hover {
   transform: translate(-1px, -1px);
@@ -189,7 +188,7 @@ body::before {
 /* Staggered View Entrance */
 @keyframes slide-up-fade {
   0% { opacity: 0; transform: translateY(16px); }
-  100% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; transform: none; }
 }
 .animate-stagger-1 { animation: slide-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-stagger-2 { animation: slide-up-fade 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards; opacity: 0; }

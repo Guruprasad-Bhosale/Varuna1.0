@@ -1,0 +1,213 @@
+<div class="stamp-card relative bg-white border-2 border-slate-900 rounded-2xl p-6 shadow-[4px_4px_0px_0px_#0f172a] transition-all">
+  <div class="washi-tape-top"></div>
+  
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+    
+    <!-- Left Column: Station Identity & Geodetic Location -->
+    <div class="lg:col-span-7 space-y-4">
+      
+      <!-- Top Alert Ribbon & Tilted Stamp -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="rotate-[-2deg] px-2.5 py-0.5 border-2 text-[10px] font-mono font-black uppercase tracking-wider inline-block rounded-md"
+             [ngClass]="riskTier().level === 'SAFE' ? 'rubber-stamp-resolved' : 'rubber-stamp-dispatched'">
+          {{ riskTier().stampText }}
+        </div>
+        <span class="text-xs font-bold text-slate-700" [ngClass]="riskTier().textColor">
+          {{ riskTier().summary }}
+        </span>
+      </div>
+
+      <!-- Main Station Header -->
+      <div class="flex items-start gap-3">
+        <span class="h-4 w-4 rounded-full mt-1.5 shrink-0 animate-ping"
+              [ngClass]="riskTier().level === 'SAFE' ? 'bg-emerald-500' : 'bg-red-500'"></span>
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+            {{ data().nodeId }} ({{ data().stationName }} — {{ data().riverBasin }})
+          </h2>
+          <p class="text-xs font-mono font-bold text-slate-500 mt-1">
+            Autonomous Multi-Parameter Solar Buoy • Firmware {{ data().firmwareVersion }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Geodetic & Telemetry Metadata Pills -->
+      <div class="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs font-bold text-slate-700">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a]">
+          <svg class="h-3.5 w-3.5 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span>{{ data().latitude.toFixed(4) }}° N, {{ data().longitude.toFixed(4) }}° E</span>
+        </div>
+
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a]">
+          <svg class="h-3.5 w-3.5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+          </svg>
+          <span>{{ data().connectionType }}</span>
+        </div>
+
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a]">
+          <svg class="h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Sync: {{ data().syncTime }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Predictive Bloom Level Sub-Card -->
+    <div class="lg:col-span-5 relative">
+      <div class="stamp-card relative p-5 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_#0f172a] space-y-3">
+        
+        <!-- Header with Info Button Trigger -->
+        <div class="flex items-center justify-between">
+          <span class="font-mono text-[11px] font-black text-slate-500 uppercase tracking-widest">
+            PREDICTED BLOOM LEVEL
+          </span>
+          
+          <button (click)="toggleTooltip()"
+                  class="stamp-btn p-1.5 px-2.5 rounded-lg border-2 border-slate-900 bg-teal-50 hover:bg-teal-100 text-slate-900 transition-all cursor-pointer flex items-center gap-1.5"
+                  [title]="showTooltip() ? 'Hide Regulatory Ledger' : 'View Regulatory Standards & Threshold Guidance'"
+                  aria-label="View Regulatory Standards & Threshold Guidance">
+            <svg class="h-4 w-4 text-teal-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-[10px] font-black font-mono uppercase tracking-wider text-teal-900">
+              {{ showTooltip() ? 'Close Ledger' : 'Standards' }}
+            </span>
+          </button>
+        </div>
+
+        <!-- Level Title & Hazard Warning Icon -->
+        <div class="flex items-center justify-between">
+          <div class="text-3xl sm:text-4xl font-black font-sans tracking-tight uppercase" [ngClass]="riskTier().textColor">
+            {{ riskTier().level }}
+          </div>
+          <svg class="h-8 w-8" [ngClass]="riskTier().textColor" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+
+        <!-- Numeric Score & Probability Label -->
+        <div>
+          <div class="text-3xl font-black font-mono text-slate-900">
+            {{ data().riskScore }} <span class="text-sm font-bold text-slate-400 font-mono">/100</span>
+          </div>
+          <div class="text-xs font-bold text-slate-600 font-sans mt-0.5">
+            Probability of Harmful Bloom ({{ data().modelEngine }})
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 h-2.5 rounded-full border-2 border-slate-900 overflow-hidden shadow-inner">
+          <div class="h-full rounded-full transition-all duration-500"
+               [ngClass]="riskTier().barColor"
+               [style.width.%]="data().riskScore"></div>
+        </div>
+
+        <!-- Footnote Advice -->
+        <div class="font-mono text-[10px] font-bold text-slate-500 pt-0.5">
+          {{ riskTier().advice }}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Expandable Regulatory Provenance Threshold Ledger (Unclipped In-Card Drawer) -->
+  @if (showTooltip()) {
+    <div class="mt-6 pt-5 border-t-2 border-slate-900 space-y-4 animate-in fade-in duration-300">
+      
+      <!-- Ledger Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50 border-2 border-slate-900 p-3.5 rounded-xl shadow-[2px_2px_0px_0px_#0f172a]">
+        <div class="flex items-center gap-2">
+          <span class="rubber-stamp-resolved text-[9px] px-2 py-0.5 rotate-[-1deg]">OFFICIAL GUIDANCE</span>
+          <span class="font-black text-xs uppercase tracking-wider text-slate-900">// REGULATORY THRESHOLD LEDGER</span>
+        </div>
+        <div class="text-[11px] font-mono text-slate-600 font-bold">
+          WHO (2026) & CPCB Class SW-II Environmental Discipline
+        </div>
+      </div>
+
+      <!-- 3-Tier Comparison Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- Safe Tier (0-39) -->
+        <div class="p-4 rounded-xl bg-emerald-50 border-2 border-emerald-600 space-y-2 shadow-[2px_2px_0px_0px_#059669]">
+          <div class="flex items-center justify-between">
+            <span class="font-black text-xs text-emerald-950 uppercase tracking-wide flex items-center gap-1.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 inline-block"></span>
+              <span>0–39: SAFE</span>
+            </span>
+            <span class="text-[9px] font-mono font-black uppercase px-1.5 py-0.5 bg-emerald-100 border border-emerald-600 rounded text-emerald-900">
+              CPCB SW-II
+            </span>
+          </div>
+          <div class="font-mono text-[10px] font-bold text-emerald-900 bg-emerald-100/60 p-1.5 rounded border border-emerald-300">
+            Chl-a &lt; 2.5 µg/L • Turb &lt; 10 NTU • DO &gt; 5 mg/L
+          </div>
+          <p class="text-[11px] text-emerald-900 leading-relaxed">
+            Complies with Central Pollution Control Board Class SW-II contact recreational criteria. Photic zone solar absorption nominal.
+          </p>
+        </div>
+
+        <!-- Moderate Tier (40-69) -->
+        <div class="p-4 rounded-xl bg-amber-50 border-2 border-amber-600 space-y-2 shadow-[2px_2px_0px_0px_#d97706]">
+          <div class="flex items-center justify-between">
+            <span class="font-black text-xs text-amber-950 uppercase tracking-wide flex items-center gap-1.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-amber-500 inline-block"></span>
+              <span>40–69: MODERATE</span>
+            </span>
+            <span class="text-[9px] font-mono font-black uppercase px-1.5 py-0.5 bg-amber-100 border border-amber-600 rounded text-amber-900">
+              WHO Alert 1
+            </span>
+          </div>
+          <div class="font-mono text-[10px] font-bold text-amber-900 bg-amber-100/60 p-1.5 rounded border border-amber-300">
+            Chl-a 2.5–10.0 µg/L • Kd490 0.15–0.30 m⁻¹ • ΔT &gt; +1.5°C
+          </div>
+          <p class="text-[11px] text-amber-900 leading-relaxed">
+            Elevated solar absorption indicates early cyanobacterial growth acceleration. Recommended for heightened sensor sampling and surveillance.
+          </p>
+        </div>
+
+        <!-- High & Extreme Tier (70-100) -->
+        <div class="p-4 rounded-xl bg-rose-50 border-2 border-rose-600 space-y-2 shadow-[2px_2px_0px_0px_#e11d48]">
+          <div class="flex items-center justify-between">
+            <span class="font-black text-xs text-rose-950 uppercase tracking-wide flex items-center gap-1.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-rose-600 inline-block"></span>
+              <span>70–100: HIGH / EXTREME</span>
+            </span>
+            <span class="text-[9px] font-mono font-black uppercase px-1.5 py-0.5 bg-rose-100 border border-rose-600 rounded text-rose-900">
+              WHO Alert 2
+            </span>
+          </div>
+          <div class="font-mono text-[10px] font-bold text-rose-900 bg-rose-100/60 p-1.5 rounded border border-rose-300">
+            Chl-a &gt; 10.0 µg/L • Stagnation • DO &lt; 3.0 mg/L
+          </div>
+          <p class="text-[11px] text-rose-900 leading-relaxed">
+            Critical risk of microcystins, surface scum, and water anoxia. Treatment plant flush and automated municipal alert dispatched.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Footer Action & Provenance -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2 font-mono text-[10px] text-slate-600">
+        <div class="leading-relaxed">
+          <span class="font-black text-slate-900">Sources:</span> WHO Guidelines for Drinking-water Quality (2026), CPCB Marine & Estuarine Standards, and ISRO EOS-06 OCM-3 Satellite Radiance Data.
+        </div>
+        <button (click)="closeTooltip()"
+                class="stamp-btn px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black shrink-0 transition-all cursor-pointer shadow-[2px_2px_0px_0px_#0f172a]">
+          Acknowledge & Close
+        </button>
+      </div>
+
+    </div>
+  }
+
+</div>

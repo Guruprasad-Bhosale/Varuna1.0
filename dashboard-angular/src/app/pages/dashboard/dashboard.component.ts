@@ -51,7 +51,7 @@ export type DashboardTab = 'overview' | 'nodes' | 'live' | 'trends' | 'alerts' |
         }
 
         <main class="flex-1 p-6 overflow-y-auto">
-          <div class="max-w-[1600px] mx-auto animate-in fade-in duration-300 slide-in-from-bottom-2" [class.opacity-50]="isNavigating()">
+          <div class="max-w-[1600px] mx-auto animate-in fade-in duration-300" [class.opacity-50]="isNavigating()">
             @switch (activeTab()) {
               @case ('overview') {
                 <app-live-monitoring-view></app-live-monitoring-view>

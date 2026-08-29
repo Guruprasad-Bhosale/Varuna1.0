@@ -48,8 +48,8 @@ class MockTelemetryEmulator:
 
     def simulate_readings(self):
         """Generate reading based on anomaly mode."""
-        base_lat = 25.3176
-        base_lon = 82.9739
+        base_lat = 16.7050
+        base_lon = 74.2433
         
         if self.anomaly == 'industrial_dump':
             ph = random.uniform(4.5, 5.5)
@@ -124,7 +124,9 @@ class MockTelemetryEmulator:
         try:
             logger.info("Sending POST request to backend API...")
             api_url = os.getenv("API_URL", "http://localhost:8000/api/v1/telemetry/ingest")
-            response = requests.post(api_url, json=payload, timeout=3)
+            admin_key = os.getenv("ADMIN_API_KEY", "dev-admin-key-2026")
+            headers = {"X-Admin-API-Key": admin_key}
+            response = requests.post(api_url, json=payload, headers=headers, timeout=3)
             logger.info(f"API Response: {response.status_code} - {response.text}")
         except Exception as e:
             logger.warning(f"Failed to push telemetry to cloud: {e}")
