@@ -41,15 +41,15 @@ import { CameraScreeningPanelComponent } from '../../../../components/camera-scr
             <div class="w-full flex items-end h-48 gap-4 px-4 relative z-10">
               <!-- Fine Bin -->
               <div class="flex-1 rounded-t-lg bg-teal-500 hover:bg-teal-600 relative group cursor-pointer transition-colors shadow-sm" [style.height.%]="finePct ?? 68">
-                <div class="absolute -top-6 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-900 whitespace-nowrap text-xs bg-white/90 px-1.5 py-0.5 rounded shadow-sm">68%</div>
+                <div class="absolute -top-6 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-900 whitespace-nowrap text-xs bg-white/90 px-1.5 py-0.5 rounded shadow-sm">{{ finePct ?? 68 }}%</div>
               </div>
               <!-- Medium Bin -->
               <div class="flex-1 rounded-t-lg bg-amber-500 hover:bg-amber-600 relative group cursor-pointer transition-colors shadow-sm" [style.height.%]="mediumPct ?? 24">
-                 <div class="absolute -top-6 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-900 whitespace-nowrap text-xs bg-white/90 px-1.5 py-0.5 rounded shadow-sm">24%</div>
+                 <div class="absolute -top-6 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-900 whitespace-nowrap text-xs bg-white/90 px-1.5 py-0.5 rounded shadow-sm">{{ mediumPct ?? 24 }}%</div>
               </div>
               <!-- Coarse Bin -->
               <div class="flex-1 rounded-t-lg bg-rose-500 hover:bg-rose-600 relative group cursor-pointer transition-colors shadow-sm" [style.height.%]="coarsePct ?? 8">
-                 <div class="absolute -top-6 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-900 whitespace-nowrap text-xs bg-white/90 px-1.5 py-0.5 rounded shadow-sm">8%</div>
+                 <div class="absolute -top-6 left-1/2 -translate-x-1/2 font-mono font-bold text-slate-900 whitespace-nowrap text-xs bg-white/90 px-1.5 py-0.5 rounded shadow-sm">{{ coarsePct ?? 8 }}%</div>
               </div>
             </div>
             

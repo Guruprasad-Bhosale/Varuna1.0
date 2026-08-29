@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -33,17 +35,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        teal: {
+          ...colors.teal,
+          DEFAULT: '#0d9488',
+        },
         navy: '#0f172a',
         background: '#f8fafc',
         surface: '#ffffff',
+        surfaceHover: '#f1f5f9',
         border: '#e2e8f0',
         textMain: '#1e293b',
         textMuted: '#64748b',
-        teal: '#0d9488',
         tealDark: '#0f766e',
         tealLight: '#ccfbf1',
         safe: '#10b981',
+        safeBg: '#ecfdf5',
         moderate: '#f59e0b',
+        moderateBg: '#fffbeb',
         dangerous: '#ef4444',
         dangerousBg: '#fef2f2',
       }

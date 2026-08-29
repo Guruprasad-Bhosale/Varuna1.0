@@ -284,14 +284,18 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     this.activeTileLayer.set(type);
     this.currentTileLayerGroup.clearLayers();
 
-    let layerUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-    let attribution = '&copy; CartoDB & OpenStreetMap';
+    let layerUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+    let attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
     if (type === 'satellite') {
       layerUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-      attribution = '&copy; Esri & Maxar';
+      attribution = '&copy; Esri, Maxar, Earthstar Geographics';
     } else if (type === 'dark') {
-      layerUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+      layerUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+      attribution = '&copy; Esri, HERE, Garmin';
+    } else if (type === 'voyager') {
+      layerUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+      attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
     }
 
     L.tileLayer(layerUrl, { 
@@ -364,6 +368,20 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
     const swathData = this.generateSwathData();
 
     swathData.forEach(pt => {
+      const riskColor = pt.prob >= 80 ? '#ef4444' : pt.prob >= 55 ? '#f97316' : pt.prob >= 25 ? '#eab308' : '#10b981';
+      const riskTier = pt.prob >= 80 ? 'Critical' : pt.prob >= 55 ? 'High Risk' : pt.prob >= 25 ? 'Moderate' : 'Low Risk';
+
+      const tooltipContent = `
+        <div class="satellite-swath-tooltip">
+          <div class="tooltip-header">ISRO EOS-06 Swath</div>
+          <div class="tooltip-coords">${pt.lat.toFixed(4)}° N | ${pt.lng.toFixed(4)}° E</div>
+          <div class="tooltip-risk-row">
+            <span class="risk-label">Bloom Risk (${riskTier})</span>
+            <span class="risk-value" style="color: ${riskColor};">${pt.prob}%</span>
+          </div>
+        </div>
+      `;
+
       L.circleMarker([pt.lat, pt.lng], {
         renderer: this.sharedCanvasRenderer,
         radius: 4,
@@ -372,8 +390,8 @@ export class RiverNodesViewComponent implements AfterViewInit, OnDestroy {
         weight: 1,
         fillOpacity: 0.85
       }).bindTooltip(
-        `<b>Lat:</b> ${pt.lat.toFixed(4)}° N | <b>Lng:</b> ${pt.lng.toFixed(4)}° E<br/><b>Bloom Risk:</b> ${pt.prob}%`,
-        { sticky: true, className: 'custom-swath-leaflet-tooltip' }
+        tooltipContent,
+        { sticky: true, className: 'custom-swath-leaflet-tooltip', offset: [0, -4] }
       ).addTo(this.swathLayerGroup);
     });
   }

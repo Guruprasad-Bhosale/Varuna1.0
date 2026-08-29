@@ -222,15 +222,20 @@ body::before {
   padding: 0 !important;
 }
 
+.leaflet-tooltip.custom-swath-leaflet-tooltip::before {
+  display: none !important;
+}
+
 .satellite-swath-tooltip {
-  background: #1e222d;
-  border: 2px solid #ffffff;
-  border-radius: 12px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
   padding: 8px 12px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   color: #ffffff;
-  min-width: 220px;
+  min-width: 200px;
+  backdrop-filter: blur(8px);
 }
 
 .satellite-swath-tooltip .tooltip-header {
