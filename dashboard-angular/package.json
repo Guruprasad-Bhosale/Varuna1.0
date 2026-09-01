@@ -22,11 +22,13 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/service-worker": "^18.2.14",
+    "@types/three": "^0.185.4",
     "echarts": "^6.1.0",
     "leaflet": "^1.9.4",
     "lucide-angular": "^1.0.0",
     "ngx-echarts": "^18.0.0",
     "rxjs": "~7.8.0",
+    "three": "^0.185.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
   },

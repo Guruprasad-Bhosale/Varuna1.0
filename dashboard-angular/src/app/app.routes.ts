@@ -15,6 +15,15 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent)
       },
       {
+        path: 'team',
+        redirectTo: 'about',
+        pathMatch: 'full'
+      },
+      {
+        path: 'mission',
+        loadComponent: () => import('./pages/mission/mission.component').then(m => m.MissionComponent)
+      },
+      {
         path: 'features/:id',
         loadComponent: () => import('./pages/features/feature-detail.component').then(m => m.FeatureDetailComponent)
       },

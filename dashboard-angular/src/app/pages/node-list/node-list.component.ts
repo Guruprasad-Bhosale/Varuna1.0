@@ -80,7 +80,7 @@ export class NodeListComponent implements OnInit {
   searchQuery = signal('');
 
   private nodes = [
-    { id: 'SagarDrishti-001', location: 'Sarjekot Estuary, Panchaganga Outfall', status: 'ACTIVE', lastSync: '2 mins ago' },
+    { id: 'SagarDrishti-001', location: 'Sarjekot Estuary, Gad River Mouth', status: 'ACTIVE', lastSync: '2 mins ago' },
     { id: 'SagarDrishti-002', location: 'Kasal Basin, Gad River Upstream', status: 'ACTIVE', lastSync: '4 mins ago' },
     { id: 'SagarDrishti-003', location: 'Kudal Bridge, Karli Central', status: 'MAINTENANCE', lastSync: '1 hour ago' },
     { id: 'SagarDrishti-004', location: 'Devbag Creek, Karli Mouth', status: 'ACTIVE', lastSync: 'Just now' }

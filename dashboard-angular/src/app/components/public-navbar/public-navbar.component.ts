@@ -21,8 +21,9 @@ import { RouterModule } from '@angular/router';
           </div>
 
           <!-- Desktop Menu -->
-          <div class="hidden md:flex items-center space-x-7">
-            <a routerLink="/about" routerLinkActive="text-teal-700 underline decoration-2 underline-offset-4" class="text-sm font-black text-slate-900 hover:text-teal-700 transition-colors uppercase tracking-wider">Mission</a>
+          <div class="hidden md:flex items-center space-x-6">
+            <a routerLink="/mission" routerLinkActive="text-teal-700 underline decoration-2 underline-offset-4" class="text-sm font-black text-slate-900 hover:text-teal-700 transition-colors uppercase tracking-wider">Mission</a>
+            <a routerLink="/about" routerLinkActive="text-teal-700 underline decoration-2 underline-offset-4" class="text-sm font-black text-slate-900 hover:text-teal-700 transition-colors uppercase tracking-wider">About Us</a>
             <a routerLink="/features/iot-hardware-node" routerLinkActive="text-teal-700 underline decoration-2 underline-offset-4" class="text-sm font-black text-slate-900 hover:text-teal-700 transition-colors uppercase tracking-wider">Technology</a>
             <a routerLink="/case-studies" routerLinkActive="text-teal-700 underline decoration-2 underline-offset-4" class="text-sm font-black text-slate-900 hover:text-teal-700 transition-colors uppercase tracking-wider">Deployments</a>
             <a routerLink="/blog" routerLinkActive="text-teal-700 underline decoration-2 underline-offset-4" class="text-sm font-black text-slate-900 hover:text-teal-700 transition-colors uppercase tracking-wider">Insights</a>
@@ -50,8 +51,11 @@ import { RouterModule } from '@angular/router';
 
       <!-- Mobile Drawer -->
       <div *ngIf="isMobileMenuOpen" class="md:hidden bg-white border-b-2 border-slate-900 px-4 py-4 space-y-2 shadow-lg">
+        <a (click)="isMobileMenuOpen = false" routerLink="/mission" class="block font-black text-slate-900 py-2 px-3 rounded-lg hover:bg-slate-100 uppercase text-xs tracking-wider">
+          Mission Storybook
+        </a>
         <a (click)="isMobileMenuOpen = false" routerLink="/about" class="block font-black text-slate-900 py-2 px-3 rounded-lg hover:bg-slate-100 uppercase text-xs tracking-wider">
-          Mission & Basin Scope
+          Meet the Team
         </a>
         <a (click)="isMobileMenuOpen = false" routerLink="/features/iot-hardware-node" class="block font-black text-slate-900 py-2 px-3 rounded-lg hover:bg-slate-100 uppercase text-xs tracking-wider">
           Edge & Satellite Tech

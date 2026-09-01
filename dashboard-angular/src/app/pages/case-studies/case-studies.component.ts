@@ -26,10 +26,10 @@ import { BreadcrumbsComponent } from '../../components/breadcrumbs/breadcrumbs.c
             </span>
           </div>
           
-          <h2 class="text-3xl font-bold text-slate-900 mb-6">Panchaganga River Pilot (Kolhapur)</h2>
+          <h2 class="text-3xl font-bold text-slate-900 mb-6">Gad River Basin Pilot (Sarjekot Estuary)</h2>
           
           <p class="text-lg font-medium text-slate-700 mb-8 border-l-4 border-teal-600 pl-4 leading-relaxed">
-            The Panchaganga river basin faces significant stress from localized industrial effluents and urban inflow. 
+            The Gad River basin faces critical stress from localized industrial effluents and estuary outfall surges. 
             Manual sampling occurred bi-weekly, completely missing illicit nighttime discharges.
           </p>
           
@@ -113,8 +113,8 @@ export class CaseStudiesComponent implements OnInit {
 
   ngOnInit() {
     this.seoService.updateMetaTags({
-      title: 'Deployments & Case Studies',
-      description: 'Review real-world deployments of Project SagarDrishti, including the Panchaganga River Pilot and urban inflow monitoring.',
+      title: 'Deployments & Case Studies | Project SagarDrishti',
+      description: 'Review real-world deployments of Project SagarDrishti, including the Gad River Basin Pilot (Sarjekot Estuary) and coastal outfall monitoring.',
       canonicalUrl: 'https://sagardrishti.org/case-studies'
     });
   }

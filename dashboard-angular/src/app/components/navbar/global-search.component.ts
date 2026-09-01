@@ -49,7 +49,7 @@ export class GlobalSearchComponent {
 
   // Mock registry (integrate with TelemetryService in production)
   private registry = [
-    { id: 'SagarDrishti-001', location: 'Sarjekot Estuary, Panchaganga Outfall', keywords: ['node', 'sagardrishti'] },
+    { id: 'SagarDrishti-001', location: 'Sarjekot Estuary, Gad River Mouth', keywords: ['node', 'sagardrishti'] },
     { id: 'SagarDrishti-002', location: 'Kasal Basin, Gad River Upstream', keywords: ['node', 'sagardrishti'] },
     { id: 'SagarDrishti-003', location: 'Kudal Bridge, Karli Central', keywords: ['node', 'sagardrishti'] },
     { id: 'SagarDrishti-004', location: 'Devbag Creek, Karli Mouth', keywords: ['node', 'sagardrishti'] }

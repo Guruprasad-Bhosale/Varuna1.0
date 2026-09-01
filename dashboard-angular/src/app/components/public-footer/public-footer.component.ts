@@ -44,7 +44,8 @@ import { RouterModule } from '@angular/router';
           <div>
             <h3 class="text-sm font-bold text-white tracking-wider uppercase mb-4">Organization</h3>
             <ul class="space-y-3 text-sm font-medium">
-              <li><a routerLink="/about" class="hover:text-white transition-colors">Our Mission</a></li>
+              <li><a routerLink="/mission" class="hover:text-white transition-colors">Mission Storybook</a></li>
+              <li><a routerLink="/about" class="hover:text-white transition-colors">Meet the Team</a></li>
               <li><a routerLink="/case-studies" class="hover:text-white transition-colors">Case Studies</a></li>
               <li><a routerLink="/blog" class="hover:text-white transition-colors">Technical Blog</a></li>
               <li><a routerLink="/faq" class="hover:text-white transition-colors">FAQ</a></li>

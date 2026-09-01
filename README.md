@@ -427,7 +427,7 @@ title Sagar Drishti Development Roadmap
 
 2026 Q2 : Hardware Prototype
 
-2026 Q2 : Panchaganga Pilot
+2026 Q2 : Gad River Basin Pilot (Sarjekot Estuary)
 
 2026 Q3 : Satellite Automation
 

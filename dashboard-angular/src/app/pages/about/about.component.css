@@ -1,0 +1,4 @@
+/* Card Hover Transitions */
+.group {
+  will-change: transform, box-shadow;
+}

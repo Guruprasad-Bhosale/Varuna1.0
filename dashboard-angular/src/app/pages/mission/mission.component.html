@@ -1,0 +1,319 @@
+<div class="relative min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-16">
+  
+  <!-- Breadcrumb Bar -->
+  <app-breadcrumbs [crumbs]="[{label: 'Mission Storybook', path: '/mission'}]"></app-breadcrumbs>
+
+  <!-- Mission Prologue / Hero Header -->
+  <header class="text-center space-y-5 max-w-4xl mx-auto pt-4">
+    <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border-2 border-slate-900 bg-white shadow-[3px_3px_0px_0px_#0f172a]">
+      <span class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-teal-600"></span>
+      </span>
+      <span class="font-mono text-xs font-black text-slate-900 uppercase tracking-widest">
+        PILOT TESTBED: GAD RIVER BASIN & SARJEKOT ESTUARY ACTIVE
+      </span>
+    </div>
+    
+    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.08]">
+      Guardians of the Estuary:<br>
+      <span class="text-teal-700 underline decoration-teal-400 decoration-wavy decoration-2">From River Mouth to Deep Ocean.</span>
+    </h1>
+    
+    <p class="text-base sm:text-xl font-bold text-slate-700 leading-relaxed max-w-3xl mx-auto">
+      How a network of solar-powered edge buoys, ISRO orbital payloads, and XGBoost AI are ending the era of delayed water sampling across Maharashtra's coastline.
+    </p>
+
+    <!-- Highlight Badges -->
+    <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+      <span class="px-3 py-1 rounded-lg border-2 border-slate-900 bg-amber-100 font-mono text-xs font-black text-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
+        ⚡ 20-Min Autonomous Cycle
+      </span>
+      <span class="px-3 py-1 rounded-lg border-2 border-slate-900 bg-teal-100 font-mono text-xs font-black text-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
+        🛰️ ISRO EOS-06 Remote Sensing
+      </span>
+      <span class="px-3 py-1 rounded-lg border-2 border-slate-900 bg-indigo-100 font-mono text-xs font-black text-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
+        🤖 Sub-5ms AI Inference
+      </span>
+      <span class="px-3 py-1 rounded-lg border-2 border-slate-900 bg-rose-100 font-mono text-xs font-black text-slate-900 shadow-[2px_2px_0px_0px_#0f172a]">
+        📲 Zero-Cost WhatsApp Alerts
+      </span>
+    </div>
+  </header>
+
+  <!-- Narrative Timeline Grid -->
+  <div class="space-y-12 relative before:absolute before:inset-0 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-slate-300 before:hidden lg:before:block">
+    
+    <!-- Chapter I: The Crisis -->
+    <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-6 stamp-card p-6 sm:p-8 bg-white border-2 border-slate-900 rounded-2xl shadow-[5px_5px_0px_0px_#0f172a] space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2 font-mono text-xs font-bold text-slate-500">
+          <span>CHAPTER I // THE CRISIS</span>
+          <span class="text-rose-600 font-black">FATAL SAMPLING DELAY</span>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900">The Silent Poisoning of Coastal Basins</h2>
+        <p class="text-sm font-medium text-slate-700 leading-relaxed">
+          For decades, river monitoring relied on manual grab samples: a technician dipping a plastic bottle into the water, transporting it to a laboratory, and waiting 5 to 7 days for chemical reports. By the time an industrial flush or toxic algal bloom is confirmed on paper, fish kills have already devastated local fishermen and contaminated municipal water intakes.
+        </p>
+        <div class="p-3 bg-rose-50 border-2 border-rose-600 rounded-xl font-mono text-xs font-bold text-rose-900 flex items-center gap-2.5">
+          <span class="text-base">⚠️</span>
+          <span>Traditional lab report turnaround: 120+ Hours (Action Impossible)</span>
+        </div>
+      </div>
+      
+      <div class="lg:col-span-6 flex justify-center">
+        <div class="stamp-card !bg-slate-950 !text-white border-2 border-slate-900 rounded-2xl shadow-[5px_5px_0px_0px_#0d9488] p-7 space-y-4 w-full max-w-md">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xs font-black text-teal-400 tracking-wider">// FIELD REALITY CHECK</span>
+            <span class="h-2 w-2 rounded-full bg-rose-500 animate-ping"></span>
+          </div>
+          <div class="text-3xl sm:text-4xl font-black font-mono text-white tracking-tight">10,000+ Liters</div>
+          <p class="text-xs sm:text-sm font-medium text-slate-300 leading-relaxed">
+            Of toxic effluent can discharge through an unmonitored river mouth in a single night before human detection occurs.
+          </p>
+          <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Source: CPCB Basin Audit</span>
+            <span class="text-rose-400 font-bold">Unchecked Contamination</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter II: The Architecture -->
+    <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-6 order-2 lg:order-1 flex justify-center">
+        <div class="stamp-card !bg-teal-950 !text-white border-2 border-slate-900 rounded-2xl shadow-[5px_5px_0px_0px_#0f172a] p-7 space-y-4 w-full max-w-md">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xs font-black text-teal-300 tracking-wider">// AUTONOMOUS EDGE SOLUTION</span>
+            <span class="px-2 py-0.5 rounded bg-teal-800 font-mono text-[10px] text-teal-200 font-black">SOLAR ACTIVE</span>
+          </div>
+          <div class="text-3xl sm:text-4xl font-black font-mono text-white tracking-tight">&lt; 3 Seconds</div>
+          <p class="text-xs sm:text-sm font-medium text-teal-100 leading-relaxed">
+            From telemetry ingestion on the buoy to automated WhatsApp and SMS incident dispatch with zero human intervention.
+          </p>
+          <div class="pt-2 border-t border-teal-900 flex items-center justify-between text-[11px] font-mono text-teal-300">
+            <span>Cycle: Every 20 Mins</span>
+            <span class="text-emerald-400 font-bold">Encrypted Telemetry</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="lg:col-span-6 order-1 lg:order-2 stamp-card p-6 sm:p-8 bg-white border-2 border-slate-900 rounded-2xl shadow-[5px_5px_0px_0px_#0f172a] space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2 font-mono text-xs font-bold text-slate-500">
+          <span>CHAPTER II // THE ARCHITECTURE</span>
+          <span class="text-teal-700 font-black">SUB-SECOND EDGE INTELLIGENCE</span>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900">Enter SagarDrishti: Continuous Autonomous Sentinels</h2>
+        <p class="text-sm font-medium text-slate-700 leading-relaxed">
+          We engineered ruggedized, solar-powered multi-parameter buoys deployed directly at critical outfalls like the Gad River and Sarjekot Estuary. Operating 24/7, these nodes capture pH, turbidity, electrical conductivity, water temperature, and optical particulate samples every 20 minutes, streaming encrypted telemetry via LTE and LoRaWAN.
+        </p>
+        <div class="p-3 bg-teal-50 border-2 border-teal-600 rounded-xl font-mono text-xs font-bold text-teal-900 flex items-center gap-2.5">
+          <span class="text-base">🔋</span>
+          <span>Peristaltic auto-sampling • Chamber flush cycle • Self-cleaning optical chamber</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter III: The Fusion -->
+    <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-6 stamp-card p-6 sm:p-8 bg-white border-2 border-slate-900 rounded-2xl shadow-[5px_5px_0px_0px_#0f172a] space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2 font-mono text-xs font-bold text-slate-500">
+          <span>CHAPTER III // THE FUSION</span>
+          <span class="text-indigo-600 font-black">ISRO ORBITAL CALIBRATION</span>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900">Orbital Eyes Meet Microscopic Optics</h2>
+        <p class="text-sm font-medium text-slate-700 leading-relaxed">
+          Point sensors alone cannot see the entire ocean, and satellites cannot measure microscopic toxins on river bottoms. SagarDrishti fuses real-time point telemetry with ISRO EOS-06 OCM-3 satellite ocean color data (Chlorophyll-a, Kd490) and Raspberry Pi YOLOv8 optical particle screening into the NIRVAAH XGBoost predictive engine, anticipating blooms 48 to 72 hours before they surface.
+        </p>
+        <div class="p-3 bg-indigo-50 border-2 border-indigo-600 rounded-xl font-mono text-xs font-bold text-indigo-900 flex items-center gap-2.5">
+          <span class="text-base">🛰️</span>
+          <span>EOS-06 Ocean Colour Monitor 3 • 360m Resolution Spectral Bands</span>
+        </div>
+      </div>
+      
+      <div class="lg:col-span-6 flex justify-center">
+        <div class="stamp-card !bg-indigo-950 !text-white border-2 border-slate-900 rounded-2xl shadow-[5px_5px_0px_0px_#0f172a] p-7 space-y-4 w-full max-w-md">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xs font-black text-indigo-300 tracking-wider">// PREDICTIVE LEAD TIME</span>
+            <span class="px-2 py-0.5 rounded bg-indigo-800 font-mono text-[10px] text-indigo-200 font-black">AI FORECAST</span>
+          </div>
+          <div class="text-3xl sm:text-4xl font-black font-mono text-white tracking-tight">48–72 Hours</div>
+          <p class="text-xs sm:text-sm font-medium text-indigo-100 leading-relaxed">
+            Early warning buffer for municipal water plants, desalination stations, and coastal aquaculture zones.
+          </p>
+          <div class="pt-2 border-t border-indigo-900 flex items-center justify-between text-[11px] font-mono text-indigo-300">
+            <span>Model: NIRVAAH XGBoost</span>
+            <span class="text-emerald-400 font-bold">96.4% Validation Acc</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter IV: The Impact -->
+    <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-6 order-2 lg:order-1 flex justify-center">
+        <div class="stamp-card !bg-emerald-950 !text-white border-2 border-slate-900 rounded-2xl shadow-[5px_5px_0px_0px_#0f172a] p-7 space-y-4 w-full max-w-md">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xs font-black text-emerald-300 tracking-wider">// COMMUNITY RESILIENCE</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-800 font-mono text-[10px] text-emerald-200 font-black">GRASSROOTS</span>
+          </div>
+          <div class="text-3xl sm:text-4xl font-black font-mono text-white tracking-tight">₹0 App Overhead</div>
+          <p class="text-xs sm:text-sm font-medium text-emerald-100 leading-relaxed">
+            Delivered directly via simple WhatsApp alerts in Marathi and English to local fishing cooperatives and river authorities.
+          </p>
+          <div class="pt-2 border-t border-emerald-900 flex items-center justify-between text-[11px] font-mono text-emerald-300">
+            <span>Sindhudurg Pilot Zone</span>
+            <span class="text-teal-300 font-bold">340+ Fishermen Protected</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="lg:col-span-6 order-1 lg:order-2 stamp-card p-6 sm:p-8 bg-white border-2 border-slate-900 rounded-2xl shadow-[5px_5px_0px_0px_#0f172a] space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2 font-mono text-xs font-bold text-slate-500">
+          <span>CHAPTER IV // THE IMPACT</span>
+          <span class="text-emerald-700 font-black">DEMOCRATIC ACCESS</span>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900">Democratic Environmental Intelligence</h2>
+        <p class="text-sm font-medium text-slate-700 leading-relaxed">
+          Intelligence is useless if locked inside an ivory tower. SagarDrishti converts complex hydrodynamic ML predictions into plain-language WhatsApp advisories, alerting coastal fishermen before they drop nets in anoxic dead zones and providing pollution control authorities with tamper-proof digital ledgers.
+        </p>
+        <div class="p-3 bg-emerald-50 border-2 border-emerald-600 rounded-xl font-mono text-xs font-bold text-emerald-900 flex items-center gap-2.5">
+          <span class="text-base">🤝</span>
+          <span>Zero smartphone apps needed • Instant native messaging • Multi-lingual alert dispatch</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Comparison Matrix: Legacy vs SagarDrishti -->
+  <div class="stamp-card p-6 sm:p-8 bg-white border-2 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_#0f172a] space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-slate-900 pb-4">
+      <div>
+        <div class="font-mono text-xs font-black text-teal-700 uppercase tracking-widest">// THE PARADIGM SHIFT</div>
+        <h3 class="text-2xl sm:text-3xl font-black text-slate-900">Legacy Manual Sampling vs. SagarDrishti</h3>
+      </div>
+      <span class="px-3 py-1 rounded-full border-2 border-slate-900 bg-amber-200 font-mono text-xs font-black text-slate-900 self-start sm:self-center">
+        100x FASTER DETECTION
+      </span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left font-sans text-sm">
+        <thead>
+          <tr class="border-b-2 border-slate-900 bg-slate-100 font-mono text-xs font-black text-slate-900">
+            <th class="py-3 px-4">PARAMETER / CAPABILITY</th>
+            <th class="py-3 px-4 text-rose-700">TRADITIONAL SAMPLING</th>
+            <th class="py-3 px-4 text-teal-800 bg-teal-50/80">SAGAR DRISHTI AI PLATFORM</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y border-slate-200 font-medium">
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-bold text-slate-900">Sampling Frequency</td>
+            <td class="py-3 px-4 text-slate-600">Once every 15–30 Days (Manual grab)</td>
+            <td class="py-3 px-4 font-bold text-teal-900 bg-teal-50/50">Continuous (Every 20 Minutes, 24/7)</td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-bold text-slate-900">Incident Detection Latency</td>
+            <td class="py-3 px-4 text-slate-600">5 to 7 Days (Lab turnaround)</td>
+            <td class="py-3 px-4 font-bold text-teal-900 bg-teal-50/50">&lt; 3 Seconds (Edge AI evaluation)</td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-bold text-slate-900">Spatial Awareness</td>
+            <td class="py-3 px-4 text-slate-600">Single shoreline point</td>
+            <td class="py-3 px-4 font-bold text-teal-900 bg-teal-50/50">Point Buoys + ISRO Satellite Ocean Swath</td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-bold text-slate-900">Predictive Forecasting</td>
+            <td class="py-3 px-4 text-slate-600">None (Purely retrospective)</td>
+            <td class="py-3 px-4 font-bold text-teal-900 bg-teal-50/50">48–72h Bloom Forecast via XGBoost</td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-bold text-slate-900">Alert Distribution</td>
+            <td class="py-3 px-4 text-slate-600">Bureaucratic monthly PDF</td>
+            <td class="py-3 px-4 font-bold text-teal-900 bg-teal-50/50">Instant Marathi / English WhatsApp Alerts</td>
+          </tr>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4 font-bold text-slate-900">Deployment Cost</td>
+            <td class="py-3 px-4 text-slate-600">₹8,00,000+ per industrial station</td>
+            <td class="py-3 px-4 font-bold text-teal-900 bg-teal-50/50">₹12,209 Low-Cost Autonomous Node</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SDG Alignment Strip -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="stamp-card p-6 bg-sky-50 border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_#0f172a] space-y-2">
+      <div class="font-mono text-xs font-black text-sky-800">UN SDG 6</div>
+      <div class="text-lg font-black text-slate-900">Clean Water & Sanitation</div>
+      <p class="text-xs text-slate-700 font-medium">Protecting drinking water intakes from undetected upstream chemical dumps and industrial pollutants.</p>
+    </div>
+
+    <div class="stamp-card p-6 bg-emerald-50 border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_#0f172a] space-y-2">
+      <div class="font-mono text-xs font-black text-emerald-800">UN SDG 14</div>
+      <div class="text-lg font-black text-slate-900">Life Below Water</div>
+      <p class="text-xs text-slate-700 font-medium">Preventing catastrophic marine dead zones and safeguarding estuary nursery habitats for coastal fisheries.</p>
+    </div>
+
+    <div class="stamp-card p-6 bg-teal-50 border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_#0f172a] space-y-2">
+      <div class="font-mono text-xs font-black text-teal-800">UN SDG 13</div>
+      <div class="text-lg font-black text-slate-900">Climate Action</div>
+      <p class="text-xs text-slate-700 font-medium">Solar-powered autonomous infrastructure reducing carbon footprint and monitoring climate-induced thermal anomalies.</p>
+    </div>
+  </div>
+
+  <!-- GRAND SLOGAN & MISSION TAGLINE BANNER (FINAL SECTION) -->
+  <div class="relative overflow-hidden stamp-card !bg-slate-950 !text-white border-2 border-slate-900 rounded-3xl shadow-[8px_8px_0px_0px_#0d9488] p-8 sm:p-12 text-center space-y-8">
+    
+    <!-- Subtle Background Glow Element -->
+    <div class="absolute -top-24 -right-24 w-72 h-72 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Official Badge -->
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-teal-400/40 bg-teal-950/80 text-teal-300 font-mono text-xs font-black uppercase tracking-widest shadow-inner">
+      <span>🌊</span>
+      <span>PROJECT SAGAR DRISHTI • CAPGEMINI TECH4POSITIVE FUTURE</span>
+    </div>
+
+    <!-- The Grand Slogan / Tagline -->
+    <div class="space-y-4 max-w-4xl mx-auto">
+      <h2 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15]">
+        “See the Change.<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-cyan-200 to-emerald-300">
+          Predict the Risk. Act in Time.
+        </span>”
+      </h2>
+      <p class="text-sm sm:text-lg font-medium text-slate-300 max-w-2xl mx-auto leading-relaxed">
+        Autonomous Edge IoT • ISRO Satellite Remote Sensing • Machine Learning for Living Waters.
+      </p>
+    </div>
+
+    <!-- Call to Action Buttons -->
+    <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+      <a routerLink="/dashboard" class="stamp-btn px-7 py-3.5 bg-teal-400 hover:bg-teal-300 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl border-2 border-slate-900 shadow-[3px_3px_0px_0px_#ffffff] transition-all">
+        Launch Telemetry Cockpit →
+      </a>
+      <a routerLink="/nodes" class="stamp-btn px-7 py-3.5 bg-white hover:bg-slate-100 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0d9488] transition-all">
+        View Hardware Registry 📡
+      </a>
+      <a routerLink="/about" class="stamp-btn px-7 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider rounded-xl border-2 border-slate-700 shadow-[3px_3px_0px_0px_#0d9488] transition-all">
+        Meet the Team 👥
+      </a>
+    </div>
+
+    <!-- Footer Seal -->
+    <div class="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slate-400 gap-3">
+      <div class="flex items-center gap-2">
+        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Gad River & Sarjekot Estuary Live Operations</span>
+      </div>
+      <div class="text-slate-400">
+        Empowering Coastal Ecosystems & Fisherfolk © 2026
+      </div>
+    </div>
+
+  </div>
+
+</div>
